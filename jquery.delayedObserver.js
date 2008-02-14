@@ -31,8 +31,8 @@
   $.fn.extend({
     delayedObserver:function(delay, callback, opt){
       var $this = $(this);
-      var event = opt.event || 'keyup';
       var pos   = 0;
+      var event = (opt && opt.event)? opt.event: 'keyup';
       
       stack.push({obj: $this, timer: null, delay: delay,
                   oldVal: $this.val(), callback: callback});
