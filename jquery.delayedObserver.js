@@ -42,7 +42,7 @@
       $this[event](function() {
         target = stack[pos];
           if (target.obj.val() == target.obj.oldVal) return;
-          else callback(pos);
+          else callback.apply(this, [pos]);
       });
       return this;
     }
