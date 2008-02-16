@@ -1,3 +1,12 @@
+/*
+  jQuery youtubeLinksToEmbed - 0.1
+  (c) 2008 ~ Maxime Haineault (haineault@gmail.com)
+  http://haineault.com   
+
+  MIT License (http://www.opensource.org/licenses/mit-license.php)
+
+*/
+
 (function($){
     // http://www.youtube.com/watch?v=_23TGMeYrgw   url
     // http://www.youtube.com/v/7K2Z8hFdM84&rel=1   embed
