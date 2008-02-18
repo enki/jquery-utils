@@ -26,7 +26,7 @@
 				else args = {r: regexp, cb: callback}; 
 
                 if (handleClick) $('a[href~=#]').each(function(i,a){
-                    if (a.href.match(/#calculate\-price/)) $(a).click(callback); })
+                    if (a.href.match(regexp)) $(a).click(callback); })
 
 				handlers.push(args || {});
 				return $.anchorHandler;
