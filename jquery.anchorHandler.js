@@ -10,10 +10,13 @@
   - fixed bug in IE
   - added handleClick argument (default to false)
   - added stronger typecheck for the regexp variable
+  - fixed variable scope of "handlers"
+  - now using builtin hash window.location.hash instead of full URL
 */
 
 (function($){
-	var url  = window.location.href, handlers = [];
+    var hash = window.location.hash;
+    var handlers = [];
 	
 	$.extend({
 		anchorHandler: {
@@ -26,7 +29,7 @@
 				else args = {r: regexp, cb: callback}; 
 
                 if (handleClick) $('a[href~=#]').each(function(i,a){
-                    if (a.href.match(regexp)) $(a).click(callback); })
+                    if (a.href.match(regexp)) $(a).click(callback); });
 
 				handlers.push(args || {});
 				return $.anchorHandler;
@@ -34,6 +37,6 @@
 		}
 	})(document).ready(function(){
 		$.map(handlers, function(handler){
-			var match = url.match(handler.r) && url.match(handler.r)[0] || false;
-			if (match) handler.cb.apply(this, [match, (url.match(/#.*/)[0] || false)]);});});
+			var match = hash.match(handler.r) && hash.match(handler.r)[0] || false;
+			if (match)  handler.cb.apply(this, [match, (hash || false)]);});});
 })(jQuery);
