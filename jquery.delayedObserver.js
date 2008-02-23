@@ -1,12 +1,14 @@
 /*
- jQuery delayed observer 0.5 ~ http://code.google.com/p/jquery-utils/
+ jQuery delayed observer - 0.5
+ http://code.google.com/p/jquery-utils/
 
- (c) 2007 ~ Maxime Haineault (haineault@gmail.com)
+ (c) Maxime Haineault <haineault@gmail.com>
+ http://haineault.com
  
  MIT License (http://www.opensource.org/licenses/mit-license.php)
  
- changelog
- ---------
+ Changelog
+ =========
  0.2 using closure, special thanks to Stephen Goguen & Tane Piper.
  0.3 now allow object chaining, added license
  0.4 code cleanup, added support for other events than keyup, fixed variable scope

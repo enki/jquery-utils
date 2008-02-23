@@ -1,3 +1,13 @@
+/*
+  jQuery countdown - 0.1a
+  http://code.google.com/p/jquery-utils/
+
+  (c) Maxime Haineault <haineault@gmail.com>
+  http://haineault.com   
+
+  MIT License (http://www.opensource.org/licenses/mit-license.php)
+*/
+
 (function() {
     var date, remain, el = null;
     var trans = " jour";
