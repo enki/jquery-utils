@@ -1,26 +1,32 @@
 /*
-  jQuery youtubeLinksToEmbed - 0.1
+  jQuery youtubeLinksToEmbed - 0.2
   (c) 2008 ~ Maxime Haineault (haineault@gmail.com)
   http://haineault.com   
 
   MIT License (http://www.opensource.org/licenses/mit-license.php)
 
+  Changelog
+  =========
+  0.2
+  - code cleanup
+  - now if the link is clicked twice nothing happens
+
 */
 
 (function($){
-    // http://www.youtube.com/watch?v=_23TGMeYrgw   url
-    // http://www.youtube.com/v/7K2Z8hFdM84&rel=1   embed
+    var youtubeURL = 'http://www.youtube.com/v/';
 
     var yl2e = {
         onclick: function() {
-            if ($(this).next().hasClass('youtubeLinksToEmbed')) return true;
+            if ($(this).next().hasClass('youtubeLinksToEmbed')) return false;
 
-            href    = 'http://www.youtube.com/v/' + this.href.match(/[a-zA-Z0-9-_]+$/) + '&rel=1'
+            href    =  youtubeURL + this.href.match(/[a-zA-Z0-9-_]+$/) + '&rel=1'
             wrapper = $('<div class="youtubeLinksToEmbed" style="display:none;"><span>Loading...</span><div style="display:none;"></div></div>');
             player  = $('div:first', wrapper);
 
             player.flash({src: href, width: 425, height: 355});
             $(this).after(wrapper);
+
             wrapper.queue(function(){
                 $(this).css('height', 40);
                 $(this).dequeue();
@@ -53,7 +59,6 @@
         }
     });
 })(jQuery);
-
 
 $(document).ready(function(){
     $('body').youtubeLinksToEmbed();
