@@ -13,40 +13,34 @@
  0.3 now allow object chaining, added license
  0.4 code cleanup, added support for other events than keyup, fixed variable scope
  0.5 changed filename, included in jquery-utils 
+ 0.6 complete rewrite, same structure but more compact, 
+     now using jquery's "data" method instead of a stack to store data
+     it's now possible to change the condition, by default it's "if new this.val == this.oldval"
 */
 
-(function() {
-  var stack = [];var target;
- 
-  function callback(pos) {
-    target = stack[pos];
-    if (target.timer) clearTimeout(target.timer);
-   
-    target.timer = setTimeout(function(){
-      target.timer = null;
-      target.callback(target.obj.val(), target.obj);
-    }, target.delay * 1000);
-
-    target.oldVal = target.obj.val();
-  } 
- 
-  $.fn.extend({
-    delayedObserver:function(delay, callback, opt){
-      var $this = $(this);
-      var pos   = 0;
-      var event = (opt && opt.event)? opt.event: 'keyup';
-      
-      stack.push({obj: $this, timer: null, delay: delay,
-                  oldVal: $this.val(), callback: callback});
-       
-      pos = stack.length-1;
-     
-      $this[event](function() {
-        target = stack[pos];
-          if (target.obj.val() == target.obj.oldVal) return;
-          else callback.apply(this, [pos]);
-      });
-      return this;
-    }
-  });
+(function($){
+    $.extend($.fn, {
+        delayedObserver: function(callback, delay, options){
+            $obj    = $(this);
+            options = options || {};
+            $obj.data('oldval',    $obj.val())
+                .data('delay',     delay || 0.5)
+                .data('condition', options.condition || function() {
+                    return ($(this).data('oldval') == $(this).val());
+                })
+                .data('callback',  callback)
+                [(options.event||'keyup')](function(){
+                    if ($obj.data('condition').apply($obj)) return;
+                    else {
+                        if ($obj.data('timer')) clearTimeout($obj.data('timer'));
+                      
+                        $obj.data('timer', setTimeout(function(){
+                            $obj.data('callback').apply($obj);
+                        }, $obj.data('delay') * 1000));
+                      
+                        $obj.data('oldval', $obj.val());
+                    }i
+                });
+        }
+    });
 })(jQuery);
