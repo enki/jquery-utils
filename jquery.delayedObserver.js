@@ -16,30 +16,33 @@
  0.6 complete rewrite, same structure but more compact, 
      now using jquery's "data" method instead of a stack to store data
      it's now possible to change the condition, by default it's "if new this.val == this.oldval"
+     now using this.each to support multiple observed elements
 */
 
 (function($){
     $.extend($.fn, {
         delayedObserver: function(callback, delay, options){
-            $obj    = $(this);
-            options = options || {};
-            $obj.data('oldval',    $obj.val())
-                .data('delay',     delay || 0.5)
-                .data('condition', options.condition || function() {
-                    return ($(this).data('oldval') == $(this).val());
-                })
-                .data('callback',  callback)
-                [(options.event||'keyup')](function(){
-                    if ($obj.data('condition').apply($obj)) return;
-                    else {
-                        if ($obj.data('timer')) clearTimeout($obj.data('timer'));
-                      
-                        $obj.data('timer', setTimeout(function(){
-                            $obj.data('callback').apply($obj);
-                        }, $obj.data('delay') * 1000));
-                      
-                        $obj.data('oldval', $obj.val());
-                    }i
+            this.each(function(){
+                var $obj    = $(this);
+                var options = options || {};
+                $obj.data('oldval',    $obj.val())
+                    .data('delay',     delay || 0.5)
+                    .data('condition', options.condition || function() {
+                        return ($(this).data('oldval') == $(this).val());
+                    })
+                    .data('callback',  callback)
+                    [(options.event||'keyup')](function(){
+                        if ($obj.data('condition').apply($obj)) return;
+                        else {
+                            if ($obj.data('timer')) clearTimeout($obj.data('timer'));
+                          
+                            $obj.data('timer', setTimeout(function(){
+                                $obj.data('callback').apply($obj);
+                            }, $obj.data('delay') * 1000));
+                          
+                            $obj.data('oldval', $obj.val());
+                        }
+                    });
                 });
         }
     });
