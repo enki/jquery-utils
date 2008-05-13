@@ -59,7 +59,6 @@
         var buffer     = [];
         var token      = '';
         var args       = args || {};
-        var getFormat  = function(str) { return 'd'; }; // TODO
         var star       = str.split('');
         for(index in str) {
             start = parseInt(index);
@@ -72,8 +71,8 @@
             }
             else if (start > end || buffer.length < 1)  buffer.push(str[start]);
         }
-        console.log('Formatted: %s -> %a -> %s', str, buffer, buffer.join(''));
-        return buffer.join('');
+        //console.log('Formatted: %s -> %a -> %s (%d)', str, buffer, buffer.join(''), buffer.length);
+        return (buffer.length > 1)? buffer.join(''): buffer[0];
     };
 
     var sprintf = function() {
