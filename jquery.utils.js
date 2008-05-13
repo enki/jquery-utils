@@ -12,14 +12,15 @@
 (function($){
 	$.extend({ 
 		isRegExp: function(o) {
-			return o.constructor.toString().indexOf('RegExp()') != -1);
+			return o.constructor.toString().indexOf('RegExp()') != -1;
 		},
 		isArray: function(o) {
-			return o.constructor.toString().indexOf('Array()') != -1);
+			return o.constructor.toString().indexOf('Array()') != -1;
 		},
 		toCurrency: function() {
 			o = parseFloat(this).toFixed(2);
 			return (o=='NaN') ? '0.00' : o ;
 		}
+
 	});
 })(jQuery);
