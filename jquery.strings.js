@@ -1,30 +1,35 @@
 /*
-    How it should work:
+  jQuery strings - 0.1a
+  http://code.google.com/p/jquery-utils/
 
-    Via string prototype:
-    =====================
+  (c) Maxime Haineault <haineault@gmail.com>
+  http://haineault.com   
 
-    Inspiration
-    ~~~~~~~~~~~
-    http://www.python.org/dev/peps/pep-3101/
+  MIT License (http://www.opensource.org/licenses/mit-license.php)
 
-    named arguments
-    ~~~~~~~~~~~~~~~
-    $.format('{a}bc', {a:'A'}) -> Abc
+  How it should work:
 
-    conversion 
-    ~~~~~~~~~~
-    $.format('{a:s}bc', {a:[1,2,3]}) -> 123bc
-    $.format('{a:d}bc', {a:1.5})     -> 1bc
-    
-    Note: for conversion types see: http://docs.python.org/lib/typesseq-strings.html
+  Inspiration
+  ~~~~~~~~~~~
+  http://www.python.org/dev/peps/pep-3101/
 
-    extensible conversions
-    ~~~~~~~~~~~~~~~~~~~~~~
-    jQuery.extend(jQuery.strConversion, 
-        {'u': function(arg){ return arg.toUpperCase(); }
-    });
-    $.format('{a:u}bc', {a:'a'})     -> Abc
+  named arguments
+  ~~~~~~~~~~~~~~~
+  $.format('{a}bc', {a:'A'}) -> Abc
+
+  conversion 
+  ~~~~~~~~~~
+  $.format('{a:s}bc', {a:[1,2,3]}) -> 123bc
+  $.format('{a:d}bc', {a:1.5})     -> 1bc
+  
+  Note: for conversion types see: http://docs.python.org/lib/typesseq-strings.html
+
+  extensible conversions
+  ~~~~~~~~~~~~~~~~~~~~~~
+  jQuery.extend(jQuery.strConversion, 
+      {'u': function(arg){ return arg.toUpperCase(); }
+  });
+  $.format('{a:u}bc', {a:'a'})     -> Abc
 */
 
 (function(){
