@@ -10,12 +10,21 @@
 
     named arguments
     ~~~~~~~~~~~~~~~
+    $.format('{a}bc', {a:'A'}) -> Abc
+
+    conversion 
+    ~~~~~~~~~~
+    $.format('{a:s}bc', {a:[1,2,3]}) -> 123bc
+    $.format('{a:d}bc', {a:1.5})     -> 1bc
+    
+    Note: for conversion types see: http://docs.python.org/lib/typesseq-strings.html
 
     extensible conversions
     ~~~~~~~~~~~~~~~~~~~~~~
     jQuery.extend(jQuery.strConversion, 
         {'u': function(arg){ return arg.toUpperCase(); }
     });
+    $.format('{a:u}bc', {a:'a'})     -> Abc
 */
 
 (function(){
@@ -38,7 +47,7 @@
         return conversion[format](arg);
     };
 
-    var format =  function(str, args) {
+    var format = function(str, args) {
         var end        = 0;
         var start      = 0;
         var match      = false;
