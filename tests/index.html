@@ -1,9 +1,36 @@
 <html>
     <head>
         <title>jQuery utils</title>
+        <link rel="Stylesheet" media="screen" href="testsuite.css" />
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-        <script type="text/javascript" src="jquery.strings.js"></script>
+        <script type="text/javascript" src="testrunner.js"></script>
+        <script type="text/javascript" src="../jquery.strings.js"></script>
     </head>
-    <body>
+    <body id="body">
+    	<h1 id="header">jQuery.utils Test Suite</h1>
+	    <h2 id="banner"></h2>
+        <h2 id="userAgent"></h2>    
+        <div id="main"></div>
+        <ol id="tests"></ol>
     </body>
+<script type="text/javascript">
+module('jquery.strings.js');
+test("Format (basic replacement)", function() {
+    expect(6);
+    ok($.format('{a}bc', {a:'A'}) == 'Abc', 'Single character replacement (start)' );
+    ok($.format('a{b}c', {b:'B'}) == 'aBc', 'Single character replacement (middle)' );
+    ok($.format('ab{c}', {c:'C'}) == 'abC', 'Single character replacement (end)' );
+
+    ok($.format('{abc}defghi', {abc:'ABC'}) == 'ABCdefghi', 'Multiple character replacement (start)' );
+    ok($.format('abc{def}ghi', {def:'DEF'}) == 'abcDEFghi', 'Multiple character replacement (middle)' );
+    ok($.format('abcdef{ghi}', {ghi:'GHI'}) == 'abcdefGHI', 'Multiple character replacement (end)' );
+});
+
+module('jquery.strings.js');
+test("Format (convertion)", function() {
+    expect(2);
+    ok($.format('{a:s}bc', {a:[1,2,3]}) == '123bc', 'Array to String convertion' );
+    ok($.format('{a:d}bc', {a:1.5}) == '1bc', 'Float to Integer convertion' );
+});
+</script>
 </html>
