@@ -28,10 +28,12 @@ test("Format (basic replacement)", function() {
 
 module('jquery.strings.js');
 test("Format (convertion)", function() {
-    expect(3);
+    expect(4);
     ok($.format('{a:s}', {a:[1,2,3]}) == '123', 'Array to String convertion' );
     ok($.format('{a:d}', {a:10.5}) == '10', 'Float to Integer convertion' );
     ok(typeof($.format('{a:d}', {a:10.5})) == 'number', 'Type of float to Integer convertion' );
+    
+    ok($.format('a{a:03d}b', {a:1}) == 'a001b', 'Float to Integer convertion' );
 });
 </script>
 </html>

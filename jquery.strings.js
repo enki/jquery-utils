@@ -33,23 +33,32 @@
 */
 
 (function(){
+    
+    var repeat = function(s, l) { 
+        return new Array(l||1).join(s); 
+    }
 
     var conversion = {
         // string
-        's': function(arg) {
-            return (typeof(arg) == 'string')? arg: arg.join('');
+        's': function(input, args) {
+            return (typeof(input) == 'string')? input: input.join('');
         },
-        'd': function(arg) {
-            return parseInt(arg);
+        'd': function(input, args) {
+            var out = parseInt(input, 10); // enforce base 10
+            if (args && args[0] == 0 && args.length > 1) { // zero padding
+                out = repeat('0', parseInt(args.slice(1, args.length), 10)) + out;
+            }
+            return out;
         }
     };
 
-    var formatToken = function(token, arg) {
-        console.log('Format: %s -> %o', token, arg);
+    var formatToken = function(token, input) {
         var match  = token.split(':');
         var token  = match[0];
-        var format = (match[1] && conversion[match[1]])? match[1]: 's';
-        return conversion[format](arg);
+        var format = match[1] && match[1].slice(-1, match[1].length) || 's';
+        var args   = match[1] && match[1].slice(0, match[1].length-1) || '';
+        //console.log('Format: %s -> %o (%s)', input, token, args);
+        return conversion[format](input, args);
     };
 
     var format = function(str, args) {
