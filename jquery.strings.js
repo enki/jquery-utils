@@ -55,7 +55,11 @@
         'i': function(input, args){ 
             return this.d(input, args);
         },
-        // o 	Unsigned octal
+        // Unsigned octal
+        'o': function(input, args){ 
+            return input.toString(8);
+        },
+
         // Unsigned decimal
         'u': function(input, args) {
             return Math.abs(this.d(input, args));
