@@ -64,22 +64,40 @@
         'u': function(input, args) {
             return Math.abs(this.d(input, args));
         },
-        // x 	Unsigned hexadecimal (lowercase)
-        // X 	Unsigned hexadecimal (uppercase)
+        // Unsigned hexadecimal (lowercase)
+        'x': function(input, args) {
+            return parseInt(input, 10).toString(16);
+        },
+        // Unsigned hexadecimal (uppercase)
+        'X': function(input, args) {
+            return this.x(input, args).toUpperCase();
+        },
         // e 	Floating point exponential format (lowercase)
         // E 	Floating point exponential format (uppercase)
-        // f 	Floating point decimal format
-        // F 	Floating point decimal format
+        // Floating point decimal format
+        'f': function(input, args) {
+            // TODO: precision & padding
+            return parseFloat(input, 10);
+        },
+        // Floating point decimal format
+        'F': function(input, args) {
+            return this.f(input, args);
+        },
         // g 	Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
         // G 	Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
-        // c 	Single character (accepts integer or single character string). 	
+        // Single character (accepts integer or single character string). 	
+        'c': function(input, args) {
+            var match = input.match(/\w|\d/);
+            return match && match[0] || '';
+        },
         // r 	String (converts any python object using repr())
+        'r': function(input, args) {
+            return (typeof(input) == 'string')? input: input.join('');
+        },
         // s 	String (converts any python object using str())
-        // string
         's': function(input, args) {
             return (typeof(input) == 'string')? input: input.join('');
         },
-
     };
 
     var formatToken = function(token, input) {
