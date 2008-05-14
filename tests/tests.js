@@ -8,20 +8,22 @@ test("Format (basic string replacement)", function() {
     ok($.format('{abc}defghi', {abc:'ABC'}) == 'ABCdefghi', 'Multiple character replacement (start)' );
     ok($.format('abc{def}ghi', {def:'DEF'}) == 'abcDEFghi', 'Multiple character replacement (middle)' );
     ok($.format('abcdef{ghi}', {ghi:'GHI'}) == 'abcdefGHI', 'Multiple character replacement (end)' );
+    // TODO: escapinng
 });
 
-test("Format (types convertion)", function() {
-    expect(1);
-    ok($.format('{a:s}', {a:[1,2,3]})       == '123',    'Array to String convertion (s)' );
-});
 test("Format - DECIMAL (d)", function() {
-    expect(5);
+    expect(4);
     ok($.format('{a:d}', {a:10.5})          == '10',     'Float to Integer convertion (d)' );
     ok($.format('{a:d}', {a:-10})           == '-10',    'Float to negative Integer convertion (d)' );
-    ok($.format('{a:i}', {a:10.5})          == '10',     'Float to Integer convertion (i)' );
     ok(typeof($.format('{a:d}', {a:10.5}))  == 'number', 'Result type of float to Integer convertion (d)' );
-    ok(typeof($.format('{a:i}', {a:10.5}))  == 'number', 'Result type of float to Integer convertion (i)' );
+    ok($.format('a{a:03d}b', {a:1}) == 'a001b', 'Basic zero padding (03d)' );
     
+});
+test("Format - DECIMAL (i)", function() {
+    expect(3);
+    ok($.format('{a:i}', {a:10.5})          == '10',     'Float to Integer convertion (i)' );
+    ok(typeof($.format('{a:i}', {a:10.5}))  == 'number', 'Result type of float to Integer convertion (i)' );
+    ok($.format('a{a:03i}b', {a:1}) == 'a001b', 'Basic zero padding (03i)' );
 });
 test("Format - UNSIGNED INT(u)", function() {
     ok($.format('{a:u}', {a:10})            == '10',     'Integer to Unsigned Integer convertion (d)' );
@@ -36,8 +38,7 @@ test("Format - OCTAL (u) ", function() {
     ok($.format('{a:o}', {a:0255})           == '255',    '0255 -> 255' );
 });
 
-test("Format (zero padding)", function() {
-    expect(2);
-    ok($.format('a{a:03d}b', {a:1}) == 'a001b', 'Basic zero padding (03d)' );
-    ok($.format('a{a:03i}b', {a:1}) == 'a001b', 'Basic zero padding (03i)' );
+test("Format - STRING (s)", function() {
+    expect(1);
+    ok($.format('{a:s}', {a:[1,2,3]})       == '123',    'Array to String convertion (s)' );
 });
