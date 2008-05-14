@@ -59,7 +59,6 @@
         'o': function(input, args){ 
             return input.toString(8);
         },
-
         // Unsigned decimal
         'u': function(input, args) {
             return Math.abs(this.d(input, args));
@@ -72,29 +71,44 @@
         'X': function(input, args) {
             return this.x(input, args).toUpperCase();
         },
-        // e 	Floating point exponential format (lowercase)
-        // E 	Floating point exponential format (uppercase)
+        // Floating point exponential format (lowercase)
+        'e': function(input, args) {
+            return parseFloat(input, 10).toExponential();
+        },
+        // Floating point exponential format (uppercase)
+        'E': function(input, args) {
+            return this.e(input, args).toUpperCase();
+        },
         // Floating point decimal format
-        'f': function(input, args) {
+        'f': function(input, args){
             // TODO: precision & padding
             return parseFloat(input, 10);
         },
         // Floating point decimal format
-        'F': function(input, args) {
+        'F': function(input, args){
             return this.f(input, args);
         },
         // g 	Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
+        'g': function(input, args){
+            input = input.toString();
+            if (input.match('.') && input.slice(0, input.indexOf('.')).length >= 6) {
+                console.log(input.slice(0, input.indexOf('.')));
+                return 'a'+parseFloat(input, 10).toExponential();
+            }
+            else return 'b'+parseFloat(input, 10);
+        },
         // G 	Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
+        'G': function(input, args){},
         // Single character (accepts integer or single character string). 	
         'c': function(input, args) {
             var match = input.match(/\w|\d/);
             return match && match[0] || '';
         },
-        // r 	String (converts any python object using repr())
+        // String (converts any python object using repr())
         'r': function(input, args) {
             return (typeof(input) == 'string')? input: input.join('');
         },
-        // s 	String (converts any python object using str())
+        // String (converts any python object using str())
         's': function(input, args) {
             return (typeof(input) == 'string')? input: input.join('');
         },

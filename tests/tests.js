@@ -1,14 +1,34 @@
 // unsigned -> positive only
+// http://svn.python.org/projects/python/trunk/Lib/test/test_format.py
+
+function test_format(arr) {
+    $(arr).each(function(a, b){
+        equals($.format(this[0], this[1]), this[2], this[3]);
+    });
+}
 
 module('jquery.strings.js');
 test('Format - basic string replacement', function() {
-    expect(6);
+//    expect(6);
+    var tests = [
+        ['{a}bc', {a:'A'},  'Abc',  'Single character replacement (start)']
+        ['a{b}c', {b:'B'}, 'aBc',  'Single character replacement (middle)'],
+        ['ab{c}', {c:'C'}, 'abC',  'Single character replacement (end)'],
+
+        ['{abc}defghi', {abc:'ABC'}, 'ABCdefghi', 'Multiple character replacement (start)'],
+        ['abc{def}ghi', {def:'DEF'}, 'abcDEFghi', 'Multiple character replacement (middle)'],
+        ['abcdef{ghi}', {ghi:'GHI'}, 'abcdefGHI', 'Multiple character replacement (end)']
+    ];
+    expect(tests.length);
+    test_format(tests);
+    /*
     equals($.format('{a}bc', {a:'A'}),           'Abc',       'Single character replacement (start)' );
     equals($.format('a{b}c', {b:'B'}),           'aBc',       'Single character replacement (middle)' );
     equals($.format('ab{c}', {c:'C'}),           'abC',       'Single character replacement (end)' );
     equals($.format('{abc}defghi', {abc:'ABC'}), 'ABCdefghi', 'Multiple character replacement (start)' );
     equals($.format('abc{def}ghi', {def:'DEF'}), 'abcDEFghi', 'Multiple character replacement (middle)' );
     equals($.format('abcdef{ghi}', {ghi:'GHI'}), 'abcdefGHI', 'Multiple character replacement (end)' );
+    */
     // TODO: escapinng
 });
 
@@ -67,4 +87,9 @@ test("Format - SINGLE CHARACTER (c)", function() {
 test("Format - STRING (s)", function() {
     expect(1);
     equals($.format('{a:s}', {a:[1,2,3]}), '123',    '[1,2,3] -> 123 (Array to string)' );
+});
+
+test("Format - Complex formatting", function() {
+    expect(1);
+    equals($.format('{a:s}b{c:03d}d{e:o}f{g:u}hijklmnopqrstuvwxyz', {a:[1,2,3], c:8, e:255, g:-200}), '123b008d377f200hijklmnopqrstuvwxyz',    'complex string formatting' );
 });
