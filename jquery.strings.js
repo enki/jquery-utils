@@ -34,22 +34,48 @@
 
 (function(){
     
-    var repeat = function(s, l) { 
-        return new Array(l||1).join(s); 
-    }
+    //+ Jonas Raoni Soares Silva
+    //@ http://jsfromhell.com/string/pad [v1.0]
+    var pad = function(str, l, s, t){
+        return s || (s = " "), (l -= str.length) > 0 ? (s = new Array(Math.ceil(l / s.length)
+            + 1).join(s)).substr(0, t = !t ? l : t == 1 ? 0 : Math.ceil(l / 2))
+            + str + s.substr(0, l - t) : str;
+    };
 
     var conversion = {
+        // Signed integer decimal.
+        'd': function(input, args) {
+            var out = parseInt(input, 10); // enforce base 10
+            if (args && args[0] == 0 && args.length > 1) { // zero padding
+                out = pad(out.toString(), parseInt(args.slice(1, args.length)), '0', 0);
+            }
+            return out;
+        },
+        // Signed integer decimal.
+        'i': function(input, args){ 
+            return this.d(input, args);
+        },
+        // o 	Unsigned octal
+        // Unsigned decimal
+        'u': function(input, args) {
+            return Math.abs(this.d(input, args));
+        },
+        // x 	Unsigned hexadecimal (lowercase)
+        // X 	Unsigned hexadecimal (uppercase)
+        // e 	Floating point exponential format (lowercase)
+        // E 	Floating point exponential format (uppercase)
+        // f 	Floating point decimal format
+        // F 	Floating point decimal format
+        // g 	Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
+        // G 	Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
+        // c 	Single character (accepts integer or single character string). 	
+        // r 	String (converts any python object using repr())
+        // s 	String (converts any python object using str())
         // string
         's': function(input, args) {
             return (typeof(input) == 'string')? input: input.join('');
         },
-        'd': function(input, args) {
-            var out = parseInt(input, 10); // enforce base 10
-            if (args && args[0] == 0 && args.length > 1) { // zero padding
-                out = repeat('0', parseInt(args.slice(1, args.length), 10)) + out;
-            }
-            return out;
-        }
+
     };
 
     var formatToken = function(token, input) {

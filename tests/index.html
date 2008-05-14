@@ -15,7 +15,7 @@
     </body>
 <script type="text/javascript">
 module('jquery.strings.js');
-test("Format (basic replacement)", function() {
+test("Format (basic string replacement)", function() {
     expect(6);
     ok($.format('{a}bc', {a:'A'}) == 'Abc', 'Single character replacement (start)' );
     ok($.format('a{b}c', {b:'B'}) == 'aBc', 'Single character replacement (middle)' );
@@ -26,14 +26,22 @@ test("Format (basic replacement)", function() {
     ok($.format('abcdef{ghi}', {ghi:'GHI'}) == 'abcdefGHI', 'Multiple character replacement (end)' );
 });
 
-module('jquery.strings.js');
-test("Format (convertion)", function() {
-    expect(4);
-    ok($.format('{a:s}', {a:[1,2,3]}) == '123', 'Array to String convertion' );
-    ok($.format('{a:d}', {a:10.5}) == '10', 'Float to Integer convertion' );
-    ok(typeof($.format('{a:d}', {a:10.5})) == 'number', 'Type of float to Integer convertion' );
-    
-    ok($.format('a{a:03d}b', {a:1}) == 'a001b', 'Float to Integer convertion' );
+test("Format (types convertion)", function() {
+    expect(8);
+    ok($.format('{a:s}', {a:[1,2,3]})       == '123',    'Array to String convertion (s)' );
+    ok($.format('{a:d}', {a:10.5})          == '10',     'Float to Integer convertion (d)' );
+    ok($.format('{a:d}', {a:-10})           == '-10',    'Float to negative Integer convertion (d)' );
+    ok($.format('{a:i}', {a:10.5})          == '10',     'Float to Integer convertion (i)' );
+    ok(typeof($.format('{a:d}', {a:10.5}))  == 'number', 'Result type of float to Integer convertion (d)' );
+    ok(typeof($.format('{a:i}', {a:10.5}))  == 'number', 'Result type of float to Integer convertion (i)' );
+    ok($.format('{a:u}', {a:10})            == '10',     'Integer to Unsigned Integer convertion (d)' );
+    ok($.format('{a:u}', {a:-10})           == '10',     'Negative Integer to Unsigned Integer convertion (d)' );
+});
+
+test("Format (zero padding)", function() {
+    expect(2);
+    ok($.format('a{a:03d}b', {a:1}) == 'a001b', 'Basic zero padding (03d)' );
+    ok($.format('a{a:03i}b', {a:1}) == 'a001b', 'Basic zero padding (03i)' );
 });
 </script>
 </html>
