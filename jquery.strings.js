@@ -129,7 +129,7 @@
         F: function(input, args){
             return this.f(input, args);
         },
-        // g 	Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
+        // Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
         g: function(input, args){
             input = input.toString();
             if (input.match('.') && input.slice(0, input.indexOf('.')).length >= 6) {
@@ -137,7 +137,7 @@
             }
             else return parseFloat(input, 10);
         },
-        // G 	Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
+        // Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
         G: function(input, args){},
         // Single character (accepts integer or single character string). 	
         c: function(input, args) {
@@ -159,7 +159,6 @@
         var token  = match[0];
         var format = match[1] && match[1].slice(-1, match[1].length) || 's';
         var args   = new Argument(match[1] && match[1].slice(0, match[1].length-1) || '');
-        //console.log('Format: %s -> %o (%s)', input, token, args);
         return conversion[format](input, args);
     };
 
@@ -182,7 +181,6 @@
             }
             else if (start > end || buffer.length < 1)  buffer.push(str[start]);
         }
-        //console.log('Formatted: %s -> %a -> %s (%d)', str, buffer, buffer.join(''), buffer.length);
         return (buffer.length > 1)? buffer.join(''): buffer[0];
     };
 
