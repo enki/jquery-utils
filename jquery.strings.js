@@ -50,9 +50,7 @@
         this.getPaddingLength = function(){
             if (this.isAlternate()) {
                 var match = this.getString().match(/0?#0?(\d+)/);
-                if (match && match[1]) {
-                    return parseInt(match[1], 10);
-                }
+                if (match && match[1]) return parseInt(match[1], 10);
             }
             var match = this.getString().match(/(0|\.)(\d+|\*)/g)
             return match && parseInt(match[0].slice(1), 10) || 0;
@@ -163,13 +161,13 @@
     };
 
     var format = function(str, args) {
-        var end        = 0;
-        var start      = 0;
-        var match      = false;
-        var buffer     = [];
-        var token      = '';
-        var args       = args || {};
-        var star       = str.split('');
+        var end    = 0;
+        var start  = 0;
+        var match  = false;
+        var buffer = [];
+        var token  = '';
+        var args   = args || {};
+        var star   = str.split('');
         for(index in str) {
             start = parseInt(index);
             if (str[start] == '{' && str[start+1] !='{') {

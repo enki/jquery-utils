@@ -21,21 +21,12 @@ test('Format - basic string replacement', function() {
     // TODO: escapinng
 });
 
-test('Format - DECIMAL (d)', function() {
+test('Format - DECIMAL (d|i)', function() {
     test_format([
         ['{a:d}',       {a:10.5},  '10',     '10.5 -> 10 (float to decimal)'],
         ['{a:d}',       {a:-10.5}, '-10',    '-10.5 -> -10 (negative float to negative decimal)'],
         ['{a:d}',       {a:-10},   '-10',    '-10 -> -10 (signed)'],
         ['a{a:03d}b',   {a:1},     'a001b',  '1 -> 001 (Zero padding)']
-    ]);
-});
-
-test('Format - DECIMAL (i)', function() {
-    test_format([
-        ['{a:i}', {a:10.5},  '10',     '10.5 -> 10 (float to decimal)'],
-        ['{a:i}', {a:-10.5}, '-10',    '-10.5 -> -10 (negative float to negative decimal)'],
-        ['{a:d}', {a:-10},   '-10',    '-10 -> -10 (unsigned decimal)'],
-        ['a{a:03i}b', {a:1}, 'a001b',  '1 -> 001 (Zero padding)']
     ]);
 });
 
@@ -109,7 +100,7 @@ test("Format - flag: Alternate form (#)", function() {
     ]);
 });
 test("Format - tests from python format_tests.py", function() {
-    expect(5);
+    expect(11);
     equals($.format('{a:.1d}', {a:1}), '1', '.1d -> 1');
 //  equals($.format('{a:.*d}', [Number.MAX_VALUE, 1]), '1', '.1d -> 1'); // expect overflow
     equals($.format('{a:.100d}', {a:1}), '0'.repeat(100)+'1', '.100d');
@@ -117,5 +108,12 @@ test("Format - tests from python format_tests.py", function() {
     equals($.format('{a:#.118x}', {a:1}), '0x'+'0'.repeat(118)+'1', '#.118x');
 
     ok($.format('{a:f}', {a:1.0}).toString().length == '1.000000'.length,   'f: 1.0 -> 1.000000 (default precision (6))');
+
+    equals($.format('{a:x}', {a:10}), 'a', '10:x -> a');
+    equals($.format('{a:x}', {a:100000000000}), '174876e800', '100000000000:x -> 174876e800');
+    equals($.format('{a:o}', {a:10}), '12', '10:o -> 12');
+    equals($.format('{a:o}', {a:100000000000}), '1351035564000', '100000000000:o -> 1351035564000');
+    equals($.format('{a:d}', {a:10}), '10', '10:d -> 10');
+    equals($.format('{a:d}', {a:100000000000}), '100000000000', '100000000000:d -> 100000000000');
 
 });
