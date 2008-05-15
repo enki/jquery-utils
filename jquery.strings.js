@@ -32,8 +32,22 @@
   $.format('{a:u}bc', {a:'a'})     -> Abc
 */
 
+    function Argument(arg) {
+        this.__arg = arg;
+        this.__max_precision = parseFloat('1.'+ (new Array(32)).join('1'), 10).toString().length-3;
+        this.getString = function(){
+            return this.__arg;
+        };
+        this.getPrecision = function() {
+            var match = this.getString().match(/\.(\d+|\*)/g)
+            return match && parseInt(match[0].slice(1), 10) || this.__max_precision ;
+        };
+        this.getPadding = function() {
+            var match = this.getString().match(/0(\d+|\*)/g)
+            return match && parseInt(match[0].slice(1), 10) || false;
+        };
+    };
 (function(){
-    
     //+ Jonas Raoni Soares Silva
     //@ http://jsfromhell.com/string/pad [v1.0]
     var pad = function(str, l, s, t){
@@ -44,52 +58,52 @@
 
     var conversion = {
         // Signed integer decimal.
-        'd': function(input, args) {
-            var out = parseInt(input, 10); // enforce base 10
-            if (args && args[0] == 0 && args.length > 1) { // zero padding
-                out = pad(out.toString(), parseInt(args.slice(1, args.length)), '0', 0);
-            }
-            return out;
+        d: function(input, arg){
+            var o = parseInt(input, 10); // enforce base 10
+            var p = arg.getPadding(); // zero padding
+            if (p) return pad(o.toString(), p, '0', 0);
+            else return o;
         },
         // Signed integer decimal.
-        'i': function(input, args){ 
+        i: function(input, args){ 
             return this.d(input, args);
         },
         // Unsigned octal
-        'o': function(input, args){ 
+        o: function(input, args){ 
             return input.toString(8);
         },
         // Unsigned decimal
-        'u': function(input, args) {
+        u: function(input, args) {
             return Math.abs(this.d(input, args));
         },
         // Unsigned hexadecimal (lowercase)
-        'x': function(input, args) {
+        x: function(input, args) {
             return parseInt(input, 10).toString(16);
         },
         // Unsigned hexadecimal (uppercase)
-        'X': function(input, args) {
+        X: function(input, args) {
             return this.x(input, args).toUpperCase();
         },
         // Floating point exponential format (lowercase)
-        'e': function(input, args) {
+        e: function(input, args) {
             return parseFloat(input, 10).toExponential();
         },
         // Floating point exponential format (uppercase)
-        'E': function(input, args) {
+        E: function(input, args) {
             return this.e(input, args).toUpperCase();
         },
         // Floating point decimal format
-        'f': function(input, args){
+        f: function(input, arg){
             // TODO: precision & padding
+//            console.log(arg.getPrecision());
             return parseFloat(input, 10);
         },
         // Floating point decimal format
-        'F': function(input, args){
+        F: function(input, args){
             return this.f(input, args);
         },
         // g 	Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
-        'g': function(input, args){
+        g: function(input, args){
             input = input.toString();
             if (input.match('.') && input.slice(0, input.indexOf('.')).length >= 6) {
                 console.log(input.slice(0, input.indexOf('.')));
@@ -98,18 +112,18 @@
             else return 'b'+parseFloat(input, 10);
         },
         // G 	Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
-        'G': function(input, args){},
+        G: function(input, args){},
         // Single character (accepts integer or single character string). 	
-        'c': function(input, args) {
+        c: function(input, args) {
             var match = input.match(/\w|\d/);
             return match && match[0] || '';
         },
         // String (converts any python object using repr())
-        'r': function(input, args) {
+        r: function(input, args) {
             return (typeof(input) == 'string')? input: input.join('');
         },
         // String (converts any python object using str())
-        's': function(input, args) {
+        s: function(input, args) {
             return (typeof(input) == 'string')? input: input.join('');
         },
     };
@@ -118,7 +132,7 @@
         var match  = token.split(':');
         var token  = match[0];
         var format = match[1] && match[1].slice(-1, match[1].length) || 's';
-        var args   = match[1] && match[1].slice(0, match[1].length-1) || '';
+        var args   = new Argument(match[1] && match[1].slice(0, match[1].length-1) || '');
         //console.log('Format: %s -> %o (%s)', input, token, args);
         return conversion[format](input, args);
     };
