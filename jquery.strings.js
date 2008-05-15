@@ -31,30 +31,46 @@
   });
   $.format('{a:u}bc', {a:'a'})     -> Abc
 */
-
 (function(){
-    Argument = function(arg) {
+    var Argument = function(arg) {
         this.__arg = arg;
         this.__max_precision = parseFloat('1.'+ (new Array(32)).join('1'), 10).toString().length-3;
+        this.__def_precision = 6;
         this.getString = function(){
             return this.__arg;
         };
         this.getPrecision = function(){
             var match = this.getString().match(/\.(\d+|\*)/g);
-            if (!match) return this.__max_precision;
+            if (!match) return this.__def_precision;
             else {
                 match = match[0].slice(1);
                 return (match == '*')? match: parseInt(match, 10);
             }
         };
-        this.getPadding = function(){
-            var match = this.getString().match(/0(\d+|\*)/g)
-            return match && parseInt(match[0].slice(1), 10) || false;
+        this.getPaddingLength = function(){
+            if (this.isAlternate()) {
+                var match = this.getString().match(/0?#0?(\d+)/);
+                if (match && match[1]) {
+                    return parseInt(match[1], 10);
+                }
+            }
+            var match = this.getString().match(/(0|\.)(\d+|\*)/g)
+            return match && parseInt(match[0].slice(1), 10) || 0;
         };
-        this.getFlag = function(){
-            var match = this.getString().match(/^(0|\#|\-|\+)+/);
-            return match && match[0] || false;
-        }
+        this.getPaddingString = function(){
+            var o = '';
+            if (this.isAlternate()) o = ' ';
+            // 0 take precedence on alternate format
+            if (this.getString().match(/#0|0#|^0|\.\d+/)) o = '0'; 
+            return o;
+        };
+        this.getFlags = function(){
+            var match = this.getString().match(/^(0|\#|\-|\+|\s)+/);
+            return match && match[0].split('') || [];
+        };
+        this.isAlternate = function() {
+            return !!this.getString().match(/^0?#/);
+        };
     };
 
     //+ Jonas Raoni Soares Silva
@@ -69,8 +85,8 @@
         // Signed integer decimal.
         d: function(input, arg){
             var o = parseInt(input, 10); // enforce base 10
-            var p = arg.getPadding(); // zero padding
-            if (p) return pad(o.toString(), p, '0', 0);
+            var p = arg.getPaddingLength();
+            if (p) return pad(o.toString(), p, arg.getPaddingString(), 0);
             else return o;
         },
         // Signed integer decimal.
@@ -78,16 +94,20 @@
             return this.d(input, args);
         },
         // Unsigned octal
-        o: function(input, args){ 
-            return input.toString(8);
+        o: function(input, arg){ 
+            var o = input.toString(8);
+            if (arg.isAlternate()) o = pad(o, o.length+1, '0', 0); // http://docs.python.org/lib/typesseq-strings.html (note #1)
+            return pad(o, arg.getPaddingLength(), arg.getPaddingString(), 0);
         },
         // Unsigned decimal
         u: function(input, args) {
             return Math.abs(this.d(input, args));
         },
         // Unsigned hexadecimal (lowercase)
-        x: function(input, args) {
-            return parseInt(input, 10).toString(16);
+        x: function(input, arg){
+            var o = parseInt(input, 10).toString(16);
+            o = pad(o, arg.getPaddingLength(), arg.getPaddingString(),0);
+            return (arg.isAlternate())? '0x'+o: o;
         },
         // Unsigned hexadecimal (uppercase)
         X: function(input, args) {
@@ -103,11 +123,9 @@
         },
         // Floating point decimal format
         f: function(input, arg){
-            // TODO: precision & padding
-//            console.log(arg.getPrecision());
-            return parseFloat(input, 10);
+            return pad(parseFloat(input, 10).toFixed(arg.getPrecision()), arg.getPaddingLength(), arg.getPaddingString(),0);
         },
-        // Floating point decimal format
+        // Floating point decimal format (alias)
         F: function(input, args){
             return this.f(input, args);
         },
@@ -115,10 +133,9 @@
         g: function(input, args){
             input = input.toString();
             if (input.match('.') && input.slice(0, input.indexOf('.')).length >= 6) {
-                console.log(input.slice(0, input.indexOf('.')));
-                return 'a'+parseFloat(input, 10).toExponential();
+                return parseFloat(input, 10).toExponential();
             }
-            else return 'b'+parseFloat(input, 10);
+            else return parseFloat(input, 10);
         },
         // G 	Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
         G: function(input, args){},
@@ -160,7 +177,7 @@
                 end   = str.indexOf('}', start);
                 token = str.slice(start+1, end);
                 match = token.match(/^\w+/)[0] || token;
-                if (!args[match]) buffer.push('{'+token+'}');
+                if (args[match]==null) buffer.push('{'+token+'}');
                 else buffer.push(formatToken(token, args[match]));
             }
             else if (start > end || buffer.length < 1)  buffer.push(str[start]);

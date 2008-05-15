@@ -1,5 +1,8 @@
 // unsigned -> positive only
 // http://svn.python.org/projects/python/trunk/Lib/test/test_format.py
+
+String.prototype.repeat = function(l) { return (new Array(l||1)).join(this)  };
+
 function test_format(a) {
     expect(a.length);
     $(a).each(function(){ equals($.format(this[0], this[1]), this[2], this[3]); });
@@ -56,14 +59,23 @@ test("Format - UNSIGNED INT (u)", function() {
 
 test("Format - UNSIGNED HEXADECIMAL (x)", function() {
     test_format([
-        ['{a:x}', {a:75}, '4b',    '75 -> 4b (Signed integer to hexadecimal)']
+        ['{a:x}', {a:75}, '4b', '75 -> 4b (Signed integer to hexadecimal)'],
+        ['{a:x}', {a:0},  '0',  '0 -> 0']
     ]);
 });
 
 test("Format - UNSIGNED UPPER CASE HEXADECIMAL (X)", function() {
     test_format([
-        ['{a:X}', {a:75}, '4B',    '75 -> 4B (Signed integer to hexadecimal)']
+        ['{a:X}', {a:75}, '4B',    '75 -> 4B (Signed integer to hexadecimal)'],
+        ['{a:X}', {a:0},  '0',  '0 -> 0']
     ]);
+});
+
+test("Format - FLOATING POINT DECIMAL (f|F)", function() {
+    expect(3);
+    ok($.format('{a:f}', {a:1.0}).toString().length == '1.000000'.length,   '1.0 -> 1.000000 (default precision (6))');
+    ok($.format('{a:.2f}', {a:1}).toString().length == '1.00'.length,       'Unsigned decimal to float');
+    ok($.format('{a:05.2f}', {a:1}).toString().length == '02.00'.length,    'Unsigned decimal to float with zero padding');
 });
 
 test("Format - SINGLE CHARACTER (c)", function() {
@@ -81,22 +93,29 @@ test("Format - STRING (s)", function() {
     ]);
 });
 
-test("Format - Complex formatting", function() {
+test("Format - flag: Alternate form (#)", function() {
     test_format([
-        ['{a:s}b{c:03d}d{e:o}f{g:u}hijklmnopqrstuvwxyz', {a:[1,2,3], c:8, e:255, g:-200}, '123b008d377f200hijklmnopqrstuvwxyz',    'complex string formatting' ]
+        ['a{a:#7d}b',  {a:1}, 'a      1b',    'Alternate form padding (string)'],
+        ['a{a:0#8d}b', {a:1}, 'a00000001b',   'Alternate form padding with zero (1)'],
+        ['a{a:#09d}b', {a:1}, 'a000000001b',  'Alternate form padding with zero (2)'],
+        // octal
+        ['a{a:#o}b',   {a:1}, 'a01b',         'Alternate form octal padding with zero (1)'],
+        ['a{a:#5o}b',  {a:1}, 'a   01b',      'Alternate form octal padding with zero and string (2)'],
+        ['a{a:0#5o}b', {a:1}, 'a00001b',      'Alternate form octal padding with zero and string (3)'],
+        ['a{a:#05o}b', {a:1}, 'a00001b',      'Alternate form octal padding with zero and string (4)'],
+        // hexadecimal
+        ['{a:#x}',     {a:0}, '0x0',          'Alternate form hexadecimal (lower) padding with zero (1)'],
+        ['{a:#X}',     {a:0}, '0X0',          'Alternate form hexadecimal (upper) padding with zero (2)']
     ]);
 });
-
-
-
 test("Format - tests from python format_tests.py", function() {
-    test_format([
-        ['{a:.1d}',  {a:1}, '1', '{.1d} -> 1'],
-//        ['{a:.*1d}', {a:1}, '1', '{.1d} -> 1'],
-//        ['{a:.100d}', {a:1}, '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001', '{.1d} -> 1']
-//        ['{a:.117x}', {a:1}, '0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001', '{.1d} -> 1']
-//        ['{a:.118x}', {a:1}, '0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001', '{.1d} -> 1']
-        ['{a:f}',  {a:1.0}, '1.000000', '{.1d} -> 1'],
+    expect(5);
+    equals($.format('{a:.1d}', {a:1}), '1', '.1d -> 1');
+//  equals($.format('{a:.*d}', [Number.MAX_VALUE, 1]), '1', '.1d -> 1'); // expect overflow
+    equals($.format('{a:.100d}', {a:1}), '0'.repeat(100)+'1', '.100d');
+    equals($.format('{a:#.117x}', {a:1}), '0x'+'0'.repeat(117)+'1', '#.117x');
+    equals($.format('{a:#.118x}', {a:1}), '0x'+'0'.repeat(118)+'1', '#.118x');
 
-    ]);
+    ok($.format('{a:f}', {a:1.0}).toString().length == '1.000000'.length,   'f: 1.0 -> 1.000000 (default precision (6))');
+
 });
