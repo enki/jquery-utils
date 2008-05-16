@@ -107,16 +107,16 @@
             return (arg.isAlternate())? '0x'+o: o;
         },
         // Unsigned hexadecimal (uppercase)
-        X: function(input, args) {
-            return this.x(input, args).toUpperCase();
+        X: function(input, arg){
+            return this.x(input, arg).toUpperCase();
         },
         // Floating point exponential format (lowercase)
-        e: function(input, args) {
-            return parseFloat(input, 10).toExponential();
+        e: function(input, arg){
+            return parseFloat(input, 10).toExponential(arg.getPrecision());
         },
         // Floating point exponential format (uppercase)
-        E: function(input, args) {
-            return this.e(input, args).toUpperCase();
+        E: function(input, arg){
+            return this.e(input, arg).toUpperCase();
         },
         // Floating point decimal format
         f: function(input, arg){

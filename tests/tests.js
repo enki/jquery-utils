@@ -58,6 +58,15 @@ test("Format - UNSIGNED HEXADECIMAL (x|X)", function() {
     ]);
 });
 
+test("Format - FLOATING POINT EXPONENTIAL format (e|E)", function() {
+    test_format([
+        ['{a:e}',   {a:1},      '1.000000e+0',      '1:e -> 1.000000e+0'],
+        ['{a:.9e}', {a:100.11}, '1.001100000e+2',   '1:e -> 1.001100000e+2'],
+        ['{a:E}',   {a:1},      '1.000000E+0',      '1:e -> 1.000000E+0'],
+        ['{a:.9E}', {a:100.11}, '1.001100000E+2',   '1:e -> 1.001100000E+2']
+    ]);
+});
+
 test("Format - FLOATING POINT DECIMAL (f|F)", function() {
     expect(3);
     ok($.format('{a:f}', {a:1.0}).toString().length == '1.000000'.length,   '1.0 -> 1.000000 (default precision (6))');
