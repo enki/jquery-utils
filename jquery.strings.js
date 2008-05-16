@@ -5,10 +5,10 @@
   (c) Maxime Haineault <haineault@gmail.com>
   http://haineault.com   
 
+  MIT License (http://www.opensource.org/licenses/mit-license.php)
+
   Implementation of Python3K advanced string formatting
   http://www.python.org/dev/peps/pep-3101/
-
-  MIT License (http://www.opensource.org/licenses/mit-license.php)
 
   How it should work:
 
@@ -41,6 +41,12 @@
   - support for multiple arguments (?)
   - fix the * modifier (need array arguments support)
   - create documentation (when the API will be freezed)
+
+  Kown differences
+  ~~~~~~~~~~~~~~~~
+  - JavaScript precision is more limited than Python
+  - Python zero pad exponent (10 -> 1.0e+01), not JavaScript (10 -> 1.0e+1)
+  - My *repr* implementation is not like the python one
 */
 (function(){
     var conversion = {
