@@ -50,6 +50,7 @@
   - Mozilla/4.0 (compatible; MSIE 6.0; Windows 98)
   - Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
   - Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Media Center PC 3.0; .NET CLR 1.0.3705)
+  - Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Media Center PC 3.0; .NET CLR 1.0.3705)
   - Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14
   - Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9b5) Gecko/2008050509 Firefox/3.0b5
   - Mozilla/5.0 (X11; U; Linux i686; en; rv:1.9b5) Gecko Epiphany/2.22
