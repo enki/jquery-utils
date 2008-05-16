@@ -30,14 +30,60 @@
       {'u': function(arg){ return arg.toUpperCase(); }
   });
   $.format('{a:u}bc', {a:'a'})     -> Abc
+  
+  TODO
+  ~~~~
+  - -|+|\s flags handling
+  - sprintf
+  - escaping
 */
 (function(){
     var conversion = {
+        // tries to translate any objects type into string gracefully
+        __repr: function(i){
+            switch(this.__getType(i)) {
+                case 'array':case 'date':case 'number':
+                    return input.toString();
+                break;
+                case 'object': 
+                    var o = [];
+                    for (x in i) o.push(i+': '+ this.__repr(input[x]));
+                    return o.join(', ');
+                break;
+                case 'string': default: 
+                    return i;
+                break;
+            }
+        },
+
+        // like typeof but less vague
+        __getType: function(i) {
+            if (!i || !i.constructor) return 'undefined';
+            var match = i.constructor.toString().match(/Array|Number|String|Object|Date/);
+            return match && match[0].toLowerCase() || 'undefined';
+        },
+
+        //+ Jonas Raoni Soares Silva
+        //@ http://jsfromhell.com/string/pad [v1.0]
+        __pad: function(str, l, s, t){
+            return s || (s = " "), (l -= str.length) > 0 ? (s = new Array(Math.ceil(l / s.length)
+                + 1).join(s)).substr(0, t = !t ? l : t == 1 ? 0 : Math.ceil(l / 2))
+                + str + s.substr(0, l - t) : str;
+        },
+
+        __formatToken: function(token, input) {
+            var match  = token.split(':');
+            var token  = match[0];
+            var format = match[1] && match[1].slice(-1, match[1].length) || 's';
+            var args   = new Argument(match[1] && match[1].slice(0, match[1].length-1) || '');
+            return conversion[format](input, args);
+        },
+
         // Signed integer decimal.
         d: function(input, arg){
             var o = parseInt(input, 10); // enforce base 10
             var p = arg.getPaddingLength();
-            if (p) return pad(o.toString(), p, arg.getPaddingString(), 0);
+            if (p) return this.__pad(o.toString(), p, arg.getPaddingString(), 0);
             else return o;
         },
         // Signed integer decimal.
@@ -47,8 +93,8 @@
         // Unsigned octal
         o: function(input, arg){ 
             var o = input.toString(8);
-            if (arg.isAlternate()) o = pad(o, o.length+1, '0', 0); // http://docs.python.org/lib/typesseq-strings.html (note #1)
-            return pad(o, arg.getPaddingLength(), arg.getPaddingString(), 0);
+            if (arg.isAlternate()) o = this.__pad(o, o.length+1, '0', 0); // http://docs.python.org/lib/typesseq-strings.html (note #1)
+            return this.__pad(o, arg.getPaddingLength(), arg.getPaddingString(), 0);
         },
         // Unsigned decimal
         u: function(input, args) {
@@ -57,7 +103,7 @@
         // Unsigned hexadecimal (lowercase)
         x: function(input, arg){
             var o = parseInt(input, 10).toString(16);
-            o = pad(o, arg.getPaddingLength(), arg.getPaddingString(),0);
+            o = this.__pad(o, arg.getPaddingLength(), arg.getPaddingString(),0);
             return (arg.isAlternate())? '0x'+o: o;
         },
         // Unsigned hexadecimal (uppercase)
@@ -74,7 +120,7 @@
         },
         // Floating point decimal format
         f: function(input, arg){
-            return pad(parseFloat(input, 10).toFixed(arg.getPrecision()), arg.getPaddingLength(), arg.getPaddingString(),0);
+            return this.__pad(parseFloat(input, 10).toFixed(arg.getPrecision()), arg.getPaddingLength(), arg.getPaddingString(),0);
         },
         // Floating point decimal format (alias)
         F: function(input, args){
@@ -96,12 +142,13 @@
         },
         // String (converts any JavaScript object to anotated format)
         r: function(input, args) {
-            return repr(input);
+            return this.__repr(input);
         },
         // String (converts any JavaScript object using object.toString())
         s: function(input, args) {
             return input.toString && input.toString() || ''+input;
-        },
+        }
+        // I will not honor the "%" conversion like Python (http://docs.python.org/lib/typesseq-strings.html)
     };
 
     var Argument = function(arg) {
@@ -143,48 +190,6 @@
         };
     };
 
-    // tries to translate any objects type into string gracefully
-    var repr = function(input){
-        switch(getType(input)) {
-            case 'array':
-            case 'date':
-            case 'number':
-                return input.toString();
-            break;
-            case 'object': 
-                var o = [];
-                for (i in input) o.push(i+': '+ repr(input[i]));
-                return o.join(', ');
-            break;
-            case 'string': default: 
-                return input;
-            break;
-        }
-    };
-
-    // like typeof but less vague
-    var getType = function(i) {
-        if (!i || !i.constructor) return 'undefined';
-        var match = i.constructor.toString().match(/Array|Number|String|Object|Date/);
-        return match && match[0].toLowerCase() || 'undefined';
-    };
-
-    //+ Jonas Raoni Soares Silva
-    //@ http://jsfromhell.com/string/pad [v1.0]
-    var pad = function(str, l, s, t){
-        return s || (s = " "), (l -= str.length) > 0 ? (s = new Array(Math.ceil(l / s.length)
-            + 1).join(s)).substr(0, t = !t ? l : t == 1 ? 0 : Math.ceil(l / 2))
-            + str + s.substr(0, l - t) : str;
-    };
-
-    var formatToken = function(token, input) {
-        var match  = token.split(':');
-        var token  = match[0];
-        var format = match[1] && match[1].slice(-1, match[1].length) || 's';
-        var args   = new Argument(match[1] && match[1].slice(0, match[1].length-1) || '');
-        return conversion[format](input, args);
-    };
-
     var format = function(str, args) {
         var end    = 0;
         var start  = 0;
@@ -200,7 +205,7 @@
                 token = str.slice(start+1, end);
                 match = token.match(/^\w+/)[0] || token;
                 if (args[match]==null) buffer.push('{'+token+'}');
-                else buffer.push(formatToken(token, args[match]));
+                else buffer.push(conversion.__formatToken(token, args[match]));
             }
             else if (start > end || buffer.length < 1)  buffer.push(str[start]);
         }
