@@ -10,54 +10,8 @@
   Implementation of Python3K advanced string formatting
   http://www.python.org/dev/peps/pep-3101/
 
-  How it should work:
-
-  named arguments
-  ~~~~~~~~~~~~~~~
-  $.format('{a}bc', {a:'A'}) -> Abc
-
-  conversion 
-  ~~~~~~~~~~
-  $.format('{a:s}bc', {a:[1,2,3]}) -> 123bc
-  $.format('{a:d}bc', {a:1.5})     -> 1bc
+  Documentation: http://code.google.com/p/jquery-utils/wiki/StringFormat
   
-  Note: for conversion types see: http://docs.python.org/lib/typesseq-strings.html
-
-  Support for user-defined formatting
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  jQuery.extend(jQuery.strConversion, 
-      {'U': function(arg){ return arg.toUpperCase(); }
-  });
-  $.format('{a:U}bc', {a:'a'})     -> Abc
-  
-  TODO
-  ~~~~
-  - -|+|\s flags handling
-  - sprintf
-  - proper escaping
-  - repr should truncate using precision
-  - jQuery.fn extention (jformat)
-  - create documentation (when the API will be freezed)
-
-  Kown differences
-  ~~~~~~~~~~~~~~~~
-  - JavaScript precision is more limited than Python
-  - Python zero pad exponent (10 -> 1.0e+01), not JavaScript (10 -> 1.0e+1)
-  - My *repr* implementation is not like the python one
-
-  Browsers tested
-  ~~~~~~~~~~~~~~~
-  - Mozilla/4.0 (compatible; MSIE 6.0; Windows 98)
-  - Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
-  - Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Media Center PC 3.0; .NET CLR 1.0.3705)
-  - Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Media Center PC 3.0; .NET CLR 1.0.3705)
-  - Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14
-  - Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9b5) Gecko/2008050509 Firefox/3.0b5
-  - Mozilla/5.0 (X11; U; Linux i686; en; rv:1.9b5) Gecko Epiphany/2.22
-  - Opera/9.24 (Windows NT 5.1; U; en)
-  - Opera/9.50 (X11; Linux i686; U; en)
-  - Mozilla/5.0 (Windows; U; Windows NT 5.1; fr-FR) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.1 Safari/525.17
-  * if you pass/fail the test suite on other browser please send me your browser string with the results
 */
 (function(){
     var conversion = {
