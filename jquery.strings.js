@@ -37,8 +37,6 @@
   - escaping
   - repr should truncate using precision
   - jQuery.fn extention (jformat)
-  - support for array as arguments
-  - support for multiple arguments (?)
   - fix the * modifier (need array arguments support)
   - create documentation (when the API will be freezed)
 
@@ -81,13 +79,25 @@
                 + 1).join(s)).substr(0, t = !t ? l : t == 1 ? 0 : Math.ceil(l / 2))
                 + str + s.substr(0, l - t) : str;
         },
-
-        __formatToken: function(token, input) {
-            var match  = token.split(':');
-            var token  = match[0];
-            var format = match[1] && match[1].slice(-1, match[1].length) || 's';
-            var args   = new Argument(match[1] && match[1].slice(0, match[1].length-1) || '');
-            return conversion[format](input, args);
+        __getInput: function(key, args) {
+            switch(this.__getType(args)){
+                case 'object': 
+                    if (typeof(args[key]) != 'undefined') return args[key];
+                    else {
+                        // try by numerical index
+                    }
+//                    if (args[match]==null) buffer.push('{'+token+'}');
+//                    else buffer.push(conversion.__formatToken(token, args[match]));
+                break;
+                case 'array': 
+                    if (typeof(args[parseInt(key, 10)]) != 'undefined') return args[parseInt(key, 10)];
+                break;
+            }
+            return '{'+key+'}';
+        },
+        __formatToken: function(token, args) {
+            var arg   = new Argument(token);
+            return conversion[arg.getFormat().slice(-1)](this.__getInput(arg.getKey(), args), arg);
         },
 
         // Signed integer decimal.
@@ -168,6 +178,13 @@
         this.getString = function(){
             return this.__arg;
         };
+        this.getKey = function(){
+            return this.__arg.split(':')[0];
+        };
+        this.getFormat = function(){
+            var match = this.getString().split(':');
+            return (match && match[1])? match[1]: 's';
+        };
         this.getPrecision = function(){
             var match = this.getString().match(/\.(\d+|\*)/g);
             if (!match) return this.__def_precision;
@@ -188,7 +205,7 @@
             var o = '';
             if (this.isAlternate()) o = ' ';
             // 0 take precedence on alternate format
-            if (this.getString().match(/#0|0#|^0|\.\d+/)) o = '0'; 
+            if (this.getFormat().match(/#0|0#|^0|\.\d+/)) o = '0'; 
             return o;
         };
         this.getFlags = function(){
@@ -196,26 +213,33 @@
             return match && match[0].split('') || [];
         };
         this.isAlternate = function() {
-            return !!this.getString().match(/^0?#/);
+            return !!this.getFormat().match(/^0?#/);
         };
     };
 
+    var arguments2Array = function(args, shift) {
+        var shift = shift || 0;
+        var o = [];
+        console.log('args', args, args.length);
+        for (l=args.length, x=shift-1; x<l;x++) {
+            o.push(args[x]);
+        }
+        return o;
+    }
     var format = function(str, args) {
         var end    = 0;
         var start  = 0;
         var match  = false;
         var buffer = [];
         var token  = '';
-        var args   = args || {};
+        var args   = (typeof(arguments[1]) != 'object')? arguments2Array(arguments, 2): args || [];
         var star   = str.split('');
         for(index in str) {
             start = parseInt(index);
             if (str[start] == '{' && str[start+1] !='{') {
                 end   = str.indexOf('}', start);
                 token = str.slice(start+1, end);
-                match = token.match(/^\w+/)[0] || token;
-                if (args[match]==null) buffer.push('{'+token+'}');
-                else buffer.push(conversion.__formatToken(token, args[match]));
+                buffer.push(conversion.__formatToken(token, args));
             }
             else if (start > end || buffer.length < 1)  buffer.push(str[start]);
         }

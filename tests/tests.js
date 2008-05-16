@@ -16,7 +16,8 @@ test('Format - basic string replacement', function() {
         ['ab{c}',       {c:'C'},     'abC',       'Single character replacement (end)'],
         ['{abc}defghi', {abc:'ABC'}, 'ABCdefghi', 'Multiple character replacement (start)'],
         ['abc{def}ghi', {def:'DEF'}, 'abcDEFghi', 'Multiple character replacement (middle)'],
-        ['abcdef{ghi}', {ghi:'GHI'}, 'abcdefGHI', 'Multiple character replacement (end)']
+        ['abcdef{ghi}', {ghi:'GHI'}, 'abcdefGHI', 'Multiple character replacement (end)'],
+        ['{0}{1}',      [1,2],       '12',        'Array as argument']
     ]);
     // TODO: escapinng
 });
