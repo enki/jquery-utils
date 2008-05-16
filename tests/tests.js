@@ -17,7 +17,10 @@ test('Format - basic string replacement', function() {
         ['{abc}defghi', {abc:'ABC'}, 'ABCdefghi', 'Multiple character replacement (start)'],
         ['abc{def}ghi', {def:'DEF'}, 'abcDEFghi', 'Multiple character replacement (middle)'],
         ['abcdef{ghi}', {ghi:'GHI'}, 'abcdefGHI', 'Multiple character replacement (end)'],
-        ['{0}{1}',      [1,2],       '12',        'Array as argument']
+        ['{0}{1}',      [1,2],       '12',        'Array as argument'],
+        ['{0:.*f}',     [8,2],       '2.00000000','Argument defined precision'],
+        ['{a:.*f}',     {a:[8,2]},   '2.00000000','Argument defined precision in object'],
+        ['{0:.*f}',     [8],         '8.000000',  'Argument defined precision with missing second argument (fallback to default precision)']
     ]);
     // TODO: escapinng
 });

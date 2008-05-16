@@ -79,10 +79,16 @@
                 + 1).join(s)).substr(0, t = !t ? l : t == 1 ? 0 : Math.ceil(l / 2))
                 + str + s.substr(0, l - t) : str;
         },
-        __getInput: function(key, args) {
+        __getInput: function(arg, args) {
+            var key = arg.getKey();
             switch(this.__getType(args)){
                 case 'object': 
-                    if (typeof(args[key]) != 'undefined') return args[key];
+                    if (typeof(args[key]) != 'undefined') {
+                        if (conversion.__getType(args[key]) == 'array') {
+                            return arg.getFormat().match(/\.\*/) && args[key][1] || args[key];
+                        }
+                        return args[key];
+                    }
                     else {
                         // try by numerical index
                     }
@@ -90,14 +96,17 @@
 //                    else buffer.push(conversion.__formatToken(token, args[match]));
                 break;
                 case 'array': 
-                    if (typeof(args[parseInt(key, 10)]) != 'undefined') return args[parseInt(key, 10)];
+                    key = parseInt(key, 10);
+                    if (arg.getFormat().match(/\.\*/) && typeof(args[key+1]) != 'undefined') return args[key+1];
+                    else if (typeof(args[key]) != 'undefined') return args[key];
+                    else return key;
                 break;
             }
             return '{'+key+'}';
         },
         __formatToken: function(token, args) {
-            var arg   = new Argument(token);
-            return conversion[arg.getFormat().slice(-1)](this.__getInput(arg.getKey(), args), arg);
+            var arg   = new Argument(token, args);
+            return conversion[arg.getFormat().slice(-1)](this.__getInput(arg, args), arg);
         },
 
         // Signed integer decimal.
@@ -171,8 +180,9 @@
         }
     };
 
-    var Argument = function(arg) {
-        this.__arg = arg;
+    var Argument = function(arg, args) {
+        this.__arg  = arg;
+        this.__args = args;
         this.__max_precision = parseFloat('1.'+ (new Array(32)).join('1'), 10).toString().length-3;
         this.__def_precision = 6;
         this.getString = function(){
@@ -186,11 +196,18 @@
             return (match && match[1])? match[1]: 's';
         };
         this.getPrecision = function(){
-            var match = this.getString().match(/\.(\d+|\*)/g);
+            var match = this.getFormat().match(/\.(\d+|\*)/g);
             if (!match) return this.__def_precision;
             else {
                 match = match[0].slice(1);
-                return (match == '*')? match: parseInt(match, 10);
+                if (match != '*') return parseInt(match, 10);
+                else if(conversion.__getType(this.__args) == 'array') {
+                    return this.__args[1] && this.__args[0] || this.__def_precision;
+                }
+                else if(conversion.__getType(this.__args) == 'object') {
+                    return this.__args[this.getKey()] && this.__args[this.getKey()][0] || this.__def_precision;
+                }
+                else return this.__def_precision;
             }
         };
         this.getPaddingLength = function(){
@@ -220,10 +237,7 @@
     var arguments2Array = function(args, shift) {
         var shift = shift || 0;
         var o = [];
-        console.log('args', args, args.length);
-        for (l=args.length, x=shift-1; x<l;x++) {
-            o.push(args[x]);
-        }
+        for (l=args.length, x=shift-1; x<l;x++) o.push(args[x]);
         return o;
     }
     var format = function(str, args) {
