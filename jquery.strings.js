@@ -1,7 +1,7 @@
 /*
   jQuery strings - 0.1a
   http://code.google.com/p/jquery-utils/
-
+  
   (c) Maxime Haineault <haineault@gmail.com>
   http://haineault.com   
 
@@ -34,10 +34,9 @@
   ~~~~
   - -|+|\s flags handling
   - sprintf
-  - escaping
+  - proper escaping
   - repr should truncate using precision
   - jQuery.fn extention (jformat)
-  - fix the * modifier (need array arguments support)
   - create documentation (when the API will be freezed)
 
   Kown differences
@@ -45,6 +44,19 @@
   - JavaScript precision is more limited than Python
   - Python zero pad exponent (10 -> 1.0e+01), not JavaScript (10 -> 1.0e+1)
   - My *repr* implementation is not like the python one
+
+  Browsers tested
+  ~~~~~~~~~~~~~~~
+  - Mozilla/4.0 (compatible; MSIE 6.0; Windows 98)
+  - Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)
+  - Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Media Center PC 3.0; .NET CLR 1.0.3705)
+  - Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14
+  - Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9b5) Gecko/2008050509 Firefox/3.0b5
+  - Mozilla/5.0 (X11; U; Linux i686; en; rv:1.9b5) Gecko Epiphany/2.22
+  - Opera/9.24 (Windows NT 5.1; U; en)
+  - Opera/9.50 (X11; Linux i686; U; en)
+  - Mozilla/5.0 (Windows; U; Windows NT 5.1; fr-FR) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.1 Safari/525.17
+  * if you pass/fail the test suite on other browser please send me your browser string with the results
 */
 (function(){
     var conversion = {
@@ -56,7 +68,7 @@
                 break;
                 case 'object': 
                     var o = [];
-                    for (x in i) o.push(i+': '+ this.__repr(i[x]));
+                    for (x=0; x<i.length; i++) o.push(i+': '+ this.__repr(i[x]));
                     return o.join(', ');
                 break;
                 case 'string': default: 
@@ -247,15 +259,14 @@
         var buffer = [];
         var token  = '';
         var args   = (typeof(arguments[1]) != 'object')? arguments2Array(arguments, 2): args || [];
-        var star   = str.split('');
-        for(index in str) {
-            start = parseInt(index);
-            if (str[start] == '{' && str[start+1] !='{') {
+        var tmp    = str.split('');
+        for(start=0; start < tmp.length; start++) {
+            if (tmp[start] == '{' && tmp[start+1] !='{') {
                 end   = str.indexOf('}', start);
-                token = str.slice(start+1, end);
+                token = tmp.slice(start+1, end).join('');
                 buffer.push(conversion.__formatToken(token, args));
             }
-            else if (start > end || buffer.length < 1)  buffer.push(str[start]);
+            else if (start > end || buffer.length < 1)  buffer.push(tmp[start]);
         }
         return (buffer.length > 1)? buffer.join(''): buffer[0];
     };
