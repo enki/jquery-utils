@@ -5,13 +5,12 @@
   (c) Maxime Haineault <haineault@gmail.com>
   http://haineault.com   
 
+  Implementation of Python3K advanced string formatting
+  http://www.python.org/dev/peps/pep-3101/
+
   MIT License (http://www.opensource.org/licenses/mit-license.php)
 
   How it should work:
-
-  Inspiration
-  ~~~~~~~~~~~
-  http://www.python.org/dev/peps/pep-3101/
 
   named arguments
   ~~~~~~~~~~~~~~~
@@ -24,18 +23,24 @@
   
   Note: for conversion types see: http://docs.python.org/lib/typesseq-strings.html
 
-  extensible conversions
-  ~~~~~~~~~~~~~~~~~~~~~~
+  Support for user-defined formatting
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   jQuery.extend(jQuery.strConversion, 
-      {'u': function(arg){ return arg.toUpperCase(); }
+      {'U': function(arg){ return arg.toUpperCase(); }
   });
-  $.format('{a:u}bc', {a:'a'})     -> Abc
+  $.format('{a:U}bc', {a:'a'})     -> Abc
   
   TODO
   ~~~~
   - -|+|\s flags handling
   - sprintf
   - escaping
+  - repr should truncate using precision
+  - jQuery.fn extention (jformat)
+  - support for array as arguments
+  - support for multiple arguments (?)
+  - fix the * modifier (need array arguments support)
+  - create documentation (when the API will be freezed)
 */
 (function(){
     var conversion = {
@@ -43,11 +48,11 @@
         __repr: function(i){
             switch(this.__getType(i)) {
                 case 'array':case 'date':case 'number':
-                    return input.toString();
+                    return i.toString();
                 break;
                 case 'object': 
                     var o = [];
-                    for (x in i) o.push(i+': '+ this.__repr(input[x]));
+                    for (x in i) o.push(i+': '+ this.__repr(i[x]));
                     return o.join(', ');
                 break;
                 case 'string': default: 
@@ -148,7 +153,6 @@
         s: function(input, args) {
             return input.toString && input.toString() || ''+input;
         }
-        // I will not honor the "%" conversion like Python (http://docs.python.org/lib/typesseq-strings.html)
     };
 
     var Argument = function(arg) {

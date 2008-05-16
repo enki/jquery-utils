@@ -104,9 +104,16 @@ test("Format - SINGLE CHARACTER (c)", function() {
     ]);
 });
 
+test("Format - STRING (r)", function() {
+    test_format([
+        ['{a:r}', {a:1},        '1',     '1:r -> 1'],
+        ['{a:r}', {a:[1,2,3]},  '1,2,3', '[1,2,3]:r -> 1,2,3 (Array to string)']
+    ]);
+});
 test("Format - STRING (s)", function() {
     test_format([
-        ['{a:s}', {a:[1,2,3]}, '1,2,3',    '[1,2,3] -> 1,2,3 (Array to string)']
+        ['{a:s}', {a:1},       '1',     '1:s -> 1'],
+        ['{a:s}', {a:[1,2,3]}, '1,2,3', '[1,2,3]:s -> 1,2,3 (Array to string)']
     ]);
 });
 
@@ -132,14 +139,11 @@ test("Format - tests from python format_tests.py", function() {
     equals($.format('{a:.100d}', {a:1}), '0'.repeat(100)+'1', '.100d');
     equals($.format('{a:#.117x}', {a:1}), '0x'+'0'.repeat(117)+'1', '#.117x');
     equals($.format('{a:#.118x}', {a:1}), '0x'+'0'.repeat(118)+'1', '#.118x');
-
-    ok($.format('{a:f}', {a:1.0}).toString().length == '1.000000'.length,   'f: 1.0 -> 1.000000 (default precision (6))');
-
+    ok($.format('{a:f}',     {a:1.0}).toString().length == '1.000000'.length,   'f: 1.0 -> 1.000000 (default precision (6))');
     equals($.format('{a:x}', {a:10}), 'a', '10:x -> a');
     equals($.format('{a:x}', {a:100000000000}), '174876e800', '100000000000:x -> 174876e800');
     equals($.format('{a:o}', {a:10}), '12', '10:o -> 12');
     equals($.format('{a:o}', {a:100000000000}), '1351035564000', '100000000000:o -> 1351035564000');
     equals($.format('{a:d}', {a:10}), '10', '10:d -> 10');
     equals($.format('{a:d}', {a:100000000000}), '100000000000', '100000000000:d -> 100000000000');
-
 });
