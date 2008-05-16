@@ -77,14 +77,12 @@
                 break;
             }
         },
-
         // like typeof but less vague
         __getType: function(i) {
             if (!i || !i.constructor) return typeof(i);
             var match = i.constructor.toString().match(/Array|Number|String|Object|Date/);
             return match && match[0].toLowerCase() || typeof(i);
         },
-
         //+ Jonas Raoni Soares Silva
         //@ http://jsfromhell.com/string/pad [v1.0]
         __pad: function(str, l, s, t){
@@ -103,10 +101,8 @@
                         return args[key];
                     }
                     else {
-                        // try by numerical index
+                        // TODO: try by numerical index
                     }
-//                    if (args[match]==null) buffer.push('{'+token+'}');
-//                    else buffer.push(conversion.__formatToken(token, args[match]));
                 break;
                 case 'array': 
                     key = parseInt(key, 10);
@@ -136,7 +132,7 @@
         // Unsigned octal
         o: function(input, arg){ 
             var o = input.toString(8);
-            if (arg.isAlternate()) o = this.__pad(o, o.length+1, '0', 0); // http://docs.python.org/lib/typesseq-strings.html (note #1)
+            if (arg.isAlternate()) o = this.__pad(o, o.length+1, '0', 0); 
             return this.__pad(o, arg.getPaddingLength(), arg.getPaddingString(), 0);
         },
         // Unsigned decimal
@@ -253,6 +249,7 @@
         for (l=args.length, x=shift-1; x<l;x++) o.push(args[x]);
         return o;
     }
+
     var format = function(str, args) {
         var end    = 0;
         var start  = 0;
