@@ -32,53 +32,6 @@
   $.format('{a:u}bc', {a:'a'})     -> Abc
 */
 (function(){
-    var Argument = function(arg) {
-        this.__arg = arg;
-        this.__max_precision = parseFloat('1.'+ (new Array(32)).join('1'), 10).toString().length-3;
-        this.__def_precision = 6;
-        this.getString = function(){
-            return this.__arg;
-        };
-        this.getPrecision = function(){
-            var match = this.getString().match(/\.(\d+|\*)/g);
-            if (!match) return this.__def_precision;
-            else {
-                match = match[0].slice(1);
-                return (match == '*')? match: parseInt(match, 10);
-            }
-        };
-        this.getPaddingLength = function(){
-            if (this.isAlternate()) {
-                var match = this.getString().match(/0?#0?(\d+)/);
-                if (match && match[1]) return parseInt(match[1], 10);
-            }
-            var match = this.getString().match(/(0|\.)(\d+|\*)/g)
-            return match && parseInt(match[0].slice(1), 10) || 0;
-        };
-        this.getPaddingString = function(){
-            var o = '';
-            if (this.isAlternate()) o = ' ';
-            // 0 take precedence on alternate format
-            if (this.getString().match(/#0|0#|^0|\.\d+/)) o = '0'; 
-            return o;
-        };
-        this.getFlags = function(){
-            var match = this.getString().match(/^(0|\#|\-|\+|\s)+/);
-            return match && match[0].split('') || [];
-        };
-        this.isAlternate = function() {
-            return !!this.getString().match(/^0?#/);
-        };
-    };
-
-    //+ Jonas Raoni Soares Silva
-    //@ http://jsfromhell.com/string/pad [v1.0]
-    var pad = function(str, l, s, t){
-        return s || (s = " "), (l -= str.length) > 0 ? (s = new Array(Math.ceil(l / s.length)
-            + 1).join(s)).substr(0, t = !t ? l : t == 1 ? 0 : Math.ceil(l / 2))
-            + str + s.substr(0, l - t) : str;
-    };
-
     var conversion = {
         // Signed integer decimal.
         d: function(input, arg){
@@ -128,28 +81,100 @@
             return this.f(input, args);
         },
         // Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
-        g: function(input, args){
-            input = input.toString();
-            if (input.match('.') && input.slice(0, input.indexOf('.')).length >= 6) {
-                return parseFloat(input, 10).toExponential();
-            }
-            else return parseFloat(input, 10);
+        g: function(input, arg){
+            var o = parseFloat(input, 10);
+            return (o.toString().length > 6) ? Math.round(o.toExponential(arg.getPrecision())): o;
         },
         // Floating point format. Uses exponential format if exponent is greater than -4 or less than precision, decimal format otherwise
-        G: function(input, args){},
+        G: function(input, args){
+            return this.g(input, args);
+        },
         // Single character (accepts integer or single character string). 	
         c: function(input, args) {
             var match = input.match(/\w|\d/);
             return match && match[0] || '';
         },
-        // String (converts any python object using repr())
+        // String (converts any JavaScript object to anotated format)
         r: function(input, args) {
-            return (typeof(input) == 'string')? input: input.join('');
+            return repr(input);
         },
-        // String (converts any python object using str())
+        // String (converts any JavaScript object using object.toString())
         s: function(input, args) {
-            return (typeof(input) == 'string')? input: input.join('');
+            return input.toString && input.toString() || ''+input;
         },
+    };
+
+    var Argument = function(arg) {
+        this.__arg = arg;
+        this.__max_precision = parseFloat('1.'+ (new Array(32)).join('1'), 10).toString().length-3;
+        this.__def_precision = 6;
+        this.getString = function(){
+            return this.__arg;
+        };
+        this.getPrecision = function(){
+            var match = this.getString().match(/\.(\d+|\*)/g);
+            if (!match) return this.__def_precision;
+            else {
+                match = match[0].slice(1);
+                return (match == '*')? match: parseInt(match, 10);
+            }
+        };
+        this.getPaddingLength = function(){
+            if (this.isAlternate()) {
+                var match = this.getString().match(/0?#0?(\d+)/);
+                if (match && match[1]) return parseInt(match[1], 10);
+            }
+            var match = this.getString().match(/(0|\.)(\d+|\*)/g)
+            return match && parseInt(match[0].slice(1), 10) || 0;
+        };
+        this.getPaddingString = function(){
+            var o = '';
+            if (this.isAlternate()) o = ' ';
+            // 0 take precedence on alternate format
+            if (this.getString().match(/#0|0#|^0|\.\d+/)) o = '0'; 
+            return o;
+        };
+        this.getFlags = function(){
+            var match = this.getString().match(/^(0|\#|\-|\+|\s)+/);
+            return match && match[0].split('') || [];
+        };
+        this.isAlternate = function() {
+            return !!this.getString().match(/^0?#/);
+        };
+    };
+
+    // tries to translate any objects type into string gracefully
+    var repr = function(input){
+        switch(getType(input)) {
+            case 'array':
+            case 'date':
+            case 'number':
+                return input.toString();
+            break;
+            case 'object': 
+                var o = [];
+                for (i in input) o.push(i+': '+ repr(input[i]));
+                return o.join(', ');
+            break;
+            case 'string': default: 
+                return input;
+            break;
+        }
+    };
+
+    // like typeof but less vague
+    var getType = function(i) {
+        if (!i || !i.constructor) return 'undefined';
+        var match = i.constructor.toString().match(/Array|Number|String|Object|Date/);
+        return match && match[0].toLowerCase() || 'undefined';
+    };
+
+    //+ Jonas Raoni Soares Silva
+    //@ http://jsfromhell.com/string/pad [v1.0]
+    var pad = function(str, l, s, t){
+        return s || (s = " "), (l -= str.length) > 0 ? (s = new Array(Math.ceil(l / s.length)
+            + 1).join(s)).substr(0, t = !t ? l : t == 1 ? 0 : Math.ceil(l / 2))
+            + str + s.substr(0, l - t) : str;
     };
 
     var formatToken = function(token, input) {
