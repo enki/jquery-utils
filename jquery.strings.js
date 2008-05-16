@@ -67,9 +67,9 @@
 
         // like typeof but less vague
         __getType: function(i) {
-            if (!i || !i.constructor) return 'undefined';
+            if (!i || !i.constructor) return typeof(i);
             var match = i.constructor.toString().match(/Array|Number|String|Object|Date/);
-            return match && match[0].toLowerCase() || 'undefined';
+            return match && match[0].toLowerCase() || typeof(i);
         },
 
         //+ Jonas Raoni Soares Silva
