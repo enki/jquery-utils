@@ -9,22 +9,27 @@
 */
 
 (function() {
-    var date, remain, el = null;
-    var trans = " jour";
+    var date    = null;
+    var remain  = null;
+    var el      = null;
+    var days    = 0;
+    var hours   = 0;
+    var mins    = 0;
+    var secs    = 0;
+    var format  = '%d day(s), %hh %mm %ss';
+    var now     = 'Now !'
 
     function startCount() {
         el   = this;
         date = new Date(arguments[0], arguments[1]-1, arguments[2], arguments[3], arguments[4], arguments[5]);
-        if (arguments[7] == 'en') {
-            trans = " day"
-        }
+        if (arguments[6]) format = arguments[6]
+        if (arguments[7]) now    = arguments[7]
         setInterval(updateCount, 1000);
     }
 
     function updateCount() {
-        var days, hours, mins, secs=0;out ='';
         remain = Math.floor((date.getTime() - (new Date()).getTime())/1000);
-        if(remain < 0) return $(el).html('Now !');
+        if(remain < 0) return $(el).html(now);
 
         days   = Math.floor(remain/86400);//days
         remain = remain%86400;
@@ -33,12 +38,8 @@
         mins   = Math.floor(remain/60);//minutes
         remain = remain%60;
         secs   = Math.floor(remain);//seconds
-
-        if(days != 0) {out += days + trans +((days!=1)?"s":"")+", ";}
-        if(days != 0 || hours != 0) {out += hours +"h, ";}
-        if(days != 0 || hours != 0 || mins != 0) {out += mins +"m, ";}
-        out += secs +"s";
-        $(el).text(out);
+        
+        $(el).text(format.replace('%d', days).replace('%h', hours).replace('%m', mins).replace('%s', secs));
     }
 
     jQuery.fn.extend({

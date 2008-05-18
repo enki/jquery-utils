@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>jQuery utils</title>
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <script type="text/javascript" src="../jquery.countdown.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('#countdown-1').countdown(2030, 10, 1, 12, 0, 0);
+                $('#countdown-2').countdown(2030, 10, 1, 12, 0, 0, '%d jour(s), %h heures %m minutes et %s secondes');
+            });
+        </script>
+        <style type="text/css">
+            pre {
+                margin:10px 40px;
+                padding:20px 40px;
+                background:#eee;
+                border:1px solid #ddd;
+                float:none!important;
+
+            
+            }
+            .countdown {
+                color:#269;
+                font-size:200%;
+                margin:10px 40px;
+            }
+        </style>
+    </head>
+    <body id="body">
+        
+        <h2>jquery.countdown.js</h2>
+        <h3>Date as arguments</h3>
+        <pre>$('#countdown-1').countdown(2030, 10, 1, 12, 0, 0);</pre>
+        <div id="countdown-1" class="countdown"></div>
+
+        <h3>Custom format</h3>
+        <pre>$('#countdown-2').countdown(2030, 10, 1, 12, 0, 0, '%d jour(s), %h heures %m minutes et %s secondes');</pre>
+        <div id="countdown-2" class="countdown"></div>
+    </body>
+</html>
+
