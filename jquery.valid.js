@@ -11,14 +11,16 @@
 
 (function($){
 
-    var valid = {
-
+    var isValid = {
+        currency: function(i, args) {
+        
+        }
     };
 
     $.extend({ 
         
-        valid: function(i, validator) {
-            return valid[validator](i);
+        isValid: function(i, validation, args) {
+            return valid[validator](i, args);
         }
     }});
 })(jQuery);
@@ -26,3 +28,4 @@
 // API example
 // $('.price').valid('currency', 'us')
 // $.valid(price, 'currency')
+// $('input').isValid('currency')
