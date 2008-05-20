@@ -20,20 +20,19 @@
             switch(this.__getType(i)) {
                 case 'array':case 'date':case 'number':
                     return i.toString();
-                break;
                 case 'object': 
                     var o = [];
-                    for (x=0; x<i.length; i++) o.push(i+': '+ this.__repr(i[x]));
+                    for (x=0; x<i.length; i++) { o.push(i+': '+ this.__repr(i[x])); }
                     return o.join(', ');
-                break;
-                case 'string': default: 
+                case 'string': 
                     return i;
-                break;
+                default: 
+                    return i;
             }
         },
         // like typeof but less vague
         __getType: function(i) {
-            if (!i || !i.constructor) return typeof(i);
+            if (!i || !i.constructor) { return typeof(i); }
             var match = i.constructor.toString().match(/Array|Number|String|Object|Date/);
             return match && match[0].toLowerCase() || typeof(i);
         },
