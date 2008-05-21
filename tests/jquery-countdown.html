@@ -6,8 +6,23 @@
 
         <script type="text/javascript">
             $(document).ready(function(){
-                $('#countdown-1').countdown(2030, 10, 1, 12, 0, 0);
-                $('#countdown-2').countdown(2030, 10, 1, 12, 0, 0, '%d jour(s), %h heures %m minutes et %s secondes');
+                var d = new Date();
+                $('#countdown-1').countdown({now: 'Happy new year !', 
+                    year: d.getFullYear()+1, month: d.getMonth()+1, day: d.getDate()+1, hour: 1, min: 1, sec: 1 
+                });
+                $('#countdown-2').countdown({
+                    format: '%d jours, %h heures %m minutes et %s secondes avant demain.',
+                    year: d.getFullYear(), month: d.getMonth(), day: d.getDate()+1, hour: 1, min: 1, sec: 1
+                });
+                $('#countdown-3').countdown({
+                    format: '%d [jour|jours], %h [heure|heures] %m [minute|minutes] et %s [seconde|secondes]',
+                    year: 2037, month: 12, day: 31
+                });
+                $('#countdown-4').countdown({
+                    format: '%d [day|days], %h [hour|hours] %m [minute|minutes] et %s [second|seconds]',
+                    year: 2038, month: 1, day: 1,
+                    now: 'Happy new <strike>year</strike>bug !'
+                });
             });
         </script>
         <style type="text/css">
@@ -17,26 +32,66 @@
                 background:#eee;
                 border:1px solid #ddd;
                 float:none!important;
-
-            
+            }
+            h2 {
+                margin:20px 40px;
+                color:#333;
+                font-weight:normal;
+            }
+            h3 {
+                margin:30px 40px 0 40px;
+                color:#666;
+                font-weight:normal;
             }
             .countdown {
                 color:#269;
                 font-size:200%;
                 margin:10px 40px;
             }
+            hr {
+                margin:10px 40px;
+                color:#999;
+            }
         </style>
     </head>
     <body id="body">
-        
         <h2>jquery.countdown.js</h2>
-        <h3>Date as arguments</h3>
-        <pre>$('#countdown-1').countdown(2030, 10, 1, 12, 0, 0);</pre>
-        <div id="countdown-1" class="countdown"></div>
+        <h3>Basic usage</h3>
+        <pre>// default format is '%d [day|days] %hh %mm %ss'
+var d = new Date();
 
+$('#countdown-1').countdown({now: 'Happy new year !', 
+    year: d.getFullYear()+1, month: d.getMonth()+1, day: d.getDate()+1, hour: 1, min: 1, sec: 1 
+});</pre>
+        <div id="countdown-1" class="countdown"></div>
+        <hr size="1" />
         <h3>Custom format</h3>
-        <pre>$('#countdown-2').countdown(2030, 10, 1, 12, 0, 0, '%d jour(s), %h heures %m minutes et %s secondes');</pre>
+        <pre>$('#countdown-2').countdown({
+    format: '%d jours, %h heures %m minutes et %s secondes',
+    year: 2030, month: 12, day: 1
+});
+        </pre>
         <div id="countdown-2" class="countdown"></div>
+        <hr size="1" />
+        <h3>Handling plurals</h3>
+        <pre>var d = new Date();
+$('#countdown-1').countdown({ 
+    year: 2037, month: 12, day: 31
+});</pre>
+        <div id="countdown-3" class="countdown"></div>
+        <hr size="1" />
+        <h3>Now message</h3>
+        <pre>$('#countdown-4').countdown({
+    format: '%d [jour|jours], %h [heure|heures] %m [minute|minutes] et %s [seconde|secondes]',
+    year: 2038, month: 1, day: 1,
+    now: 'Happy new <strike>year</strike>bug !'
+});
+        </pre>
+        <div id="countdown-4" class="countdown"></div>
+        <h3>Functional arguments (todo)</h3>
+        <pre>$('#countdown-5').countdown({year: '+1'});
+        </pre>
+        <div id="countdown-4" class="countdown"></div>
     </body>
 </html>
 

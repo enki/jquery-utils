@@ -1,51 +1,72 @@
 /*
-  jQuery countdown - 0.1a
+  jQuery countdown - 0.1
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com>
   http://haineault.com   
 
   MIT License (http://www.opensource.org/licenses/mit-license.php)
+  
+  Todo
+  ====
+  - functional argument (ex: {year:+1})
+  - unit tests (?)
+  - pause/start method
+  - clear interval when now
+  - optimize regexp
 */
 
 (function() {
-    var date    = null;
-    var remain  = null;
-    var el      = null;
-    var days    = 0;
-    var hours   = 0;
-    var mins    = 0;
-    var secs    = 0;
-    var format  = '%d day(s), %hh %mm %ss';
-    var now     = 'Now !'
 
-    function startCount() {
-        el   = this;
-        date = new Date(arguments[0], arguments[1]-1, arguments[2], arguments[3], arguments[4], arguments[5]);
-        if (arguments[6]) format = arguments[6]
-        if (arguments[7]) now    = arguments[7]
-        setInterval(updateCount, 1000);
-    }
+    function countdown(el, args) {
+        var now = new Date();
+        var cd  = {
+            remain: null, el: el, days: 0, hours: 0, mins: 0, secs: 0,
+            format: args.format || '%d [day|days] %hh %mm %ss',  
+            now: 'Now !',
+            date: new Date(
+                args.year || now.getFullYear(), 
+                args.month && args.month || now.getMonth()-1, 
+                args.day  || now.getDay(), 
+                args.hour || 23, 
+                args.min  || 59, 
+                args.sec  || 59)
+        };
+        var formatToken = function(str, token, val) {
+            if (!str) { return ''; }
+            else {
+                if (!str.match(/\[|\]/g)) { return str.replace('%'+token, val); }
+                else {
+                    var r = new RegExp ('\\%'+token+'(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'ig');
+                    return str.replace(r, val+'$1'+ ((parseInt(val, 10)<2)?'$2':'$3'));
+                }
+            }
+        };
 
-    function updateCount() {
-        remain = Math.floor((date.getTime() - (new Date()).getTime())/1000);
-        if(remain < 0) return $(el).html(now);
+        var update = function() {
+            cd.remain = Math.floor((cd.date.getTime() - (new Date()).getTime())/1000);
+            if(cd.remain < 0) return $(el).html(cd.now);
+            cd.days   = Math.floor(cd.remain/86400);//days
+            cd.remain = cd.remain%86400;
+            cd.hours  = Math.floor(cd.remain/3600)-1; //hours
+            cd.remain = cd.remain%3600;
+            cd.mins   = Math.floor(cd.remain/60);   //minutes
+            cd.remain = cd.remain%60;
+            cd.secs   = Math.floor(cd.remain);      //seconds
+            
+            var o = cd.format;
+            o = formatToken(o, 'd', cd.days);
+            o = formatToken(o, 'h', cd.hours);
+            o = formatToken(o, 'm', cd.mins);
+            o = formatToken(o, 's', cd.secs);
+            $(cd.el).text(o);
+        };
 
-        days   = Math.floor(remain/86400);//days
-        remain = remain%86400;
-        hours  = Math.floor(remain/3600);//hours
-        remain = remain%3600;
-        mins   = Math.floor(remain/60);//minutes
-        remain = remain%60;
-        secs   = Math.floor(remain);//seconds
-        
-        $(el).text(format.replace('%d', days).replace('%h', hours).replace('%m', mins).replace('%s', secs));
+        update();
+        setInterval(update, 1000);
     }
 
     jQuery.fn.extend({
-        countdown: function() {
-            args = arguments;
-            this.each(function() { startCount.apply(this, args); });
-        }
+        countdown: function(args) { this.each(function() { new countdown(this, args); }); }
     });
 })();
