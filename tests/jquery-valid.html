@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>jQuery utils / valid</title>
+        <link rel="Stylesheet" media="screen" href="styles.css" />
         <script type="text/javascript" src="jquery.min.js"></script>
         <script type="text/javascript" src="../jquery.valid.js"></script>
 
@@ -9,24 +9,23 @@
             });
         </script>
         <style type="text/css">
-            pre {
-                margin:10px 40px;
-                padding:20px 40px;
-                background:#eee;
-                border:1px solid #ddd;
-                float:none!important;
-
-            
-            }
         </style>
     </head>
     <body id="body">
         
         <h2>jquery.valid.js</h2>
-        <h3></h3>
-        <pre></pre>
-        <div id="countdown-1" class="countdown"></div>
-
+        <h3>Validations</h3>
+        <ul>
+            <li>integer</li>
+            <li>numeric</li>
+            <li>boolean</li>
+            <li>alphanum</li>
+            <li>date</li>
+            <li>time</li>
+            <li>email</li>
+        </ul>
+        <h3>Integer</h3>
+        <pre>$.isValid('1', 'integer'); // return true</pre>
     </body>
 </html>
 

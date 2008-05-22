@@ -222,5 +222,15 @@
         return (buffer.length > 1)? buffer.join(''): buffer[0];
     };
 
-    $.extend({format: format, strConversion: conversion});
+    var trim = function(i, type) {
+        type = type || 0; // -1: left, 0: both, 1:right
+        console.log($(i), type) 
+    }
+
+    $.extend({
+        // Format/sprintf functions
+        format: format, 
+        strConversion: conversion,
+    });
+
 })();
