@@ -5,23 +5,33 @@
         <script type="text/javascript" src="../jquery.countdown.js"></script>
 
         <script type="text/javascript">
+            c = 'test';
             $(document).ready(function(){
                 var d = new Date();
-                $('#countdown-1').countdown({now: 'Happy new year !', 
+                c = $('#countdown-1').countdown({msgNow: 'Happy new year !', 
                     year: d.getFullYear()+1, month: d.getMonth()+1, day: d.getDate()+1, hour: 1, min: 1, sec: 1 
                 });
                 $('#countdown-2').countdown({
-                    format: '%d jours, %h heures %m minutes et %s secondes avant demain.',
+                    msnFormat: '%d jours, %h heures %m minutes et %s secondes avant demain.',
                     year: d.getFullYear(), month: d.getMonth(), day: d.getDate()+1, hour: 1, min: 1, sec: 1
                 });
                 $('#countdown-3').countdown({
-                    format: '%d [jour|jours], %h [heure|heures] %m [minute|minutes] et %s [seconde|secondes]',
+                    msgFormat: '%w [week|weeks], %h [heure|heures] %m [minute|minutes] et %s [seconde|secondes]',
                     year: 2037, month: 12, day: 31
                 });
                 $('#countdown-4').countdown({
-                    format: '%d [day|days], %h [hour|hours] %m [minute|minutes] et %s [second|seconds]',
+                    msgFormat: '%y [year|years], %h [hour|hours] %m [minute|minutes] et %s [second|seconds]',
                     year: 2038, month: 1, day: 1,
-                    now: 'Happy new <strike>year</strike>bug !'
+                    msgNow: 'Happy new <strike>year</strike>bug !'
+                });
+                $('.countdown').click(function(){
+                    if ($(this).hasClass('stopped')) {
+                        $(this).removeClass('stopped')
+                               .data('countdown').start();
+                    }
+                    else {
+                        $(this).addClass('stopped').data('countdown').stop();
+                    }
                 });
             });
         </script>
@@ -47,6 +57,10 @@
                 color:#269;
                 font-size:200%;
                 margin:10px 40px;
+                cursor:pointer;
+            }
+            .countdown.stopped {
+                color:#c30;
             }
             hr {
                 margin:10px 40px;
