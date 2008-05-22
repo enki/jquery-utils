@@ -10,9 +10,7 @@
 */
 
 (function($){
-
     var valid = {
-        
         // Types
         integer:  function(i, args)  { return /(^-?\d\d*$)/.test(i); },
         numeric:  function(i, args)  { return /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)/.test(i); },
