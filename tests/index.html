@@ -3,20 +3,17 @@
         <title>jQuery utils</title>
         <link rel="Stylesheet" media="screen" href="testsuite.css" />
         <script type="text/javascript" src="jquery.min.js"></script>
-        <script type="text/javascript" src="testrunner.js"></script>
-        <script type="text/javascript" src="../jquery.strings.js"></script>
-        <script type="text/javascript" src="tests.js"></script>
         <script type="text/javascript">
             $(document).ready(function(){
 //                setTimeout(function(){window.location.reload();}, 2000);
             });
         </script>
     </head>
-    <body id="body">
-    	<h1 id="header">jQuery.utils Test Suite</h1>
-	    <h2 id="banner"></h2>
-        <h2 id="userAgent"></h2>    
-        <div id="main"></div>
-        <ol id="tests"></ol>
-    </body>
+<frameset id="test" rows="10%,90%" border="1">
+    <frame src="index-head.html">
+    <frameset cols="20%,80%" border="1">
+        <frame src="index-nav.html">
+        <frame name="viewport" src="unit-tests.html">
+    </frameset>
+</frameset>
 </html>
