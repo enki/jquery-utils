@@ -15,15 +15,39 @@
         
         <h2>jquery.valid.js</h2>
         <h3>Validations</h3>
-        <ul>
-            <li>integer</li>
-            <li>numeric</li>
-            <li>boolean</li>
-            <li>alphanum</li>
-            <li>date</li>
-            <li>time</li>
-            <li>email</li>
-        </ul>
+        <table class="nav" cellpadding="0" cellspacing="0" summary="">
+            <tr>
+                <td>
+                    <h4>Generic data types</h4>
+                    <ul>
+                        <li>integer</li>
+                        <li>numeric</li>
+                        <li>boolean</li>
+                        <li>alphanum</li>
+                        <li>date</li>
+                        <li>time</li>
+                        <li>email</li>
+                    </ul>
+                </td>
+                <td class="border">
+                    <h4>Networking</h4>
+                    <ul>
+                        <li>email</li>
+                        <li>IP (IPv4)</li>
+                        <li>macaddress</li>
+                    </ul>
+                </td>
+                <td class="border">
+                    <h4>MySQL data types</h4>
+                    <ul>
+                        <li>mysql.date</li>
+                        <li>mysql.datetime</li>
+                        <li>mysql.timestamp</li>
+                        <li>mysql.time</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
         <h3>Usage</h3>
         <pre>$.isValid('1', 'integer'); // return true
 $('input#test').isValid('integer');</pre>

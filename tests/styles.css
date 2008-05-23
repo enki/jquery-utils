@@ -9,7 +9,26 @@ body {
 a {
     color:#236;
 }
-
+table {
+    margin:10px 40px;
+}
+table td {
+    vertical-align:top;
+}
+table.nav td {
+    padding:0 20px;
+    font-size:.8em;
+}
+table.nav td ul {
+    padding:0!important;
+}
+table.nav td ul li {
+    color:#666;
+    margin-left:20px!important;
+}
+table.nav td.border {
+    border-left:1px solid #ccc;
+}
 /* top frame */
 body#top {
     background:#333 url(side_top.jpg) repeat-x 0 0;
