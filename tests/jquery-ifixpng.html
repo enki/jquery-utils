@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <title>jQuery utils</title>
+        <link rel="Stylesheet" media="screen" href="styles.css" />
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <script type="text/javascript" src="../jquery.ifixpng.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+            });
+        </script>
+        <style type="text/css">
+        </style>
+    </head>
+    <body id="body">
+        <h2>jquery.ifixpng.js</h2>
+        <div class="copyright">Copyright (c) 2007-2008 Kush M. (<a href="http://jquery.khurshid.com/ifixpng.php" target="_blank">khurshid.com</a>)</div>
+        <div class="license">
+            Dual licensed under the MIT and GPL licenses<br>
+            <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a>
+            <br>
+            <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">http://www.gnu.org/licenses/gpl.html</a>
+</a>
+        
+        </div>
+        <h3>Basic usage</h3>
+        <pre>// apply to all png images 
+$('img[@src$=.png]').ifixpng(); 
+ 
+// apply to all png images and to div#logo 
+$('img[@src$=.png], div#logo').ifixpng(); 
+ 
+// apply to div#logo, undo fix, then apply the fix again 
+$('img[@src$=.png], div#logo').ifixpng().iunfixpng().ifixpng(); 
+ 
+// apply to div#logo2, modify css property and add click event 
+$('div#logo2').ifixpng().css({cursor:'pointer'}).click(function(){ alert('ifixpng is cool!'); });</pre>
+        <hr size="1" />
+        <h3>Removing fix</h3>
+        <pre>$('#switch').toggle(function(){ 
+    $('#logo').iunfixpng(); 
+}, function(){ 
+    $('#logo').ifixpng(); 
+});</pre>
+   </body>
+</html>

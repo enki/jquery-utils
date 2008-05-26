@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <title>jQuery utils</title>
+        <link rel="Stylesheet" media="screen" href="styles.css" />
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <script type="text/javascript" src="../jquery.ifixpng.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+            });
+        </script>
+        <style type="text/css">
+        </style>
+    </head>
+    <body id="body">
+        <h2>jquery.flash.js</h2>
+        <div class="copyright">Copyright (c) 2006 Luke Lutman (<a href="http://jquery.lukelutman.com/plugins/flash" target="_blank">lukelutman.com</a>)</div>
+        <div class="license">
+            Dual licensed under the MIT and GPL licenses<br>
+            <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a>
+            <br>
+            <a href="http://www.opensource.org/licenses/gpl-license.php" target="_blank">http://www.opensource.org/licenses/gpl-license.php</a>
+</a>
+        
+        </div>
+        <h3>Basic usage</h3>
+        <pre>$('#hello').flash({
+    src: 'hello.swf',
+    width: 320,
+    height: 240
+});
+</pre>
+        <hr size="1" />
+        <h3>Custom replacement</h3>
+        <pre>$('.custom').flash(null, null, function(htmlOptions){
+    // do stuff
+});</pre>
+        <hr size="1" />
+        <h3>Overwriting defaults</h3>
+        <pre>$.fn.flash.replace = function(htmlOptions) {
+    // always do stuff
+};</pre>
+        <hr size="1" />
+        <h3>Flash detection</h3>
+        <pre>$('#hello').flash(
+    { src: 'hello.swf' }, 
+    { version: '6.0.65' }
+);</pre>
+        <hr size="1" />
+        <h3>Express install</h3>
+        <pre>$('#hello').flash(
+    { src: 'hello.swf' }, 
+    { expressInstall: true }
+);</pre>
+        <hr size="1" />
+        <h3>Graceful degradation</h3>
+        <pre>$('#hello').flash(
+    { src: 'hello.swf' }, 
+    { update: false }
+);</pre>
+        <hr size="1" />
+        <h3>Bypass detection</h3>
+        <pre><a href="page.html?hasFlash=true">I have Flash!</a></pre>
+   </body>
+</html>
