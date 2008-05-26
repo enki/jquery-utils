@@ -83,3 +83,31 @@ body#nav ul {
     list-style:square;
     margin-left:30px;
 }
+
+#body p {
+    margin:20px 40px
+}
+
+/* credits */
+.copyright,
+.license {
+    margin:0 40px 0 40px;
+    color:#666;
+    font-size:.8em;
+}
+
+/* forms */
+
+ul.form {}
+ul.form li {
+    list-style:none!important;
+}
+ul.form li label {
+    display:block;
+    font-size:80%;
+    color:#999;
+}
+ul.form li input {
+    color:#666;
+    padding-top:4px;
+}

@@ -18,17 +18,10 @@
         alphanum: function(i, args)  { return /^[a-zA-Z0-9.\-_]+$/.test(i); },
         // Networking
         net: {
-            email:    function(i, args)  { return /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)\b$/.test(i); }, // http://regular-expressions.info/email.html 
+            email: function(i, args)  { return /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)\b$/.test(i); }, // http://regular-expressions.info/email.html 
             ip: function(i){ return /(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/.test(i); },
             macaddress: function(){},
             uri: function(i, args){ $.extend({type:'http'});}
-        },
-        // MySQL
-        mysql: {
-            date: function() {},
-            datetime: function() {},
-            timestamp: function() {}, // default Mysql 5+
-            time: function() {}
         },
         // Locals
         canadian: {
@@ -39,6 +32,13 @@
             phoneNumber: function() {},
             ssn: function() {},
             sin: function() {}
+        },
+        // MySQL
+        mysql: {
+            date: function() {},
+            datetime: function() {},
+            timestamp: function() {}, // default Mysql 5+
+            time: function() {}
         }
         
     };
