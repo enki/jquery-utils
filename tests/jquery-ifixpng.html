@@ -7,6 +7,12 @@
 
         <script type="text/javascript">
             $(document).ready(function(){
+                $('#demo-1').ifixpng(); 
+                $('#demo-2').toggle(function(){ 
+                    $(this).iunfixpng(); 
+                }, function(){ 
+                    $(this).ifixpng(); 
+                });
             });
         </script>
         <style type="text/css">
@@ -35,12 +41,18 @@ $('img[@src$=.png], div#logo').ifixpng().iunfixpng().ifixpng();
  
 // apply to div#logo2, modify css property and add click event 
 $('div#logo2').ifixpng().css({cursor:'pointer'}).click(function(){ alert('ifixpng is cool!'); });</pre>
+        <div class="demo">
+            <img id="demo-1" src="images/mitch91-rayon-tux-2579.png" alt="" border="0">
+        </div>
         <hr size="1" />
         <h3>Removing fix</h3>
-        <pre>$('#switch').toggle(function(){ 
-    $('#logo').iunfixpng(); 
-}, function(){ 
-    $('#logo').ifixpng(); 
+        <pre>$('#demo-2').toggle(function(){ 
+        $(this).iunfixpng(); 
+    }, function(){ 
+        $(this).ifixpng(); 
 });</pre>
+        <div class="demo">
+            <img id="demo-2" src="images/sosoe222-smart-tux-3440.png" alt="" border="0">
+        </div>
    </body>
 </html>
