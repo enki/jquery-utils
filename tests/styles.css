@@ -136,13 +136,15 @@ table.list tbody td {
     font-size:.8em;
 }
 
-
+.result,
 .related-links {
     background:#eee;
     padding:#666;
     display:block;
-    margin:6px 40px;
-    padding:20px;
+    margin:6px 30px;
+    padding:10px 20px;
+    border:2px solid #ccc;
+    font-size:.8em;
 }
 .related-links.documentation {
     background:#e8ffaf;
