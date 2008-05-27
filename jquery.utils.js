@@ -18,9 +18,8 @@
 			return o.constructor.toString().indexOf('Array()') != -1;
 		},
 		toCurrency: function() {
-			o = parseFloat(this).toFixed(2);
-			return (o=='NaN') ? '0.00' : o ;
+			o = parseFloat(this, 10).toFixed(2);
+			return (o=='NaN') ? '0.00' : o;
 		}
-
 	});
 })(jQuery);
