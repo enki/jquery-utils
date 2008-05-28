@@ -25,6 +25,11 @@
                     year: 2038, month: 1, day: 1,
                     msgNow: 'Happy new <strike>year</strike>bug !'
                 });
+                $('#countdown-5').countdown({
+                    msgFormat: '%y [year|years], %h [hour|hours] %m [minute|minutes] et %s [second|seconds]',
+                    year: '+1',
+                    msgNow: 'Happy new <strike>year</strike>bug !'
+                });
                 $('.countdown').click(function(){
                     if ($(this).hasClass('stopped')) {
                         $(this).removeClass('stopped')
@@ -84,10 +89,13 @@ $('#countdown-1').countdown({
 });
         </pre>
         <div id="countdown-4" class="countdown"></div>
-        <h3>Functional arguments (todo)</h3>
+        <h3>Functional arguments</h3>
         <pre>$('#countdown-5').countdown({year: '+1'});
         </pre>
-        <div id="countdown-4" class="countdown"></div>
+        <div id="countdown-5" class="countdown"></div>
+        <p>
+            <b>Note:</b> By now, only works for years and months.
+        </p>
     </body>
 </html>
 
