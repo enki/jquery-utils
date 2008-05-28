@@ -1,7 +1,7 @@
 // unsigned -> positive only
 // http://svn.python.org/projects/python/trunk/Lib/test/test_format.py
 
-String.prototype.repeat = function(l) { return (new Array(l||1)).join(this)  };
+if (!String.prototype.repeat) String.prototype.repeat = function(l) { return (new Array(l||1)).join(this)  };
 
 function test_format(a) {
     expect(a.length);

@@ -41,8 +41,7 @@
 
         var update = function() {
             cd.remain = Math.floor((cd.date.getTime() - (new Date()).getTime())/1000);
-
-            if(cd.remain < 0) return $(el).html(options.msgNow).data('countdown').stop();
+            if(cd.remain < 0) return $(cd.el).html(options.msgNow).data('countdown').stop();
 
             cd.days   = Math.floor(cd.remain/86400);  // days
             cd.remain = cd.remain%86400;
@@ -75,8 +74,9 @@
             date:   new Date(options.year, options.month, options.day, 
                              options.hour, options.min, options.sec) 
         };
+        $(el).data('countdown', cd);
 
-        return update(), $(el).data('countdown', cd).data('countdown');
+        return  update(), $(el).data('countdown');
     };
     $.fn.countdown = function(args) { return new countdown(this.get(0), args); };
 })(jQuery);
