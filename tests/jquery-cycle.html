@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <link rel="Stylesheet" media="screen" href="styles.css" />
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <script type="text/javascript" src="../jquery.cycle.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('#demo-1').cycle([
+                    'images/cisoun-tux-kenny-2198.png',
+                    'images/mitch91-rayon-tux-2579.png',
+                    'images/sosoe222-smart-tux-3440.png'
+                ], 5000);
+                
+                $('#demo-2').cycle([
+                    'images/cisoun-tux-kenny-2198.png',
+                    'images/mitch91-rayon-tux-2579.png',
+                    'images/sosoe222-smart-tux-3440.png'
+                ], {
+                    interval: 10000, 
+                    onBefore: function(element, image) {
+                        $(element).next().next().append($('<li>Loading: '+ image + '</li>'));
+                    },
+                    onAfter: function(element, image) {
+                        $(element).next().html('<b>Loaded: '+ image +'</b>');
+                    },
+                    callback: function(element, image){
+                        if ($.browser.mozilla) window.scrollTo(window.pageXOffset, window.pageYOffset); // scrollfix
+                        $(element)
+                            .fadeOut()
+                            .queue(function(){
+                                $(this).css({backgroundImage:'url("'+ image +'")'});
+                                $(this).dequeue();
+                                $(this).fadeIn('slow');
+                                $(this).dequeue(); });
+                    }
+                });
+            });
+
+        </script>
+        <style type="text/css">
+        </style>
+    </head>
+    <body id="body">
+        <h2>jquery.cycle.js</h2>
+        <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
+        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <h3>Basic usage</h3>
+        <pre>$(document).ready(function(){
+    $('#demo-1').cycle([
+        'images/cisoun-tux-kenny-2198.png',
+        'images/mitch91-rayon-tux-2579.png',
+        'images/sosoe222-smart-tux-3440.png'
+   ], 3000);
+});</pre>
+        <h3>Demo</h3>
+        <div class="demo">
+            <p id="demo-1" style="width:256px;height:256px;"></p>
+        </div>
+        <h3>Overwrite defaults</h3>
+        <pre>$(document).ready(function(){
+    
+    $('#demo-2').cycle([
+        'images/cisoun-tux-kenny-2198.png',
+        'images/mitch91-rayon-tux-2579.png',
+        'images/sosoe222-smart-tux-3440.png'
+    ], {
+        interval: 10000, // default is 5000
+        onBefore: function(element, image) { // default is false
+            $(element).next().next().append($('<li>Loading: '+ image + '</li>'));
+        },
+        onAfter: function(element, image) { // default is false
+            $(element).next().html('<b>Loaded: '+ image +'</b>');
+        },
+        callback: function(element, image){ // default is generic image rotation script
+            if ($.browser.mozilla) window.scrollTo(window.pageXOffset, window.pageYOffset); // scrollfix
+            $(element)
+                .fadeOut()
+                .queue(function(){
+                    $(this).css({backgroundImage:'url("'+ image +'")'});
+                    $(this).dequeue();
+                    $(this).fadeIn('slow');
+                    $(this).dequeue(); });
+        }
+    });
+});</pre>
+        <h3>Demo</h3>
+        <div class="demo">
+            <p id="demo-2" style="width:256px;height:256px;"></p>
+            <p id="demo-2-text"></p>
+            <ul id="demo-2-log"></ul>
+        </div>
+    </body>
+</html>
+

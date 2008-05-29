@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <link rel="Stylesheet" media="screen" href="styles.css" />
+        <script type="text/javascript" src="jquery.min.js"></script>
+        <script type="text/javascript" src="../jquery.delayedObserver.js"></script>
+
+        <script type="text/javascript">
+        $(document).ready(function(){
+            $('input#demo-1').delayedObserver(function() {
+                $('#demo-1-result').text('Typed: '+ $(this).val());
+            }, 0.8);
+        });
+        </script>
+        <style type="text/css">
+        </style>
+    </head>
+    <body id="body">
+        <h2>jquery.delayedObserver.js</h2>
+        <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
+        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <a class="related-links documentation" href="http://code.google.com/p/jquery-utils/wiki/DelayedObserver">Documentation</a>
+        <h3>Usage</h3>
+        <pre>$(document).ready(function(){
+    $('input#demo-1').delayedObserver(function() {
+        $('#demo-1-result').text('Typed: '+ $(this).val());
+    }, 0.8);
+});</pre>
+        <h3>Demo</h3>
+        <div class="demo">
+            <p><input id="demo-1" type="text" /></p>
+            <p id="demo-1-text"></p>
+            <div id="demo-1-result" class="result">Type something fast..</div>
+        </div>
+    </body>
+</html>
+
