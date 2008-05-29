@@ -43,7 +43,12 @@
 
         var update = function() {
             cd.remain = Math.floor((cd.date.getTime() - (new Date()).getTime())/1000);
-            if(cd.remain < 0) return $(cd.el).html(options.msgNow).data('countdown').stop();
+            if(cd.remain < 0) {
+                cd.stop();
+                clearInterval(cd.id);
+                $(cd.el).html(options.msgNow);
+                return true;
+            }
 
             cd.days   = Math.floor(cd.remain/86400);  // days
             cd.remain = cd.remain%86400;
@@ -88,7 +93,7 @@
             id:     setInterval(update, options.interval), el: el,
             remain: null, el: el, days: 0, hours: 0, mins: 0, secs: 0,
             start:  function(){ return new countdown($(this.el), options); },
-            stop:   function(){ return clearTimeout($(this.el).data('countdown').id)},
+            stop:   function(){ return clearInterval(this.id);},
             date:   new Date(parse('year', options.year), parse('month', options.month), parse('day', options.day), 
                              parse('hour', options.hour), parse('min', options.min),     parse('sec', options.sec)) 
         };

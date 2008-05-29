@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <link rel="Stylesheet" media="screen" href="data/testsuite.css" />
+        <script type="text/javascript" src="../jquery-1.2.3.min.js"></script>
+        <script type="text/javascript" src="../src/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../src/jquery.anchorHandler.js"></script>
+        <script type="text/javascript" src="../src/jquery.countdown.js"></script>
+        <script type="text/javascript" src="../src/jquery.strings.js"></script>
+        <script type="text/javascript" src="../src/jquery.valid.js"></script>
+        <script type="text/javascript" src="data/testrunner.js"></script>
+        <script type="text/javascript" src="unit/jquery.anchorHandler.js"></script>
+        <script type="text/javascript" src="unit/jquery.cookie.js"></script>
+        <script type="text/javascript" src="unit/jquery.countdown.js"></script>
+        <script type="text/javascript" src="unit/jquery.valid.js"></script>
+        <script type="text/javascript" src="unit/jquery.strings.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+//                setTimeout(function(){window.location.reload();}, 2000);
+            });
+        </script>
+    </head>
+    <body id="body">
+        <h2>Unit tests</h2>
+        <h3 id="banner"><span class="pass">passed</span><span class="fail">failed</span></h3>
+        <h4 id="userAgent"></h4> 
+        <div id="main"></div>
+        <ol id="tests"></ol>
+        <div id="fixtures">
+            <!-- jquery.anchorHandler.js -->
+            <a id="anchorHandler1" href="#test">test</a>
+            <span id="anchorHandler2">false</span>
+            
+            <!-- jquery.countdown.js -->
+            <span id="countdown1"></span>
+            <span id="countdown2"></span>
+            <span id="countdown3"></span>
+            <span id="countdown4"></span>
+            <span id="countdown5"></span>
+        </div>
+    </body>
+</html>

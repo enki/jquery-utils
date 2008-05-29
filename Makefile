@@ -3,23 +3,22 @@ BUILD_DIR = build
 
 PREFIX = .
 DOCS_DIR = ${PREFIX}/docs
-TEST_DIR = ${PREFIX}/tests
+TEST_DIR = ${PREFIX}/test
 DIST_DIR = ${PREFIX}/dist
 SPEED_DIR = ${PREFIX}/speed
-#PLUG_DIR = ../plugins
 
 BASE_FILES = ${SRC_DIR}/jquery.utils.js\
 	${SRC_DIR}/jquery.anchorHandler.js\
+	${SRC_DIR}/jquery.cookie.js\
 	${SRC_DIR}/jquery.countdown.js\
-	${SRC_DIR}/jquery.cycle.js\
-	${SRC_DIR}/jquery.delayedObserver.js\
-	${SRC_DIR}/jquery.flash.js\
-	${SRC_DIR}/jquery.forms.js\
-	${SRC_DIR}/jquery.ifixpng.js\
-	${SRC_DIR}/jquery.inputs.js\
-	${SRC_DIR}/jquery.strings.js\
-	${SRC_DIR}/jquery.valid.js\
-	${SRC_DIR}/jquery.youtubeLinksToEmbed.js
+    ${SRC_DIR}/jquery.cycle.js\
+    ${SRC_DIR}/jquery.delayedObserver.js\
+    ${SRC_DIR}/jquery.flash.js\
+    ${SRC_DIR}/jquery.forms.js\
+    ${SRC_DIR}/jquery.ifixpng.js\
+    ${SRC_DIR}/jquery.strings.js
+#    ${SRC_DIR}/jquery.valid.js\
+#    ${SRC_DIR}/jquery.youtubeLinksToEmbed.js
 
 MODULES = ${SRC_DIR}/intro.js\
 	${BASE_FILES}\

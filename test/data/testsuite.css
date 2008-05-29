@@ -1,0 +1,144 @@
+.pass { color: #236; } 
+.fail { color: #c30; } 
+p.result {
+    font-size:120%!important;
+    color:#333;
+}
+
+h2.pass { background-color: green; }
+h2.fail { background-color: red; }
+
+h3 {margin-top:0!important;}
+h3#banner span { 
+    display:none;
+    color:#fff;
+    border:1px solid #ccc;
+    padding:10px 20px;
+    font-size:180%;
+    font-weight:normal;
+    letter-spacing:2px;
+}
+h3#banner.pass span.pass,
+h3#banner.fail span.fail { display:block!important; }
+h3#banner.pass span.fail,
+h3#banner.fail span.pass { display:none!important; }
+h3#banner.pass { background: #269; }
+h3#banner.fail { background: #c30;}
+
+ol#tests > li > strong { cursor:pointer; }
+ol#tests > li { margin-left:50px; }
+
+
+#userAgent {
+    font-size:1.2em;
+    color:#333;
+    font-weight:normal;
+    background:#eee;
+    border:1px solid #ccc;
+    border-width:0 1px 1px 1px;
+    padding:10px 20px;
+    margin:0 40px 10px 40px;
+}
+
+div#fx-tests h4 {
+	background: red;
+}
+
+div#fx-tests h4.pass {
+	background: green;
+}
+
+div#fx-tests div.box {
+	background: red url(data/cow.jpg) no-repeat;
+	overflow: hidden;
+	border: 2px solid #000;
+}
+
+div#fx-tests div.overflow {
+	overflow: visible;
+}
+
+div.inline {
+	display: inline;
+}
+
+div.autoheight {
+	height: auto;
+}
+
+div.autowidth {
+	width: auto;
+}
+
+div.autoopacity {
+	opacity: auto;
+}
+
+div.largewidth {
+	width: 100px;
+}
+
+div.largeheight {
+	height: 100px;
+}
+
+div.largeopacity {
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+}
+
+div.medwidth {
+	width: 50px;
+}
+
+div.medheight {
+	height: 50px;
+}
+
+div.medopacity {
+	opacity: 0.5;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+}
+
+div.nowidth {
+	width: 0px;
+}
+
+div.noheight {
+	height: 0px;
+}
+
+div.noopacity {
+	opacity: 0;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}
+
+div.hidden {
+	display: none;
+}
+
+div#fx-tests div.widewidth {
+	background-repeat: repeat-x;
+}
+
+div#fx-tests div.wideheight {
+	background-repeat: repeat-y;
+}
+
+div#fx-tests div.widewidth.wideheight {
+	background-repeat: repeat;
+}
+
+div#fx-tests div.noback {
+	background-image: none;
+}
+
+div.chain, div.chain div { width: 100px; height: 20px; position: relative; float: left; }
+div.chain div { position: absolute; top: 0px; left: 0px; }
+
+div.chain.test { background: red; }
+div.chain.test div { background: green; }
+
+div.chain.out { background: green; }
+div.chain.out div { background: red; display: none; }
+
+div#show-tests * { display: none; }

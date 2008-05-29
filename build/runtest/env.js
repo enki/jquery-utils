@@ -7,8 +7,12 @@
 // The window Object
 var window = this;
 
+
 (function(){
 
+    // Somes tests doesn't like the Automated test suite
+    window.isRhino = true; 
+    
 	// Browser Navigator
 
 	window.navigator = {
@@ -75,12 +79,13 @@ var window = this;
 	
 		return num;
 	};
-	
 	window.clearInterval = function(num){
 		if ( timers[num] ) {
 			timers[num].stop();
 			delete timers[num];
+            return true;
 		}
+        return false;
 	};
 	
 	// Window Events

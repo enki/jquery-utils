@@ -1,17 +1,20 @@
 // Init
 load("build/runtest/env.js");
 
-window.location = "tests/index.html";
+window.location = "test/index.html";
 
 window.onload = function(){
     // Load the test runner
-    load("dist/jquery-utils.js","build/runtest/testrunner.js");
+    load("jquery-1.2.3.min.js", "dist/jquery-utils.js","build/runtest/testrunner.js");
     
     // Load the tests
     load(
-        "tests/tests.anchorHandler.js",
-        "tests/tests.cookie.js",
-        "tests/tests.countdown.js"
+        "test/unit/jquery.anchorHandler.js",
+        "test/unit/jquery.cookie.js",
+        "test/unit/jquery.countdown.js",
+        "test/unit/jquery.strings.js",
+        "test/unit/jquery.valid.js"
+
     );
     
     // Display the results
