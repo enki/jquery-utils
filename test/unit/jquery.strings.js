@@ -94,9 +94,9 @@ test('Replacement and conversions', function() {
 
 test("Other tests", function() {
     expect(3);
-    ok($.format('{a:f}', {a:1.0}).toString().length == '1.000000'.length,   'FLOATING POINT DECIMAL (f|F): 1.0 -> 1.000000 (default precision (6))');
-    ok($.format('{a:.2f}', {a:1}).toString().length == '1.00'.length,       'FLOATING POINT DECIMAL (f|F): Unsigned decimal to float');
-    ok($.format('{a:05.2f}', {a:1}).toString().length == '02.00'.length,    'FLOATING POINT DECIMAL (f|F): Unsigned decimal to float with zero padding');
+    ok($.format('{a:f}', {a:1.0}).toString().length == '1.000000'.length, 'FLOATING POINT DECIMAL (f|F): 1.0 -> 1.000000 (default precision (6))');
+    ok($.format('{a:.2f}', {a:1}).toString().length == '1.00'.length,     'FLOATING POINT DECIMAL (f|F): Unsigned decimal to float');
+    ok($.format('{a:05.2f}', {a:1}).toString().length == '02.00'.length,  'FLOATING POINT DECIMAL (f|F): Unsigned decimal to float with zero padding');
 });
 
 /*

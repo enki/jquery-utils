@@ -13,7 +13,7 @@
   Documentation: http://code.google.com/p/jquery-utils/wiki/StringFormat
   
 */
-(function(){
+(function($){
     var conversion = {
         // tries to translate any objects type into string gracefully
         __repr: function(i){
@@ -233,4 +233,4 @@
         strConversion: conversion,
     });
 
-})();
+})(jQuery);

@@ -12,8 +12,8 @@ window.onload = function(){
         "test/unit/jquery.anchorHandler.js",
         "test/unit/jquery.cookie.js",
         "test/unit/jquery.countdown.js",
-        "test/unit/jquery.strings.js",
-        "test/unit/jquery.valid.js"
+        "test/unit/jquery.valid.js",
+        "test/unit/jquery.strings.js"
 
     );
     
