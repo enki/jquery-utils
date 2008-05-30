@@ -1,21 +1,21 @@
 <html>
     <head>
-        <link rel="Stylesheet" media="screen" href="styles.css" />
+        <link rel="Stylesheet" media="screen" href="data/styles.css" />
         <script type="text/javascript" src="../build/jquery/jquery-1.2.3.min.js"></script>
         <script type="text/javascript" src="../src/jquery.cycle.js"></script>
 
         <script type="text/javascript">
             $(document).ready(function(){
                 $('#demo-1').cycle([
-                    'images/cisoun-tux-kenny-2198.png',
-                    'images/mitch91-rayon-tux-2579.png',
-                    'images/sosoe222-smart-tux-3440.png'
+                    'data/cisoun-tux-kenny-2198.png',
+                    'data/mitch91-rayon-tux-2579.png',
+                    'data/sosoe222-smart-tux-3440.png'
                 ], 5000);
                 
                 $('#demo-2').cycle([
-                    'images/cisoun-tux-kenny-2198.png',
-                    'images/mitch91-rayon-tux-2579.png',
-                    'images/sosoe222-smart-tux-3440.png'
+                    'data/cisoun-tux-kenny-2198.png',
+                    'data/mitch91-rayon-tux-2579.png',
+                    'data/sosoe222-smart-tux-3440.png'
                 ], {
                     interval: 10000, 
                     onBefore: function(element, image) {
@@ -48,9 +48,9 @@
         <h3>Basic usage</h3>
         <pre>$(document).ready(function(){
     $('#demo-1').cycle([
-        'images/cisoun-tux-kenny-2198.png',
-        'images/mitch91-rayon-tux-2579.png',
-        'images/sosoe222-smart-tux-3440.png'
+        'data/cisoun-tux-kenny-2198.png',
+        'data/mitch91-rayon-tux-2579.png',
+        'data/sosoe222-smart-tux-3440.png'
    ], 3000);
 });</pre>
         <h3>Demo</h3>
@@ -61,9 +61,9 @@
         <pre>$(document).ready(function(){
     
     $('#demo-2').cycle([
-        'images/cisoun-tux-kenny-2198.png',
-        'images/mitch91-rayon-tux-2579.png',
-        'images/sosoe222-smart-tux-3440.png'
+        'data/cisoun-tux-kenny-2198.png',
+        'data/mitch91-rayon-tux-2579.png',
+        'data/sosoe222-smart-tux-3440.png'
     ], {
         interval: 10000, // default is 5000
         onBefore: function(element, image) { // default is false

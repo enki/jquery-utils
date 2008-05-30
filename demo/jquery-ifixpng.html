@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>jQuery utils</title>
-        <link rel="Stylesheet" media="screen" href="styles.css" />
+        <link rel="Stylesheet" media="screen" href="data/styles.css" />
         <script type="text/javascript" src="../build/jquery/jquery-1.2.3.min.js"></script>
         <script type="text/javascript" src="../src/jquery.ifixpng.js"></script>
 
@@ -41,7 +41,7 @@ $('img[@src$=.png], div#logo').ifixpng().iunfixpng().ifixpng();
 // apply to div#logo2, modify css property and add click event 
 $('div#logo2').ifixpng().css({cursor:'pointer'}).click(function(){ alert('ifixpng is cool!'); });</pre>
         <div class="demo">
-            <img id="demo-1" src="images/mitch91-rayon-tux-2579.png" alt="" border="0">
+            <img id="demo-1" src="data/mitch91-rayon-tux-2579.png" alt="" border="0">
         </div>
         <hr size="1" />
         <h3>Removing fix</h3>
@@ -51,7 +51,7 @@ $('div#logo2').ifixpng().css({cursor:'pointer'}).click(function(){ alert('ifixpn
         $(this).ifixpng(); 
 });</pre>
         <div class="demo">
-            <img id="demo-2" src="images/sosoe222-smart-tux-3440.png" alt="" border="0">
+            <img id="demo-2" src="data/sosoe222-smart-tux-3440.png" alt="" border="0">
         </div>
    </body>
 </html>
