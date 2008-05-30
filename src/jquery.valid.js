@@ -49,7 +49,6 @@
     $.extend({ 
         validation: valid,
         isValid: function(i, validation, args) {
-            print('TEST - '+i+' - '+validation);
             var parts = validation.split('.');
             if (parts[1] && valid[parts[0]] && valid[parts[0]][parts[1]]) {
                  return valid[parts[0]][parts[1]](i, args);

@@ -1,33 +1,40 @@
+body {
+    margin:0;
+}
+#fixtures { display:none;}
 .pass { color: #236; } 
 .fail { color: #c30; } 
+
 p.result {
     font-size:120%!important;
     color:#333;
+    margin:0 40px;
 }
 
-h2.pass { background-color: green; }
-h2.fail { background-color: red; }
-
-h3 {margin-top:0!important;}
-h3#banner span { 
-    display:none;
-    color:#fff;
-    border:1px solid #ccc;
+#banner {
+    color:#fff!important;
     padding:10px 20px;
     font-size:180%;
     font-weight:normal;
     letter-spacing:2px;
+    margin:0;
 }
-h3#banner.pass span.pass,
-h3#banner.fail span.fail { display:block!important; }
-h3#banner.pass span.fail,
-h3#banner.fail span.pass { display:none!important; }
-h3#banner.pass { background: #269; }
-h3#banner.fail { background: #c30;}
+
+h3 {margin-top:0!important;}
+#banner span { 
+    display:none;
+
+}
+
+#banner.pass span.pass,
+#banner.fail span.fail { display:inline!important; color:#fff!important;}
+#banner.pass span.fail,
+#banner.fail span.pass { display:none!important;  }
+#banner.pass { background: #269; }
+#banner.fail { background: #c30;}
 
 ol#tests > li > strong { cursor:pointer; }
-ol#tests > li { margin-left:50px; }
-
+ol#tests > li { margin-left:20px; }
 
 #userAgent {
     font-size:1.2em;
@@ -37,7 +44,7 @@ ol#tests > li { margin-left:50px; }
     border:1px solid #ccc;
     border-width:0 1px 1px 1px;
     padding:10px 20px;
-    margin:0 40px 10px 40px;
+    margin:0 0 10px 0;
 }
 
 div#fx-tests h4 {
