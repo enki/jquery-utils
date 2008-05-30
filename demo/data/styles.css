@@ -142,12 +142,18 @@ table.list tbody td {
     padding:#666;
     display:block;
     margin:6px 30px;
-    padding:10px 20px;
+    padding:10px 28px;
     border:2px solid #ccc;
-    font-size:.8em;
+    font-size:1em;
+    text-decoration:none;
+    background-position:5px 50%;
+    background-repeat:no-repeat;
 }
 .related-links.documentation {
-    background:#e8ffaf;
-    color:#313f27;
-
+    background-image:url(help.png);
+    background-color:#def;
+}
+.related-links.website {
+    background-image:url(bullet_error.png);
+    background-color:#ffc;
 }

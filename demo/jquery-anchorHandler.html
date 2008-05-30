@@ -6,8 +6,15 @@
 
         <script type="text/javascript">
             $(document).ready(function(){
+                $('div.ah-demo:not(:first)').hide();
                 $.anchorHandler
-                 .add(/#demo/, function(){ alert('Demo'); }, true);
+                 .add(/#demo\-.*/, function(){
+                      console.log(this.hash);
+                     $('div.ah-demo')
+                         .hide('fast')
+                         .filter('#'+ this.hash.replace('#',''))
+                         .slideDown('slow');
+                     return false; }, true);
             });
         </script>
         <style type="text/css">
@@ -20,16 +27,49 @@
         <a class="related-links documentation" href="http://code.google.com/p/jquery-utils/wiki/AnchorHandler">Documentation</a>
         <h3>Usage</h3>
         <pre>$(document).ready(function(){
+    $('div.ah-demo:not(first:)').hide();
     $.anchorHandler
-     // using regular expression
-     .add(/#comment\-\d+/,      focus)
-     // handling link onclick too
-     .add(/#demo/, function(){ alert('Demo'); }, true);
-});</pre>
+     .add(/#demo\-.*/, function(){
+          console.log(this.hash);
+         $('div.ah-demo')
+             .hide('fast')
+             .filter('#'+ this.hash.replace('#',''))
+             .slideDown('slow');
+         return false; }, true);
+});
+
+// html
+
+&lt;p&gt;
+    &lt;a href="#demo-1"&gt;demo 1&lt;/a&gt;
+    &lt;a href="#demo-2"&gt;demo 2&lt;/a&gt;
+    &lt;a href="#demo-3"&gt;demo 3&lt;/a&gt;
+&lt;/p&gt;
+&lt;div class="demos"&gt;
+    &lt;div id="demo-1" class="ah-demo" style="background:#ccf;"&gt;demo 1&lt;/div&gt;
+    &lt;div id="demo-2" class="ah-demo" style="background:#efc;"&gt;demo 2&lt;/div&gt;
+    &lt;div id="demo-3" class="ah-demo" style="background:#c9f;"&gt;demo 3&lt;/div&gt;
+&lt;/div&gt;</pre>
         <h3>Demo</h3>
         <div class="demo">
-            <p><a href="#demo">demo</a></p>
+            <p>
+                <a href="#demo-1">demo 1</a>
+                <a href="#demo-2">demo 2</a>
+                <a href="#demo-3">demo 3</a>
+            </p>
+            <div class="demos">
+                <div id="demo-1" class="ah-demo" style="background:#ccf;">demo 1</div>
+                <div id="demo-2" class="ah-demo" style="background:#efc;">demo 2</div>
+                <div id="demo-3" class="ah-demo" style="background:#c9f;">demo 3</div>
+            </div>
         </div>
+        <style>
+            .demos {
+                font-size:4em;
+                font-weight:bold;
+                padding:20px;
+            }
+        </style>
     </body>
 </html>
 
