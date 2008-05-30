@@ -17,8 +17,8 @@ BASE_FILES = ${SRC_DIR}/jquery.utils.js\
     ${SRC_DIR}/jquery.forms.js\
     ${SRC_DIR}/jquery.ifixpng.js\
     ${SRC_DIR}/jquery.strings.js\
-     ${SRC_DIR}/jquery.valid.js
-#    ${SRC_DIR}/jquery.youtubeLinksToEmbed.js
+    ${SRC_DIR}/jquery.valid.js\
+    ${SRC_DIR}/jquery.youtubeLinksToEmbed.js
 
 MODULES = ${SRC_DIR}/intro.js\
 	${BASE_FILES}\

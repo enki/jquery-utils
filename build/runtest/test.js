@@ -14,7 +14,6 @@ window.onload = function(){
         "test/unit/jquery.countdown.js",
         "test/unit/jquery.valid.js",
         "test/unit/jquery.strings.js"
-
     );
     
     // Display the results
