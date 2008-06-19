@@ -15,13 +15,14 @@
         <script type="text/javascript" src="unit/jquery.strings.js"></script>
         <script type="text/javascript">
             $(document).ready(function(){
-//                setTimeout(function(){window.location.reload();}, 2000);
+                $('#jQueryVersion span').text($.fn.jquery);
             });
         </script>
     </head>
     <body id="body">
         <h2 id="banner">Unit tests: <span class="pass">passed</span><span class="fail">failed</span></h2>
         <h4 id="userAgent"></h4> 
+        <h5 id="jQueryVersion">jQuery version <span></span></h5> 
         <div id="main"></div>
         <ol id="tests"></ol>
         <div id="fixtures">

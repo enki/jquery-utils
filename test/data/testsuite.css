@@ -11,6 +11,18 @@ p.result {
     margin:0 40px;
 }
 
+#jQueryVersion {
+    background:#f4f4f4;
+    color:#999;
+    margin:0;
+    padding:4px 20px;
+    font-weight:normal;
+    border-bottom:1px solid #eee;
+}
+#jQueryVersion span {
+    font-weight:bold;
+    color:#269;
+}
 #banner {
     color:#fff!important;
     padding:10px 20px;
@@ -44,7 +56,7 @@ ol#tests > li { margin-left:20px; }
     border:1px solid #ccc;
     border-width:0 1px 1px 1px;
     padding:10px 20px;
-    margin:0 0 10px 0;
+    margin:0;
 }
 
 div#fx-tests h4 {
@@ -149,3 +161,4 @@ div.chain.out { background: green; }
 div.chain.out div { background: red; display: none; }
 
 div#show-tests * { display: none; }
+
