@@ -227,9 +227,14 @@
         console.log($(i), type) 
     }
 
+    var calc = function(str, args) {
+        return eval(format(str, args));
+    };
+
     $.extend({
         // Format/sprintf functions
-        format: format, 
+        format: format,
+        calc:   calc,
         strConversion: conversion,
     });
 

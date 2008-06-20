@@ -11,6 +11,39 @@
             });
         </script>
         <style type="text/css">
+        .ui-awesomebar {
+            margin:10px 30px;
+            position:absolute;
+            z-index:1000;
+        }
+        .ui-awesomebar input {
+            width:100%;
+        }
+        .ui-awesomebar ul {
+            margin:0!important;
+            padding:0!important;
+            background:#eee;
+            border:1px solid #ccc;
+            border-width:0 1px 1px 1px;
+        }
+        .ui-awesomebar li {
+            margin:0!important;
+            padding:3px 5px!important;
+            list-style:none!important;
+            border-bottom:1px solid #ddd;
+            cursor:pointer;
+        }
+        .ui-awesomebar li.last {
+            border:0!important;
+        }
+        .ui-awesomebar li.hover,
+        .ui-awesomebar li.selected {
+            background:#ffd; 
+        }
+        .ui-awesomebar-desc {
+            font-size:.8em;
+            color:#777;
+        }
         </style>
     </head>
     <body id="body">
@@ -21,8 +54,8 @@
 
         <h3>Demo</h3>
         <p>
-            <input type="text" id="test-1"  />
             <div class="ui-awesomebar">
+                <input type="text" id="test-1"  />
                 <ul>
                     <li>
                         <div class="ui-awesomebar-title">Hello world</div>
