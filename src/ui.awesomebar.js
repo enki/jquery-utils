@@ -18,11 +18,13 @@ $.widget('ui.awesomebar', {
 		var self = this;
         self.preventUpdate = false;
 
+        // same as :contains but case insensitive
         if (typeof($.expr[':']['icontains']) == 'undefined') {
             $.expr[':']['icontains'] = function(a,i,m){
-                return (a.textContent||a.innerText||$(a).text()||"").toLowerCase().indexOf(m[3].toLowerCase())>=0;}
+                return (a.textContent||a.innerText||$(a).text()||'').toLowerCase().indexOf(m[3].toLowerCase())>=0;}
         }
 
+        // create action bar
         if ($(self.element).parent().hasClass('ui-awesomebar')) {
             self.awesomebar = $(self.element).parent();
             if ($(self.awesomebar).find('ul').get(0)) {
@@ -45,27 +47,33 @@ $.widget('ui.awesomebar', {
         $('li:first', self.list).addClass('first');
         $('li:last', self.list).addClass('last');
         $(self.awesomebar).width(self.options.width);
-
-        $(self.element).bind('keyup.awesomebar', function(e){ //console.log(e.keyCode);
-            if ($.inArray(e.keyCode, [13, 27, 37, 38, 39, 40]) == -1) {
-                self.preventUpdate = false;
-                self.filter();
+        
+        $(self.element).bind('keyup.awesomebar', function(e){
+            if ($.inArray(e.keyCode, [13, 27, 37, 38, 39, 40]) > -1) {
+                self.preventUpdate = true;
+                self.handleKeyEvents(e.keyCode); 
             }
             else {
-                self.preventUpdate = true;
-                self.onKeydown(e.keyCode); 
+                self.preventUpdate = ($(self.element).val().replace(/\s/g, '')=='')? true: false;
             }
         });
 
-        if (self.options.update) {
+        if (self.options.dataSource) {
             if ($.fn.delayedObserver) {
                 $(self.element).delayedObserver(function(){ 
                     if (!self.preventUpdate) self.options.update.apply(self);
                 }, 0.5);
-           }
+            }
+            else {
+                $(self.element).keyup(function(){
+                    if (!self.preventUpdate) self.options.update.apply(self);
+                });
+            }
+            
         }
 	},
-    onKeydown: function(keyCode){
+
+    handleKeyEvents: function(keyCode){
         switch(keyCode) {
             case 13: self.select();       break; // enter
             case 27: self.hide();         break; // escape
@@ -75,6 +83,15 @@ $.widget('ui.awesomebar', {
             case 40: self.select('next'); break; // down
         }
     },
+
+    handleHTMLresponse: function(data) {
+        var newList = $(data);
+        var oldList = $(self.element).next('ul');
+        $(oldList).replaceWith(newList);
+        // TODO: max results
+        self.list = newList;
+    },
+
     select: function(which) {
         self = this;
         if (typeof(which) == 'string') {
@@ -96,35 +113,21 @@ $.widget('ui.awesomebar', {
             }
             self.options.onSelect.apply(self,   [selected]);
             self.options.onSelected.apply(self, [selected]);
+            self.hide();
         }
     },
 
-    filter: function() {
-        self = this;
-        var val = $(self.element).val();
-        if (val == '') return self.hide();
-        var match = $(self.list).find('li:icontains('+ val  +')');
-        
-        if (!self.options.update) $(self.list).find('li').hide();
-        else $(self.list).find('li:not(:icontains('+ val  +'))').remove();
-
-        if (match.length > 0) {
-            $.each(match, function(){
-                //$.each($(this).children(), function() {
-                //    $(this).html($(this).text());
-                //});
-                var el = $(this).find(':icontains('+ val +')');
-                if ($(el).get(0)) {
-                    //var str = $(el).eq(0).text();
-                    //$(el).eq(0).html(str.replace((new RegExp('('+val+')', 'gi')), "<b>$1</b>"));
-                    if (!self.options.update) $(this).show();
-                }
-            });
-            $(self.list).show();
-        }
+    refresh: function() {
+        if (self.list.length < 1) $(self.list).hide();
         else {
-            $(self.list).hide();
+            $(self.list).show();
+            if (self.options.maxHeight && $(self.awesomebar).height() > self.options.maxHeight) {
+                $(self.awesomebar).height(self.options.maxHeight);
+            }
         }
+        $(self.list).find('li')
+            .hover(function(){ $(this).addClass('hover'); }, function(){ $(this).removeClass('hover'); })
+            .click(function(){ self.select(this); });
     },
 
 	show: function() {
@@ -133,20 +136,37 @@ $.widget('ui.awesomebar', {
 
 	hide: function(){
 		this.options.hide.apply($(this.list), [this.options.speed]);
-	},
+	}
 });
 
 $.ui.awesomebar.defaults = {
 	width:      200,    // width in pixel
-//  maxHeight:  200,   // maximum height in pixel
+    maxHeight:  200,   // maximum height in pixel
 	speed:      'fast', // animations speed
 	show:	    $.fn.slideDown, // showing effect
 	hide:	    $.fn.slideUp,   // hiding effect
-    update:     false,
-    onSelected: false,
+    maxResults: 0, // 0 = infinite
+    dataSource: false,
+    dataType:   'html',
+    onData:     function(data, status){
+        if (status == 'success') {
+            switch(self.options.dataType) {
+                case 'html': self.handleHTMLresponse.apply(self, [data]); break;
+                // TODO: other dataTypes support
+            }
+            self.refresh.apply(self);
+        }
+    },
     onSelect:   function() {
-        $(this.element).val($(this.list).find('.selected').removeClass('selected').children(':first').text());
-        this.hide();
+        $(this.element).val($(this.list).find('.selected').removeClass('selected').text());
+    },
+    onSelected: function(){},
+    update: function() {
+        self = this;
+        if ($(self.element).val() == '') return;
+        // Ajax
+        if (this.options.dataSource) {
+            $.get(this.options.dataSource.replace('%s', $(self.element).val()), self.options.onData);
+        }
     }
 };
-
