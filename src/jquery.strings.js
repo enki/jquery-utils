@@ -235,7 +235,7 @@
         // Format/sprintf functions
         format: format,
         calc:   calc,
-        strConversion: conversion,
+        strConversion: conversion
     });
 
 })(jQuery);
