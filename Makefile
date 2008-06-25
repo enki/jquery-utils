@@ -20,14 +20,12 @@ BASE_FILES = ${SRC_DIR}/jquery.utils.js\
     ${SRC_DIR}/jquery.valid.js\
     ${SRC_DIR}/jquery.youtubeLinksToEmbed.js
 
-MODULES = ${SRC_DIR}/intro.js\
-	${BASE_FILES}\
-	${SRC_DIR}/outro.js
+MODULES = ${BASE_FILES}
 
-JQ = ${DIST_DIR}/jquery-utils.js
-JQ_LITE = ${DIST_DIR}/jquery-utils.lite.js
-JQ_MIN = ${DIST_DIR}/jquery-utils.min.js
-JQ_PACK = ${DIST_DIR}/jquery-utils.pack.js
+JQ = ${DIST_DIR}/jquery.utils.js
+#JQ_LITE = ${DIST_DIR}/jquery-utils.lite.js
+JQ_MIN = ${DIST_DIR}/jquery.utils.min.js
+JQ_PACK = ${DIST_DIR}/jquery.utils.pack.js
 
 JQ_VER = `cat version.txt`
 VER = sed s/@VERSION/${JQ_VER}/
