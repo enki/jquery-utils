@@ -230,7 +230,9 @@
         // Format/sprintf functions
         format: format,
         calc:   calc,
-        strConversion: conversion
+        strConversion: conversion,
+        UTF8encode: function(s) { return unescape(encodeURIComponent(s)); },
+        UTF8decode: function(s) { return decodeURIComponent(escape(s)); }
     });
 
 })(jQuery);
