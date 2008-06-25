@@ -35,6 +35,7 @@
             else if ($(this).get(0).setSelectionRange) {
                 $(this).focus().get(0).setSelectionRange(start, end);
             }
+            return $(this);
         }
 	});
 })(jQuery);
