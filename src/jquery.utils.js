@@ -10,6 +10,10 @@
 */
 
 (function($){
+
+    // I use the ui widget api for controls
+    $.ctrl = { plugin: $.ui.plugin };
+
 	$.extend({ 
 		isRegExp: function(o) {
 			return o.constructor.toString().indexOf('RegExp()') != -1;
