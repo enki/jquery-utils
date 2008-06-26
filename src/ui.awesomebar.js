@@ -74,6 +74,7 @@ $.widget('ui.awesomebar', {
 	},
 
     handleKeyEvents: function(keyCode){
+        var self = this;
         switch(keyCode) {
             case 13: self.select();       break; // enter
             case 27: self.hide();         break; // escape
@@ -165,8 +166,8 @@ $.ui.awesomebar.defaults = {
         self = this;
         if ($(self.element).val() == '') return;
         // Ajax
-        if (this.options.dataSource) {
-            $.get(this.options.dataSource.replace('%s', $(self.element).val()), self.options.onData);
+        if (self.options.dataSource) {
+            $.get(self.options.dataSource.replace('%s', $(self.element).val()), self.options.onData);
         }
     }
 };

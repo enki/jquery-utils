@@ -18,7 +18,11 @@ BASE_FILES = ${SRC_DIR}/jquery.utils.js\
     ${SRC_DIR}/jquery.ifixpng.js\
     ${SRC_DIR}/jquery.strings.js\
     ${SRC_DIR}/jquery.valid.js\
-    ${SRC_DIR}/jquery.youtubeLinksToEmbed.js
+    ${SRC_DIR}/jquery.youtubeLinksToEmbed.js\
+	${SRC_DIR}/ui.toaster.js\
+	${SRC_DIR}/ui.awesomebar.js\
+	${SRC_DIR}/ctrl.datetime.js\
+	${SRC_DIR}/ctrl.keynav.js
 
 MODULES = ${BASE_FILES}
 
