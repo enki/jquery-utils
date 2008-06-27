@@ -231,6 +231,7 @@
         format: format,
         calc:   calc,
         strConversion: conversion,
+        repeat:  function(s, n) { return new Array(n+1).join(s); },
         UTF8encode: function(s) { return unescape(encodeURIComponent(s)); },
         UTF8decode: function(s) { return decodeURIComponent(escape(s)); }
     });
