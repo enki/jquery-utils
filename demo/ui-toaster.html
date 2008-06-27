@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="Stylesheet" media="screen" href="data/styles.css" />
+   <link rel="Stylesheet" media="screen" href="data/ui.toaster.css" />
+   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
+   <script src="http://ui.jquery.com/js/ui.js" type="text/javascript" charset="utf-8"></script>
+   <script type="text/javascript" src="../src/ui.toaster.js"></script>
+   <script type="text/javascript">
+       $(document).ready(function(){
+           $('#ui-toaster-position-demos li a').click(function(){
+               var pos = $(this).attr('href').replace('#', '');
+               $('<span><h1>'+ pos  +'</h1></span>')
+                   .toaster({position: pos, closable: false});
+           });
+           $('a[href=#close-dedault]').click(function(){
+               $('<div><p>Click anywhere in the box to close it.</p></div>').toaster()
+           });
+           $('a[href=#close-sticky]').click(function(){
+               $('<div><p>This box won\'t close until user close it.</p></div>').toaster({sticky: true})
+           });
+           $('a[href=#close-custom]').click(function(){
+               $('<div><a class="ui-toaster-close">x</a><p>Click the "x" to close the box.</p></div>').toaster()
+           });
+           $('a[href=#delay]').click(function(){
+               $('<div><p>Delayed opening.</p></div>').toaster({delay: 3});
+            });
+
+            $('#test-run').click(function(){
+                var options = {
+                    position:   $('#test-position').val(),
+                    delay:      $('#test-delay').val(),
+                    timeout:    $('#test-timeout').val(),
+                    width:      parseInt($('#test-width').val()),
+                    closable:   ($('#test-closable:checked').get(0)? true: false),
+                    sticky:     ($('#test-sticky:checked').get(0)?   true: false),
+                    show:       $.fn[$('#test-show').val()],
+                    hide:       $.fn[$('#test-hide').val()],
+                    close:      $.fn[$('#test-close').val()]
+                };
+                $('<div><p>'+ $('#test-body').val() +'</p></div>')
+                    .toaster(options);
+            });
+
+            $('a.effect').click(function(){
+                var e = this.hash.replace('#effect-', '');
+                var s = {
+                    puff: function(){ return $(this).show('puff', {}), 800; },
+                    clip: function(){ return $(this).show('clip', {}), 800; },
+                    drop: function(){ return $(this).show('drop', {}), 800; },
+                    explode: function(){ return $(this).show('explode', {}), 800; },
+                    fold: function(){ return $(this).show('fold', {}), 800; },
+                    slide: function(){ return $(this).show('slide'), 800; }
+                };
+                var h = {
+                    puff: function(){ return $(this).hide('puff', {}), 800; },
+                    clip: function(){ return $(this).hide('clip', {}), 800; },
+                    drop: function(){ return $(this).hide('drop', {}), 800; },
+                    explode: function(){ return $(this).hide('explode', {}), 800; },
+                    fold: function(){ return $(this).hide('fold', {}), 800; },
+                    slide: function(){ return $(this).hide('slide'), 800; }
+                 };
+                $('<div><p>'+ e +'</p></div>').toaster({
+                    position:'tl',
+                    delay: 0,
+                    close: h[this.hash.replace('#effect-', '')],
+                    show: s[this.hash.replace('#effect-', '')]});
+                $('<div><p>'+ e +'</p></div>').toaster({
+                    position:'tr',
+                    delay: 1,
+                    close: h[this.hash.replace('#effect-', '')],
+                    show: s[this.hash.replace('#effect-', '')]});
+                $('<div><p>'+ e +'</p></div>').toaster({
+                    position:'br',
+                    delay: 2,
+                    close: h[this.hash.replace('#effect-', '')],
+                    show: s[this.hash.replace('#effect-', '')]});
+                $('<div><p>'+ e +'</p></div>').toaster({
+                    position:'bl',
+                    delay: 3,
+                    close: h[this.hash.replace('#effect-', '')],
+                    show: s[this.hash.replace('#effect-', '')]});
+            });
+
+       });
+
+   </script>
+    </head>
+    <body id="body">
+        <h2>ui.toaster.js</h2>
+        <h3>Test</h3>
+        <form>
+
+        <table>
+            <tr>
+                <th>delay</th>  <td><input type="text" id="test-delay" value="0" style="width:30px;" /></td>
+                <td rowspan="8" style="padding:8px;">
+                    <textarea id="test-body" style="width:200px;height:200px;">Hello World</textarea>
+                </td>
+            </tr><tr>
+
+                <th>timeout</th> <td><input type="text" id="test-timeout" value="3" style="width:30px;" /></td>
+            </tr><tr>
+                <th>width</th> <td><input type="text" id="test-width" value="200" style="width:40px;" />px</td>
+            </tr><tr>
+                <th>sticky</th> <td><input type="checkbox" id="test-sticky" checked="off" /></td>
+
+            </tr><tr>
+                <th>closable</th> <td><input type="checkbox" id="test-closable" checked="off" /></td>
+            </tr><tr>
+                <th>Show effect</th> 
+                <td>
+                    <select id="test-show">
+                        <option value="slideDown" selected>Slide down</option>
+
+                        <option value="fadeIn">Fade in</option>
+                        <option value="show">Show</option>
+                    </select>
+                </td>
+            </tr><tr>
+                <th>Hide effect</th> 
+                <td>
+                    <select id="test-hide">
+
+                        <option value="slideUp" selected>Slide up</option>
+                        <option value="fadeOut">Fade Out</option>
+                        <option value="hide">Hide</option>
+                    </select>
+                </td>
+            </tr><tr>
+                <th>Close effect</th> 
+                <td>
+
+                    <select id="test-close">
+                        <option value="slideUp">Slide up</option>
+                        <option value="fadeOut" selected>Fade Out</option>
+                        <option value="hide">Hide</option>
+                    </select>
+                </td>
+            </tr><tr>
+
+                <th>Position</th> 
+                <td>
+                    <select id="test-position">
+                        <option value="tl">Top left</option>
+                        <option value="tr">Top right</option>
+                        <option value="bl">Bottom left</option>
+                        <option value="br">Bottom right</option>
+
+                    </select>
+                </td>
+            </tr>
+            <tr style="text-align:right;"><td colspan="3"><input id="test-run" type="button" value="Test !" /></td></tr>
+        </table>
+        </form>
+        <h3>Usage</h3>
+        <code><pre>
+
+$.ui.toaster($('&lt;p&gt;hello world&lt;/p&gt;'));
+$.ui.toaster('hello world');
+
+$('#msg-box').ui.toaster();
+$('&lt;p&gt;hello world&lt;/p&gt;').ui.toaster();
+        </pre></code>
+        <h3>Positions</h3>
+        <ul id="ui-toaster-position-demos">
+            <li><a href="#tl">Top left</a></li>
+
+            <li><a href="#tr">Top right</a></li>
+            <li><a href="#bl">Bottom left</a></li>
+            <li><a href="#br">Bottom right</a></li>
+        </ul>
+        <h3>Close</h3>
+        <p>
+            <a href="#close-dedault">Default</a>
+
+        </p>
+        <code><pre>
+$('a[href=#close-dedault]').click(function(){
+    $('&lt;div&gt;&lt;p&gt;Click anywhere in the box to close it.&lt;/p&gt;&lt;div&gt;').toaster()
+});
+        </pre></code>
+        <p>
+            <a href="#close-sticky">Sticky</a>
+
+        </p>
+        <code><pre>
+$('a[href=#close-dedault]').click(function(){
+    $('&lt;div&gt;&lt;p&gt;This box won't close until user close it.&lt;/p&gt;&lt;div&gt;').toaster({sticky: true})
+});
+        </pre></code>
+        <p>
+            <a href="#close-custom">Custom</a>
+
+        </p>
+        <code><pre>
+$('a[href=#close-custom]').click(function(){
+    $('&lt;div&gt;&lt;a class="ui-toaster-close"&gt;x&lt;/a&gt;&lt;p&gt;Click the "x" to close the box.&lt;/p&gt;&lt;div&gt;').toaster()
+});
+        </pre></code>
+        <h3>Delay</h3>
+
+        <p>
+            <a href="#delay">3 sec delay</a>
+        </p>
+        <code><pre>
+$('&lt;div&gt;&lt;p&gt;Delayed opening..&lt;/p&gt;&lt;div&gt;').toaster({delay: 3})
+        </pre></code>
+
+        <h3>Effects</h3>
+        <ul>
+            <li><a href="#effect-puff" class="effect">Puff</a></li>
+            <li><a href="#effect-clip" class="effect">Clip</a></li>
+            <li><a href="#effect-drop" class="effect">Drop</a></li>
+            <li><a href="#effect-explode" class="effect">Explode</a></li>
+
+            <li><a href="#effect-fold" class="effect">Fold</a></li>
+            <li><a href="#effect-slide" class="effect">Slide</a></li>
+        </ul>
+        <code><pre>$('&lt;div&gt;&lt;p&gt;Slide !&lt;/p&gt;&lt;/div&gt;').toaster({
+    position:'tl',
+    delay: 0,
+    close: function(){ return $(this).hide('slide'), 800; },
+</pre></code>
+
+    </body>
+</html>
+
+
