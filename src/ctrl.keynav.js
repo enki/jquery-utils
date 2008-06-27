@@ -21,18 +21,19 @@ $.widget('ctrl.keynav', {
         // try to guess format from class if none is specified
         if (!self.options.format) {
             var match = $(self.element).attr('class').match(/ctrl-keynav-(\w+)/i);
-            self.options.format = match && match[0] || 'int';
+            self.options.format = match && match[1] || 'int';
         }
         else {
             $(self.element).addClass('ctrl-keynav ctrl-keynav-'+ self.options.format);
         }
-
-        self.keynav = $.ctrl.keynav.formats[self.options.format];
-        $.each(['focus', 'blur', 'keyup', 'keydown'], function(i, callback) {
-            if (self.keynav[callback] && $(self.element)[callback]) {
-                self.observe(callback);
-            }
-        });
+        if ($.ctrl.keynav.formats[self.options.format]) {
+            self.keynav = $.ctrl.keynav.formats[self.options.format];
+            $.each(['focus', 'blur', 'keyup', 'keydown'], function(i, callback) {
+                if (self.keynav[callback] && $(self.element)[callback]) {
+                    self.observe(callback);
+                }
+            });
+        }
     },
     observe: function(callback) {
         var self = this;
@@ -100,6 +101,57 @@ $.ctrl.keynav.formats  = {
                 if (e.shiftKey) this.val(this.val() - 10);
                 else            this.val(this.val() - 1);
             }
+        }
+    },
+    time: {
+        capture: [38, 40], // top, bottom arrows
+        format:  24,
+        keyup: {
+            all: function(e) {
+                var self = this;
+            },
+            38: function(e) { // top 
+                var self = this;
+                var time = self.keynav.getTime($(self.element).val());
+                var hour = parseInt(time[0], 10);
+                var min  = parseInt(time[1], 10);
+                
+                if (e.altKey)        min  = min + 1;
+                else if (e.ctrlKey)  min  = Math.round((min+30)/10)*10;
+                else if (e.shiftKey) hour = hour + 1;
+                else                 min  = Math.round((min+10)/10)*10;
+
+                if (min  >= 59) { min  = 0; hour++; }
+                if (hour >= 24) { hour = 1; }
+                if (min  < 10)  { min  = '0'+min; }
+                if (hour < 10)  { hour = '0'+hour; }
+
+                self.val(hour +':'+ min);
+            },
+            40: function(e) { // bottom
+                var self = this;
+                var time = self.keynav.getTime($(self.element).val());
+                var hour = parseInt(time[0], 10);
+                var min  = parseInt(time[1], 10);
+                
+                if (e.altKey)        min  = min  - 1;
+                else if (e.ctrlKey)  min  = Math.round((min-30)/10)*10;
+                else if (e.shiftKey) hour = hour - 1;
+                else                 min  = Math.round((min-10)/10)*10;
+
+                if (min  < 0)   { min  = 59; hour--; }
+                if (hour < 0)   { hour = 24; }
+                if (min  < 10)  { min  = '0'+min; }
+                if (hour < 10)  { hour = '0'+hour; }
+
+                self.val(hour +':'+ min);
+            }
+        },
+        getTime: function(str) {
+            var o = str.split(':');
+            var h = o[0] || 0;
+            var m = o[1] || 0;
+            return [isNaN(h) && 0 || h, isNaN(m) && 0 || m];
         }
     }
 };
