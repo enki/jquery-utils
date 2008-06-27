@@ -21,15 +21,20 @@ $.widget('ctrl.datetime', {
 
         $(self.element).hide();
 
-        $('<input type="text" class="ctrl-datetime ctrl-time ctrl-keynav ctrl-keynav-time" />')
-            .attr('id', id_t).val(time).insertAfter(self.element);
-        $('<input type="text" class="ctrl-datetime ctrl-date" />')
+        var d = $('<input type="text" class="ctrl-datetime ctrl-date ctrl-keynav ctrl-keynav-date" />')
             .attr('id', id_d).val(date).insertAfter(self.element)
-            .datepicker({mandatory:true, dateFormat: 'yy-mm-dd'});
+            .datepicker(self.options.datepicker);
+
+        var t = $('<input type="text" class="ctrl-datetime ctrl-time ctrl-keynav ctrl-keynav-time" />')
+            .attr('id', id_t).val(time).insertAfter(d);
     }
 });
 
 $.ctrl.datetime.defaults = {
-    format: '{year:d}-{month:d}-{day:d} {hour:d}:{minute:d}:{second:d}'
+    format: '{year:d}-{month:d}-{day:d} {hour:d}:{minute:d}:{second:d}',
+    datepicker: {
+        mandatory:  true, 
+        dateFormat: 'yy-mm-dd'
+    }
 };
 
