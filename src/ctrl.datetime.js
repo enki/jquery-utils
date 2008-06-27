@@ -21,7 +21,7 @@ $.widget('ctrl.datetime', {
 
         $(self.element).hide();
 
-                $('<input type="text" class="ctrl-datetime ctrl-time ctrl-keynav ctrl-keynav-int" />')
+        $('<input type="text" class="ctrl-datetime ctrl-time ctrl-keynav ctrl-keynav-time" />')
             .attr('id', id_t).val(time).insertAfter(self.element);
         $('<input type="text" class="ctrl-datetime ctrl-date" />')
             .attr('id', id_d).val(date).insertAfter(self.element)

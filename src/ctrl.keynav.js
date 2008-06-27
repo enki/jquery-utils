@@ -153,6 +153,48 @@ $.ctrl.keynav.formats  = {
             var m = o[1] || 0;
             return [isNaN(h) && 0 || h, isNaN(m) && 0 || m];
         }
+    },
+    date: {
+        capture: [38, 40], // top, bottom arrows
+        keyup: {
+            all: function(e) {
+                var self = this;
+            },
+            38: function(e) { // top 
+                var self = this;
+                var date = self.keynav.getDate($(self.element).val());
+                if (e.ctrlKey)  {
+                    date[1] = date[1] + 1;
+                    date[2] = date[2] - 1;
+                }
+                if (e.shiftKey) date[0] = date[0] + 1;
+                else date[2] = date[2] + 1
+                
+                var o = new Date(date[0], date[1], date[2]);
+                var m = (o.getMonth()+1 > 9)? o.getMonth()+1: '0'+(o.getMonth()+1);
+                var d = (o.getDate() > 9)?    o.getDate():    '0'+(o.getDate());
+                self.val(o.getFullYear() +'-'+ m +'-'+ d);
+            },
+            40: function(e) { // bottom
+                var self = this;
+                var date = self.keynav.getDate($(self.element).val());
+                if (e.ctrlKey)  {
+                    date[1] = date[1] - 1;
+                    date[2] = date[2] + 1;
+                }
+                if (e.shiftKey) date[0] = date[0] - 1;
+                else date[2] = date[2] - 1
+                
+                var o = new Date(date[0], date[1], date[2]);
+                var m = (o.getMonth()+1 > 9)? o.getMonth()+1: '0'+(o.getMonth()+1);
+                var d = (o.getDate() > 9)?    o.getDate():    '0'+(o.getDate());
+                self.val(o.getFullYear() +'-'+ m +'-'+ d);
+            }
+        },
+        getDate: function(date) {
+            var d = date.split('-')
+            return [parseInt(d[0], 10), parseInt(d[1], 10)-1, parseInt(d[2], 10)]; 
+        }
     }
 };
 
