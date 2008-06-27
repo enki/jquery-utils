@@ -7,18 +7,23 @@
 
         <script type="text/javascript">
             $(document).ready(function(){
-                $('#test-1').awesomebar();
+                $('#test-1').awesomebar({
+                    width: 300,
+                    dataSource: 'data/awesomebar-data.php?str=%s'
+                });
             });
         </script>
         <style type="text/css">
         .ui-awesomebar {
-            margin:10px 30px;
-            position:absolute;
             z-index:1000;
-            overflow:scroll;
         }
         .ui-awesomebar input {
             width:100%;
+            border-left:1px solid #999;
+            border-top:1px solid #999;
+            border-right:1px solid #666;
+            border-bottom:1px solid #666;
+            -moz-border-radius:3px;
         }
         .ui-awesomebar ul {
             margin:0!important;
@@ -26,6 +31,7 @@
             background:#eee;
             border:1px solid #ccc;
             border-width:0 1px 1px 1px;
+            position:absolute;
         }
         .ui-awesomebar li {
             margin:0!important;
@@ -41,36 +47,24 @@
         .ui-awesomebar li.selected {
             background:#ffd; 
         }
-        .ui-awesomebar-desc {
-            font-size:.8em;
-            color:#777;
-        }
+        .ui-awesomebar input.match { background-color:#ffc; }
+        .ui-awesomebar input.no-match { background-color:#ffdfdf; }
         </style>
     </head>
     <body id="body">
         <h2>ui.awesomebar.js</h2>
         <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
         <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
-        <a class="related-links documentation" href="http://code.google.com/p/jquery-utils/wiki/AnchorHandler">Documentation</a>
 
         <h3>Demo</h3>
         <p>
-            <div class="ui-awesomebar">
-                <input type="text" id="test-1"  />
-                <ul>
-                    <li>
-                        <div class="ui-awesomebar-title">Hello world</div>
-                        <div class="ui-awesomebar-desc">blah blah blah</div>
-                    </li>
-                    <li>
-                        <div class="ui-awesomebar-title">Hello babe</div>
-                        <div class="ui-awesomebar-desc">bleh bleh bleh</div>
-                    </li>
-                </ul>
-            </div>
+            <input type="text" id="test-1" />
         </p>
+        <hr size="1" />
         <h3>Usage</h3>
-        <pre></pre>
+        <pre>$('#test-1').awesomebar({
+    dataSource: 'data/awesomebar-data.php?str=%s'
+});</pre>
         <hr size="1" />
     </body>
 </html>

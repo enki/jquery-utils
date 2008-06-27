@@ -26,18 +26,18 @@ $.widget('ui.awesomebar', {
 
         // create action bar
         if ($(self.element).parent().hasClass('ui-awesomebar')) {
-            self.awesomebar = $(self.element).parent();
+            self.awesomebar = $(self.element).parent().width(self.options.width);
             if ($(self.awesomebar).find('ul').get(0)) {
-                self.list = $(self.awesomebar).find('ul').hide().get(0)
+                self.list = $(self.awesomebar).find('ul').width(self.options.width).hide().get(0)
             }
             else {
-                self.list = $('<ul />').hide();
+                self.list = $('<ul />').width(self.options.width).hide();
                 $(self.awesomebar).append(self.list);
             }
         }
         else {
-            self.awesomebar = $('<div class="ui-awesomebar" />');
-            self.list       = $('<ul />').hide();
+            self.awesomebar = $('<div class="ui-awesomebar" />').width(self.options.width);
+            self.list       = $('<ul />').width(self.options.width).hide();
             $(self.element).wrap($(self.awesomebar));
             $(self.list).insertAfter(self.element);
         }
@@ -46,7 +46,6 @@ $.widget('ui.awesomebar', {
 
         $('li:first', self.list).addClass('first');
         $('li:last', self.list).addClass('last');
-        $(self.awesomebar).width(self.options.width);
         
         $(self.element).bind('keyup.awesomebar', function(e){
             if ($.inArray(e.keyCode, [13, 27, 37, 38, 39, 40]) > -1) {
@@ -56,7 +55,7 @@ $.widget('ui.awesomebar', {
             else {
                 self.preventUpdate = ($(self.element).val().replace(/\s/g, '')=='')? true: false;
             }
-        });
+        }).width(self.options.width);
 
         if (self.options.dataSource) {
             if ($.fn.delayedObserver) {
@@ -86,10 +85,13 @@ $.widget('ui.awesomebar', {
     },
 
     handleHTMLresponse: function(data) {
-        var newList = $(data);
+        var newList = $(data).width(self.options.width);
         var oldList = $(self.element).next('ul');
+        $(self.element).removeClass('match no-match');
+        if ($(self.element).val().length > 0) {
+            $(self.element).addClass(($(' > li', newList).length > 0)? 'match': 'no-match');
+        }
         $(oldList).replaceWith(newList);
-        // TODO: max results
         self.list = newList;
     },
 
@@ -114,6 +116,7 @@ $.widget('ui.awesomebar', {
             }
             self.options.onSelect.apply(self,   [selected]);
             self.options.onSelected.apply(self, [selected]);
+            $(self.element).removeClass('no-match match');
             self.hide();
         }
     },

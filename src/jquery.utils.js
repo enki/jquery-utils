@@ -26,6 +26,7 @@
 			return (o=='NaN') ? '0.00' : o;
 		}
 	});
+
 	$.extend($.fn, { 
         selectRange: function(start, end) {
             // use only the first one since only one input can be focused
