@@ -19,5 +19,37 @@
         <pre>// returns "3"
 var obj = {a:{b: 'yay', c:[1,2,3]}}
 $(obj).jpath('a c:eq(2)');</pre>
+
+        <h3>$.jpath.expr</h3>
+        <table class="list" cellpadding="0" cellspacing="0" summary="">
+            <thead>
+                <tr>
+                    <th>expr</th><th>description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>:first</th>
+                    <td>Returns the first element of an object</td>
+                </tr>
+                <tr>
+                    <th>:last</th>
+                    <td>Returns the last element of an object</td>
+                </tr>
+                <tr>
+                    <th>:eq(N)</th>
+                    <td>Returns the N<sup>th</sup> element of an array or the N proprety of an object</td>
+                </tr>
+                <tr>
+                    <th>:is(str)</th>
+                    <td>Returns true if the object's value match str</td>
+                </tr>
+                <tr>
+                    <th>:nth(N)</th>
+                    <td>Returns the N<sup>th</sup> element of an array</td>
+                </tr>
+            </tbody>
+        </table>
+
 </html>
 

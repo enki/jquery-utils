@@ -7,24 +7,6 @@
 
   MIT License (http://www.opensource.org/licenses/mit-license.php
 
-
-    obj = {
-        a: 'A',
-        b: [1,2,4]
-        c: {
-            a: 'A',
-            b: [1,2,3]
-            c: { test: 'blah' }
-        }
-    }
-
-    $.jpath('a')
-    $.jpath('b:first')
-    $.jpath('c > a')
-    $.jpath('c > b:contains(2)')
-    $.jpath('c c > test')
-
-
 */
 
 (function($){
@@ -32,55 +14,54 @@
         getPaths: function(selector) {
             return selector.replace(/\s+/g, ' ').split(/\s?,\s?/g);
         },
-        getObj: function(scope, str) {
-            if (str.indexOf(':') == -1) {
-                return scope[str] || false;
+        getObj: function(s, k) {
+            if (k.indexOf(':') == -1) {
+                return s[k] || false;
             }
             else {
-                var match = str.match(/(\w+):(\w+)(\(?.*\)?)/);
+                var match = k.match(/(\w+):(\w+)(\(?.*\)?)/);
                 var raw   = match[0];
-                var str   = match[1]
+                var k     = match[1];
                 var expr  = match[2];
-                var param = match[3] && match[3].slice(1,-1) || false;
+                var p     = match[3] && match[3].slice(1,-1) || false;
                 if ($.jpath.isExpr(expr)) {
-                    return $.jpath.expr[expr](scope, str, param);
+                    return $.jpath.expr[expr](s, k, p);
                 }
             }
         },
-        isExpr: function(str) {
-            return !!this.expr[str];
+        isExpr: function(k) {
+            return !!this.expr[k];
         },
-        isAxis: function(str) {
-            return !!this.axis[str];
+        isAxis: function(k) {
+            return !!this.axis[k];
         },
-        // a: element, i: index, m: [selector, epr, param, ?]
         axis: {
             // descendant
-            ' ': function(scope, str) {
-                return $.jpath.getObj(scope, str);
+            ' ': function(s, k) {
+                return $.jpath.getObj(s, k);
             },
         },
         expr: { // s: scope, k: key, p: param
 
-            'first': function(s, k, p) {
-                return s[k] && s[k][0] || false;
+            'contains': function(s, k, p) {
+                var p = p.match(/^\d+$/) && parseInt(p.match(/^\d+$/)[0], 10) || p;
+                return s[k] && s[k].indexOf(p) > -1 && true || false;
             },
 
             'eq': function(s, k, p) {
-                return s[k] && s[str][p] || false;
+                return s[k] && s[k][p] || false;
+            },
+
+            'first': function(s, k) {
+                return s[k] && s[k][0] || false;
+            },
+            
+            'last': function(s, k) {
+                return s[k] && s[k][s[k].length-1] || false;
             },
 
             'is': function(s, k, p) {
                 return s[k] && (s[k] == p);
-            },
-
-            'nth': function(s, k, p) {
-                return s[k] && s[k][p || 0] || false;
-            },
-
-            'contains': function(s, k, p) {
-                var p = p.match(/^\d+$/) && parseInt(p.match(/^\d+$/)[0], 10) || p;
-                return s[k] && s[k].indexOf(p) > -1 && true || false;
             },
         }
     }; 
@@ -88,13 +69,13 @@
         jpath: function(selector, a) {
             var str   = false;
             var axis  = false;
+            var path  = false;
             var scope = $(this).get(0);
 
             $.each($.jpath.getPaths(selector), function() {
-                var path = this.split(/(\s[<>+]?\s?)/);
+                path = this.split(/(\s[<>+]?\s?)/);
                 $.each(path, function(i){
-                    var str = $.trim(this) || ' ';
-
+                    str = $.trim(this) || ' ';
                     if ($.jpath.isAxis(str)) {
                         axis = $.jpath.axis[str];
                     }
@@ -109,5 +90,4 @@
             return scope;
         }
     });
-
  })(jQuery);
