@@ -60,12 +60,27 @@
                 return $.jpath.getObj(scope, str);
             },
         },
-        expr: {
-            'first': function(scope, str, param) {
-                return scope[str] && scope[str][0] || false;
+        expr: { // s: scope, k: key, p: param
+
+            'first': function(s, k, p) {
+                return s[k] && s[k][0] || false;
             },
-            'eq': function(scope, str, param) {
-                return scope[str] && scope[str][param] || false;
+
+            'eq': function(s, k, p) {
+                return s[k] && s[str][p] || false;
+            },
+
+            'is': function(s, k, p) {
+                return s[k] && (s[k] == p);
+            },
+
+            'nth': function(s, k, p) {
+                return s[k] && s[k][p || 0] || false;
+            },
+
+            'contains': function(s, k, p) {
+                var p = p.match(/^\d+$/) && parseInt(p.match(/^\d+$/)[0], 10) || p;
+                return s[k] && s[k].indexOf(p) > -1 && true || false;
             },
         }
     }; 
