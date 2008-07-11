@@ -165,3 +165,8 @@ table.list tbody td {
     background-image:url(bullet_error.png);
     background-color:#ffc;
 }
+
+.related-links.experimental {
+    background-image:url(bullet_error.png);
+    background-color:#FFDFDF;
+}
