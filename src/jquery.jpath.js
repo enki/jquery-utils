@@ -37,7 +37,7 @@
         },
         axis: {
             // descendant
-            ' ': function(s, k) {
+            '.': function(s, k) {
                 return $.jpath.getObj(s, k);
             },
         },
@@ -47,21 +47,20 @@
                 var p = p.match(/^\d+$/) && parseInt(p.match(/^\d+$/)[0], 10) || p;
                 return s[k] && s[k].indexOf(p) > -1 && true || false;
             },
-
             'eq': function(s, k, p) {
                 return s[k] && s[k][p] || false;
             },
-
             'first': function(s, k) {
                 return s[k] && s[k][0] || false;
             },
-            
             'last': function(s, k) {
                 return s[k] && s[k][s[k].length-1] || false;
             },
-
             'is': function(s, k, p) {
                 return s[k] && (s[k] == p);
+            },
+            'match': function(s, k, p) {
+                return s[k] && s[k].match(p) && true || false;
             },
         }
     }; 
@@ -73,9 +72,9 @@
             var scope = $(this).get(0);
 
             $.each($.jpath.getPaths(selector), function() {
-                path = this.split(/(\s[<>+]?\s?)/);
+                path = this.split(/(\s?[.]\s?)/);
                 $.each(path, function(i){
-                    str = $.trim(this) || ' ';
+                    str = $.trim(this) || '.';
                     if ($.jpath.isAxis(str)) {
                         axis = $.jpath.axis[str];
                     }
