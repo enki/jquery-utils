@@ -26,15 +26,16 @@ $.widget('ctrl.keynav', {
         else {
             $(self.element).addClass('ctrl-keynav ctrl-keynav-'+ self.options.format);
         }
-        if ($.ctrl.keynav.formats[self.options.format]) {
-            self.keynav = $.ctrl.keynav.formats[self.options.format];
-            $.each(['focus', 'blur', 'keyup', 'keydown'], function(i, callback) {
-                if (self.keynav[callback] && $(self.element)[callback]) {
-                    self.observe(callback);
-                }
-            });
-        }
+
+        self.keynav = $.ctrl.keynav.formats[self.options.format];
+        $.each(['focus', 'blur'], function(i, callback) {
+            if (self.keynav[callback] && $(self.element)[callback]) {
+                console.log(callback);
+                $(self.element)[callback].apply(self, [self.keynav[callback]]);
+            }
+        });
     },
+
     observe: function(callback) {
         var self = this;
         // use delayed observer if available
@@ -66,7 +67,6 @@ $.widget('ctrl.keynav', {
         $(self.element).val()[pos || self.pos()];
     },
     pos: function() {
-             console.log($(this.element).get(0).selectionStart);
          return $(this.element).get(0).selectionStart;
     },
     select: function(s, e) {
@@ -89,7 +89,7 @@ $.ctrl.keynav.formats  = {
         keyup: {
             all: function() {
                 var match = $(this.element).val().match(/\d+/g);
-                $(this.element).val(match && !isNaN(match[0]) && parseInt(match[0], 10) || '');
+                $(this.element).val(match && !isNaN(match[0]) && parseInt(match[0], 10) || 0);
             },
             38: function(e) { // top 
                 if (e.ctrlKey)  this.val(this.val() + 100);
@@ -202,8 +202,11 @@ $.extend($.ctrl.keynav.formats, {
     alphabet: {
         capture: [37, 38, 39, 40], // left, top, right, bottom arrows
         chars: 'abcdefghijklmnopqrstuvwxyz',
-        focus: function() {
+        focus: function(e) {
+            console.log(this);
             $(this.element).selectRange(1, 2);
+            e.preventDefault();
+            e.stopPropagation();
         },
         keyup: {
             all: function(e) {
@@ -230,18 +233,25 @@ $.extend($.ctrl.keynav.formats, {
                 
                 self.val(self.val().slice(0, pos) + nchr + self.val().slice(pos+1, self.val().length));
                 self.select(pos);
-
                 e.preventDefault();
                 e.stopPropagation();
             },
             39: function(e) { // right
                 var pos = (this.pos() <= this.val().length)? this.pos(): 1;
-                //console.log('%s-%s-%s', this.pos(), this.val().length, pos);
                 this.select((pos <= this.val().length) && pos-1 || pos);
             },
             40: function(e) { // bottom
-                this.select(pos);
+                var self = this;
+                var pos  = self.pos();
+                var chr  = $(self.element).val()[pos];
+                var idx  = self.keynav.chars.indexOf(chr) - 1;
+                var nchr = self.keynav.chars[((idx<26 && idx>-1)   ?idx :25)];
+                
+                self.val(self.val().slice(0, pos) + nchr + self.val().slice(pos+1, self.val().length));
+                self.select(pos);
+                e.preventDefault();
+                e.stopPropagation();
             }
         }
     }
-})
+});

@@ -7,6 +7,13 @@
 
   MIT License (http://www.opensource.org/licenses/mit-license.php
 
+  object key
+  |
+  |-----+     expression
+  |     |     |
+  token.token:method(param)
+       |             |
+       axis          parameter
 */
 
 (function($){
@@ -15,10 +22,7 @@
             return selector.replace(/\s+/g, ' ').split(/\s?,\s?/g);
         },
         getObj: function(s, k) {
-            if (k.indexOf(':') == -1) {
-                return s[k] || false;
-            }
-            else {
+            if (k.indexOf(':') > -1) {
                 var match = k.match(/(\w+):(\w+)(\(?.*\)?)/);
                 var raw   = match[0];
                 var k     = match[1];
@@ -27,6 +31,9 @@
                 if ($.jpath.isExpr(expr)) {
                     return $.jpath.expr[expr](s, k, p);
                 }
+            }
+            else {
+                return s[k] || false;
             }
         },
         isExpr: function(k) {
@@ -61,9 +68,10 @@
             },
             'match': function(s, k, p) {
                 return s[k] && s[k].match(p) && true || false;
-            },
+            }
         }
     }; 
+
     $.extend($.fn, {
         jpath: function(selector, a) {
             var str   = false;

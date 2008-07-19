@@ -38,7 +38,9 @@
                 range.select();
             }
             else if ($(this).get(0).setSelectionRange) {
-                $(this).focus().get(0).setSelectionRange(start, end);
+                $(this).bind('focus', function(e){
+                    e.preventDefault();
+                }).get(0).setSelectionRange(start, end);
             }
             return $(this);
         }
