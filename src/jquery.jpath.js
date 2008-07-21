@@ -46,7 +46,7 @@
             // descendant
             '.': function(s, k) {
                 return $.jpath.getObj(s, k);
-            },
+            }
         },
         expr: { // s: scope, k: key, p: param
 
