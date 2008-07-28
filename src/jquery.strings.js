@@ -44,17 +44,22 @@
                 + str + s.substr(0, l - t) : str;
         },
         __getInput: function(arg, args) {
-            var key = arg.getKey();
+             var key = arg.getKey();
             switch(this.__getType(args)){
-                case 'object': 
-                    if (typeof(args[key]) != 'undefined') {
-                        if (conversion.__getType(args[key]) == 'array') {
-                            return arg.getFormat().match(/\.\*/) && args[key][1] || args[key];
+                case 'object': // Thanks to Jonathan Works for the patch
+                    var keys = key.split('.');
+                    var obj = args;
+                    for(var subkey = 0; subkey < keys.length; subkey++){
+                        obj = obj[keys[subkey]];
+                    }
+                    if (typeof(obj) != 'undefined') {
+                        if (conversion.__getType(obj) == 'array') {
+                            return arg.getFormat().match(/\.\*/) && obj[1] || obj;
                         }
-                        return args[key];
+                        return obj;
                     }
                     else {
-                        // TODO: try by numerical index
+                        // TODO: try by numerical index                    
                     }
                 break;
                 case 'array': 
