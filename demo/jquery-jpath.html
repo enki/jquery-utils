@@ -16,7 +16,7 @@
         <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
         <a class="related-links experimental">Experimental code !</a>
         <p>
-            Inspired by xpath and jQuery selectors, jPath is an experimental plugin to allow easy browsing of JavaScript object, namely JSON objects. The goal
+            Inspired by xPath and jQuery selectors, jPath is an experimental plugin to allow easy browsing of JavaScript object, namely JSON objects. The goal
             is make it easy to pull/compare/search data from these object. Here's a simple example of how it's supposed to work.
         </p>
         <pre>// .. some ajax call get a JSON object called "res"
@@ -32,6 +32,11 @@ if ($(res).jpath('employee.name:is(Max)')) {
 }
 
         </pre>
+        <p>
+            Furthermore, in the above example the conventional way assume that employee.name is defined. But if the server
+            returns a JSON object and the name isn't defined the script will throw an error. jPath will simply return false
+            if either employee or name isn't defined, making it a bit more reliable.
+        </p>
         <h3>Basic usage</h3>
         <pre>var obj = {
     a: {
@@ -44,8 +49,8 @@ $(obj).jpath('a.b');           // return "yay"
 $(obj).jpath('a.b:match(ya)'); // return "true"
 $(obj).jpath('a.c');           // returns [1,2,3]
 $(obj).jpath('a.c:eq(2)');     // returns "3"
+        </pre>
 
-</pre>
         <h3>$.jpath.expr</h3>
         <table class="list" cellpadding="0" cellspacing="0" summary="">
             <thead>

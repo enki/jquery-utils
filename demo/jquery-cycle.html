@@ -5,91 +5,104 @@
         <script type="text/javascript" src="../src/jquery.cycle.js"></script>
 
         <script type="text/javascript">
-            $(document).ready(function(){
-                $('#demo-1').cycle([
-                    'data/cisoun-tux-kenny-2198.png',
-                    'data/mitch91-rayon-tux-2579.png',
-                    'data/sosoe222-smart-tux-3440.png'
-                ], 5000);
-                
-                $('#demo-2').cycle([
-                    'data/cisoun-tux-kenny-2198.png',
-                    'data/mitch91-rayon-tux-2579.png',
-                    'data/sosoe222-smart-tux-3440.png'
-                ], {
-                    interval: 10000, 
-                    onBefore: function(element, image) {
-                        $(element).next().next().append($('<li>Loading: '+ image + '</li>'));
-                    },
-                    onAfter: function(element, image) {
-                        $(element).next().html('<b>Loaded: '+ image +'</b>');
-                    },
-                    callback: function(element, image){
-                        if ($.browser.mozilla) window.scrollTo(window.pageXOffset, window.pageYOffset); // scrollfix
-                        $(element)
-                            .fadeOut()
-                            .queue(function(){
-                                $(this).css({backgroundImage:'url("'+ image +'")'});
-                                $(this).dequeue();
-                                $(this).fadeIn('slow');
-                                $(this).dequeue(); });
-                    }
+            $.fn.cycle.defaults.speed   = 900;
+            $.fn.cycle.defaults.timeout = 6000;
+
+            $(function() {
+                // run the code in the markup!
+                $('#demos pre code').each(function() {
+                    eval($(this).text());
                 });
             });
-
         </script>
+
         <style type="text/css">
+        .pics {
+            height:280px;
+            margin:0;
+            overflow:hidden;
+            padding:0;
+            width:280px;
+        }
         </style>
     </head>
     <body id="body">
         <h2>jquery.cycle.js</h2>
-        <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
-        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <div class="copyright">Copyright (c) 2007-2008 M. Alsup (<a href="http://malsup.com/" target="_blank">malsup.com</a>)</div>
+        <div class="license">
+            Dual licensed under the MIT and GPL licenses<br>
+            <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a>
+            <br>
+            <a href="http://www.opensource.org/licenses/gpl-license.php" target="_blank">http://www.opensource.org/licenses/gpl-license.php</a>
+        </div>
+        <a class="related-links documentation" href="http://malsup.com/jquery/cycle/">Documentation</a>
+        <p>
+            The jQuery Cycle Plugin is a lightweight slideshow plugin.  Its implementation is based on the <a class="external" href="http://medienfreunde.com/lab/innerfade/">InnerFade Plugin</a> by Torsten Baldes, the <a class="external" href="http://www.matto1990.com/web-design/jquery-plugins/simple-jquery-slideshow/">Slideshow Plugin</a> by Matt Oakes, and the <a class="external" href="http://www.benjaminsterling.com/experiments/jqShuffle/">jqShuffle Plugin</a> by Benjamin Sterling. It supports pause-on-hover, auto-stop, auto-fit, before/after callbacks, click triggers and many transition effects. It also supports, but does not require, the <a class="external" href="http://jqueryjs.googlecode.com/svn/trunk/plugins/metadata/jquery.metadata.js">Metadata Plugin</a> and the <a class="external" href="http://gsgd.co.uk/sandbox/jquery.easing.php">Easing Plugin</a>.
+        </p>
         <h3>Basic usage</h3>
-        <pre>$(document).ready(function(){
-    $('#demo-1').cycle([
-        'data/cisoun-tux-kenny-2198.png',
-        'data/mitch91-rayon-tux-2579.png',
-        'data/sosoe222-smart-tux-3440.png'
-   ], 3000);
-});</pre>
-        <h3>Demo</h3>
-        <div class="demo">
-            <p id="demo-1" style="width:256px;height:256px;"></p>
+        <p>
+            The plugin provides a method called cycle which is invoked on a container element. Each child element of the container becomes a "slide". Options control how and when the slides are transitioned.
+        </p>
+<div id="demos">
+    <table cellspacing="20"><tbody><tr><td>
+        <h2>shuffle</h2>
+        <div style="overflow: visible; position: relative;" id="shuffle" class="pics">
+
+            <img style="position: absolute; top: 0px; left: 0px; display: none; z-index: 2; opacity: 1;" src="data/cisoun-tux-kenny-2198.png" width="256" height="256">
+            <img style="position: absolute; top: 0px; left: 0px; display: none; z-index: 1;" src="data/mitch91-rayon-tux-2579.png" width="256" height="256">
+            <img style="position: absolute; top: 0px; left: 0px; display: block; z-index: 3;" src="data/sosoe222-smart-tux-3440.png" width="256" height="256">
         </div>
-        <h3>Overwrite defaults</h3>
-        <pre>$(document).ready(function(){
-    
-    $('#demo-2').cycle([
-        'data/cisoun-tux-kenny-2198.png',
-        'data/mitch91-rayon-tux-2579.png',
-        'data/sosoe222-smart-tux-3440.png'
-    ], {
-        interval: 10000, // default is 5000
-        onBefore: function(element, image) { // default is false
-            $(element).next().next().append($('<li>Loading: '+ image + '</li>'));
-        },
-        onAfter: function(element, image) { // default is false
-            $(element).next().html('<b>Loaded: '+ image +'</b>');
-        },
-        callback: function(element, image){ // default is generic image rotation script
-            if ($.browser.mozilla) window.scrollTo(window.pageXOffset, window.pageYOffset); // scrollfix
-            $(element)
-                .fadeOut()
-                .queue(function(){
-                    $(this).css({backgroundImage:'url("'+ image +'")'});
-                    $(this).dequeue();
-                    $(this).fadeIn('slow');
-                    $(this).dequeue(); });
-        }
-    });
-});</pre>
-        <h3>Demo</h3>
-        <div class="demo">
-            <p id="demo-2" style="width:256px;height:256px;"></p>
-            <p id="demo-2-text"></p>
-            <ul id="demo-2-log"></ul>
+        <pre><code class="mix"><span class="jquery">$</span>(<span class="string">'#shuffle'</span>).cycle({&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;fx:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'shuffle'</span>,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;easing:&nbsp;<span class="string">'backout'</span>,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;delay:&nbsp;&nbsp;-<span class="numbers">4000</span>&nbsp;<br>});</code></pre>
+
+        </td><td>
+        <h2>zoom</h2>
+        <div style="position: relative;" id="zoom" class="pics">
+            <img style="position: absolute; top: 100px; left: 100px; display: none; z-index: 2; opacity: 1; width: 0px; height: 0px;" src="data/cisoun-tux-kenny-2198.png" width="256" height="256">
+            <img style="position: absolute; top: 0px; left: 0px; display: block; z-index: 1; width: 200px; height: 200px;" src="data/mitch91-rayon-tux-2579.png" width="256" height="256">
+            <img style="position: absolute; top: 100px; left: 100px; display: none; z-index: 2; width: 0px; height: 0px;" src="data/sosoe222-smart-tux-3440.png" width="256" height="256">
         </div>
+        <pre><code class="mix"><span class="jquery">$</span>(<span class="string">'#zoom'</span>).cycle({&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;fx:&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'zoom'</span>,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;delay:&nbsp;-<span class="numbers">2000</span>&nbsp;<br>});</code></pre>
+
+        </td><td>
+        <h2>fade</h2>
+        <div style="position: relative;" id="fade" class="pics">
+            <img style="position: absolute; top: 0pt; left: 0pt; display: none; z-index: 3; opacity: 0;" src="data/cisoun-tux-kenny-2198.png" width="256" height="256">
+            <img style="position: absolute; top: 0pt; left: 0pt; display: block; z-index: 2; opacity: 1;" src="data/mitch91-rayon-tux-2579.png" width="256" height="256">
+            <img style="position: absolute; top: 0pt; left: 0pt; display: none; z-index: 1; opacity: 0;" src="data/sosoe222-smart-tux-3440.png" width="256" height="256">
+        </div>
+        <pre><code class="mix"><span class="jquery">$</span>(<span class="string">'#fade'</span>).cycle();</code></pre>
+
+    </td></tr>
+    <tr><td>
+        <h2>turnDown</h2>
+        <div style="position: relative;" id="slide" class="pics">
+            <img style="position: absolute; top: 200px; left: 0pt; display: none; z-index: 3; opacity: 1; height: 0px;" src="data/cisoun-tux-kenny-2198.png" width="256" height="256">
+            <img style="overflow: hidden; position: absolute; top: 182.889px; left: 0pt; display: block; z-index: 2; height: 16.8889px;" src="data/mitch91-rayon-tux-2579.png" width="256" height="256">
+            <img style="overflow: hidden; position: absolute; top: 0pt; left: 0pt; display: block; z-index: 1; height: 182px;" src="data/sosoe222-smart-tux-3440.png" width="256" height="256">
+        </div>
+
+        <pre><code class="mix"><span class="jquery">$</span>(<span class="string">'#slide'</span>).cycle({&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;fx:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'turnDown'</span>,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;delay:&nbsp;&nbsp;&nbsp;-<span class="numbers">4000</span>&nbsp;<br>});</code></pre>
+    </td><td>
+        <h2>curtainX</h2>
+
+        <div style="position: relative;" id="up" class="pics">
+            <img style="position: absolute; top: 0pt; left: 100px; display: none; z-index: 1; opacity: 1; width: 0px;" src="data/cisoun-tux-kenny-2198.png" width="256" height="256">
+            <img style="position: absolute; top: 0pt; left: 0px; display: block; z-index: 1; width: 200px;" src="data/mitch91-rayon-tux-2579.png" width="256" height="256">
+            <img style="position: absolute; top: 0pt; left: 100px; display: none; z-index: 1; width: 0px;" src="data/sosoe222-smart-tux-3440.png" width="256" height="256">
+        </div>
+        <pre><code class="mix"><span class="jquery">$</span>(<span class="string">'#up'</span>).cycle({&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;fx:&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'curtainX'</span>,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;sync:&nbsp;&nbsp;<span class="keywords">false</span>,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;delay:&nbsp;-<span class="numbers">2000</span>&nbsp;<br>&nbsp;});</code></pre>
+
+    </td><td>
+        <h2>scrollRight (click)</h2>
+        <div style="overflow: hidden; position: relative;" id="right" class="pics">
+            <img style="position: absolute; top: 0pt; left: 0pt; display: block; z-index: 3; opacity: 1;" src="data/cisoun-tux-kenny-2198.png" width="256" height="256">
+            <img style="position: absolute; top: 0pt; left: 0pt; display: none; z-index: 2;" src="data/mitch91-rayon-tux-2579.png" width="256" height="256">
+            <img style="position: absolute; top: 0pt; left: 0pt; display: none; z-index: 1;" src="data/sosoe222-smart-tux-3440.png" width="256" height="256">
+        </div>
+        <pre><code class="mix"><span class="jquery">$</span>(<span class="string">'#right'</span>).cycle({&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;fx:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'scrollRight'</span>,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;click:&nbsp;&nbsp;&nbsp;<span class="string">'#right'</span>,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;timeout:&nbsp;&nbsp;<span class="numbers">0</span>,&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;easing:&nbsp;&nbsp;<span class="string">'backinout'</span>&nbsp;<br>});</code></pre>
+
+    </td></tr></tbody></table>
+</div>
     </body>
 </html>
 
