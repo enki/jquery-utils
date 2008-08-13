@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="Stylesheet" media="screen" href="data/styles.css" />
+   <link rel="Stylesheet" media="screen" href="data/img.selection.css" />
+   <script type="text/javascript" src="data/jquery.min.js"></script>
+   <script type="text/javascript" src="data/ui.js"></script>
+   <script type="text/javascript" src="../src/ui.window.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        var tests = ['target', 'name', 'title', 'width', 'height', 'top', 'left',
+                     'directories','location','resizable','menubar','toolbar','scrollbars','status',
+                     'fullscreen', 'center'];
+
+        $('input#test-open').click(function(){
+            var options = {};
+            $.each(tests, function(i, test){
+                var val = $('#test-%s'.replace('%s', test)).val();
+                if (val == 'false') { val = false; }
+                if (val == 'true')  { val = true;  }
+                options[test] = val;
+            });
+            $(document).window(options);
+        });
+        $('p#test-content').click(function(){
+            $(this).window();
+        });
+    });
+    </script>
+   <style>
+    </style>
+    </head>
+    <body id="body">
+        <h2>ui.window.js</h2>
+        <p>
+            Interfacing window.open jQuery style.
+        </p>
+        <h3>Usage</h3>
+        <code><pre>$('input#test-open').click(function(){
+    $(document).window();
+});</pre></code>
+        <h3>Test bench</h3>
+        <table cellpadding="0" cellspacing="0" summary="">
+            <tr>
+                <td>
+                    <table cellpadding="0" cellspacing="0" summary="" class="list">
+                        <thead>
+                            <tr><th>Options</th><th>Default</th><th>&nbsp;</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr><th>target</th>      <td></td>      <td><input id="test-target" type="text" value="" style="width:80px;" /></td></tr>
+                        <tr><th>name</th>        <td>false</td> <td><input id="test-name" type="text" value="testWindow" style="width:80px;" /></td></tr>
+                        <tr><th>title</th>       <td>false</td> <td><input id="test-title" type="text" value="Test window" style="width:80px;" /></td></tr>
+                        <tr><th>width</th>       <td>auto</td>  <td><input id="test-width" type="text" value="300" style="width:40px;" /></td></tr>
+                        <tr><th>height</th>      <td>auto</td>  <td><input id="test-height" type="text" value="300" style="width:40px;" /></td></tr>
+                        <tr><th>top</th>         <td>auto</td>  <td><input id="test-top" type="text" value="100" style="width:40px;" /></td></tr>
+                        <tr><th>left</th>        <td>auto</td>  <td><input id="test-left" type="text" value="100" style="width:40px;" /></td></tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <table cellpadding="0" cellspacing="0" summary="" class="list">
+                        <thead>
+                            <tr><th>Options</th><th>Default</th><th>&nbsp;</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr><th>directories</th> <td>false</td> <td><select id="test-directories"><option value="true">yes</option><option value="false" selected>no</option></select></td></tr>
+                        <tr><th>location</th>    <td>false</td> <td><select id="test-location"><option value="true">yes</option><option value="false" selected>no</option></select></td></tr>
+                        <tr><th>resizable</th>   <td>false</td> <td><select id="test-resizable"><option value="true">yes</option><option value="false" selected>no</option></select></td></tr>
+                        <tr><th>menubar</th>     <td>false</td> <td><select id="test-menubar"><option value="true">yes</option><option value="false" selected>no</option></select></td></tr>
+                        <tr><th>toolbar</th>     <td>false</td> <td><select id="test-toolbar"><option value="true">yes</option><option value="false" selected>no</option></select></td></tr>
+                        <tr><th>scrollbars</th>  <td>false</td> <td><select id="test-scrollbars"><option value="true">yes</option><option value="false" selected>no</option></select></td></tr>
+                        <tr><th>status</th>      <td>false</td> <td><select id="test-status"><option value="true">yes</option><option value="false" selected>no</option></select></td></tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <table cellpadding="0" cellspacing="0" summary="" class="list">
+                        <thead>
+                            <tr><th>Plugins</th><th>Default</th><th>&nbsp;</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><th>fullstreen</th>  <td>false</td> <td><select id="test-fullscreen"><option value="true">yes</option><option value="false" selected>no</option></select></td></tr>
+                            <tr><th>center</th>      <td>false</td> <td><select id="test-center"><option value="true">yes</option><option value="false" selected>no</option></select></td></tr>
+                        </tbody>
+                        <tfoot>
+                        <tr><th><input id="test-open" type="button" value="Open window" /></th></tr>
+                        </tfoot>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <h3>Predefined content</h3>
+        <p id="test-content">
+            Click here and a window will popup and this paragraph will be inserted in it.
+        </p>
+        <code><pre>$('p#test-content').click(function(){
+    $(this).window();
+});</pre></code>
+    </body>
+</html>

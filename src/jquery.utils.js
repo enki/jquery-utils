@@ -10,9 +10,8 @@
 */
 
 (function($){
-
-    // I use the ui widget api for controls
-    $.ctrl = { plugin: $.ui.plugin };
+    // I use the ui widget api for controls and images 
+    $.ctrl  = { widget: $.ui.widget, plugins: $.ui.plugins };
 
 	$.extend({ 
 		isRegExp: function(o) {

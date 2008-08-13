@@ -1,0 +1,50 @@
+.ui-imgSelection {
+    cursor:crosshair;
+}
+.ui-imgSelection-area {
+    border:1px solid #fff;
+    cursor:pointer;
+}
+.ui-imgSelection .ui-imgSelection-focused {
+    z-index:600;
+    opacity:1.0;
+    background:transparent;
+    border:2px solid #55FF00;
+}
+.ui-imgSelection-area.hover .ui-imgSelection-focused {
+    display:block!important;
+    border:2px solid #fff;
+    cursor:pointer;
+    z-index:500;
+    background:#fff;
+    opacity:0.15;
+}
+.ui-imgSelection.hover .ui-imgSelection-area.hover {
+    z-index:700;
+}
+.ui-imgSelection .ui-imgSelection-area.ui-draggable {
+    cursor:move;
+}
+.ui-imgSelection-area .ui-resizable-handle,
+.ui-imgSelection-focused .ui-resizable-handle {
+    display:none!important;
+}
+.ui-imgSelection.hover .ui-imgSelection-area .ui-resizable-handle,
+.ui-imgSelection.hover .ui-imgSelection-focused .ui-resizable-handle {
+    display:block!important;
+}
+.ui-imgSelection-comments,
+.ui-imgSelection-infos {
+    color:#666;
+    font-size:0.7em;
+    padding:4px 0;
+    background:#eee;
+    border-width:0 1px 1px 1px;
+    text-align:center;
+}
+.ui-imgSelection-overlay-active {
+    background:#fff!important;
+    opacity:0.15!important;
+}
+.ui-imgSelection-focused {
+}

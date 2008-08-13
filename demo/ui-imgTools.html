@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+   <link rel="Stylesheet" media="screen" href="data/styles.css" />
+   <link rel="Stylesheet" media="screen" href="themes/default/jquery-ui-themeroller.css" />
+   <!-- link rel="Stylesheet" media="screen" href="data/ui.imgSelection.css" / -->
+   <script type="text/javascript" src="data/jquery.min.js"></script>
+   <script type="text/javascript" src="data/ui.js"></script>
+   <script type="text/javascript" src="../src/ui.window.js"></script>
+   <script type="text/javascript" src="../src/ui.imgSelection.js"></script>
+   <script type="text/javascript" src="../src/ui.imgTools.js"></script>
+   <script type="text/javascript">
+       $(document).ready(function(){
+            $('#demo-1').imgTools();
+       });
+   </script>
+   <!--style>
+
+    .ui-imgTools-bar {
+        position:fixed;
+        top:0;
+        left:0;
+        right:0;
+        background-color:ThreeDFace;
+        border-bottom:1px solid ThreeDShadow;
+        color:ButtonText;
+    }
+
+    /* menu */
+    .ui-imgTools-menu {
+        list-style:none;
+        padding:0!important;
+        margin:0;
+    }
+    .ui-imgTools-menu li {
+        float:left;
+        list-style:none!important;
+        margin:1px 1px 0 1px!important;
+    }
+    .ui-imgTools-menu li a {
+        font-size:.75em;
+        display:block;
+        background:ThreeDFace;
+        padding:3px 8px;
+        margin:3px 0 3px 6px;
+        text-decoration:none;
+        border:1px solid ThreeDFace;
+        -moz-border-radius:3px;
+    }
+    .ui-imgTools-menu li a:hover {
+        background:InfoBackground;
+        border:1px solid ThreeDShadow;
+        -moz-border-radius:5px;
+    }
+
+
+
+    .ui-imgTools {
+        display:inline;
+    }
+    .ui-imgTools-active {
+    }
+    .ui-imgTools-tools {
+        position:absolute;
+        background:#eee;
+        margin-top:-44px;
+        border:1px solid #ccc;
+        -moz-border-radius-topLeft:3px;
+        -moz-border-radius-topRight:3px;
+    }
+    .ui-imgTools.hover .ui-imgTools-tools {
+    }
+
+
+    /* plugins */
+    .ui-imgTools-plugin {
+        margin:10px;
+    }
+    .ui-imgTools-plugin .ui-slider {
+        float:left;
+    }
+    .ui-imgTools-plugin input {
+        font-size:.7em;
+        margin-left:3px;
+    }
+
+
+    /* imgSelection */
+    .ui-imgSelection {
+        cursor:crosshair;
+    }
+    .ui-imgSelection-area {
+        border:1px solid #fff;
+        cursor:pointer;
+    }
+    .ui-imgSelection .ui-imgSelection-focused {
+        z-index:600;
+        opacity:1.0;
+        background:transparent;
+        border:2px solid #55FF00;
+    }
+    .ui-imgTools-active .ui-imgSelection-focused,
+    .ui-imgSelection-area.hover .ui-imgSelection-focused {
+        display:block!important;
+        border:2px solid #fff;
+        cursor:pointer;
+        z-index:500;
+        background:#fff;
+        opacity:0.15;
+    }
+    .ui-imgSelection.hover .ui-imgSelection-area.hover {
+        z-index:700;
+    }
+    .ui-imgSelection .ui-imgSelection-area.ui-draggable {
+        cursor:move;
+    }
+    .ui-imgSelection.hover .ui-imgSelection-area .ui-resizable-handle,
+    .ui-imgSelection.hover .ui-imgSelection-focused .ui-resizable-handle {
+        display:block!important;
+    }
+    .ui-imgSelection-comments,
+    .ui-imgSelection-infos {
+        color:#666;
+        font-size:0.7em;
+        padding:4px 0;
+        background:#eee;
+        border-width:0 1px 1px 1px;
+        text-align:center;
+    }
+    .ui-imgSelection-overlay-active {
+        background:#fff!important;
+        opacity:0.15!important;
+    }
+
+    </style-->
+    </head>
+    <body id="body">
+        <h2>ui.imgTools.js</h2>
+        <a href="http://www.banksy.co.uk" class="related-links documentation">Artworks are from my favorite street artist, <em>Banksy</em>.</a>
+        <h3>Basic</h3>
+        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Praesent leo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In hac habitasse platea dictumst. Cras purus tellus, imperdiet eget, vehicula eget, ullamcorper eget, ligula. Phasellus lacinia. Nunc placerat, erat at dignissim fermentum, velit nibh ornare augue, non aliquet orci leo vel purus. Praesent mattis risus ac metus. Mauris eu libero. Morbi porta. Mauris molestie odio ut mi. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse id tortor sed nunc rhoncus egestas. Vestibulum tempor, pede nec mattis fringilla, erat nisl vehicula elit, porta pretium urna ante ac nulla. Vestibulum lacinia, erat quis dictum mollis, dolor tellus vehicula dolor, ut pretium dui mauris sed ligula. Vivamus odio lacus, pellentesque vitae, lacinia sed, venenatis quis, orci. Donec feugiat felis quis quam.</p>
+        <p>
+            <img id="demo-1" src="data/ImgTools.php?img=banksy-04.jpg" style="float:left;" />
+        </p>
+        <p>Praesent nec ligula. Donec sapien. Fusce sollicitudin. Nulla facilisi. Integer laoreet aliquet lorem. Suspendisse vitae enim ac arcu iaculis aliquam. Aenean tellus augue, faucibus ut, pretium tincidunt, fermentum vel, elit. Mauris accumsan, purus ac venenatis dapibus, neque nibh elementum massa, a tempor sem diam vitae sapien. In ultrices eros tincidunt ligula. Curabitur tortor metus, vulputate nec, congue ut, sodales sed, velit. Mauris dictum interdum tortor. In mauris leo, viverra ac, fermentum non, porttitor nec, risus. Vivamus aliquet posuere felis. Mauris malesuada enim nec justo. Curabitur et odio nec neque pellentesque dignissim. Duis nec enim vel nulla auctor malesuada. Vivamus dictum ipsum non nunc. Vestibulum interdum egestas sapien. Ut et diam.</p>
+        <p>Nunc massa. Integer sed diam in mauris tincidunt tincidunt. Vivamus non nisi vitae dolor laoreet consectetuer. Aliquam erat volutpat. Vivamus bibendum. Aliquam eget justo. Vestibulum varius pellentesque neque. Nunc venenatis nisi at lacus porttitor rhoncus. Fusce ac neque sit amet ante tincidunt varius. Praesent eu leo vel felis vestibulum aliquet. Curabitur tempor, justo a adipiscing facilisis, odio velit eleifend est, sed pretium nibh purus a odio. Suspendisse feugiat. In hac habitasse platea dictumst. Aenean odio orci, pulvinar in, luctus a, tempus quis, tellus. Cras tincidunt justo a est. Aliquam condimentum viverra justo. Suspendisse faucibus mollis urna. Cras congue, lorem ac luctus consequat, turpis lacus mollis dolor, vel ultrices neque purus ut elit. Aenean et mi. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+        <p>Proin placerat, tortor nec consectetuer tincidunt, odio turpis blandit tortor, id tristique purus diam eu enim. Integer malesuada auctor ipsum. Nunc ante. Sed iaculis egestas libero. Aliquam id enim. Pellentesque at nisl sit amet mi placerat tristique. Morbi congue dictum sem. Donec tortor. Nullam iaculis. Etiam tincidunt libero ut ipsum lobortis lobortis. Nulla sed nulla. Praesent vehicula, tortor non interdum placerat, ipsum eros laoreet velit, vitae porttitor urna leo cursus eros. Phasellus velit. Aliquam a turpis a dui bibendum ullamcorper. Quisque eu tellus. Nunc id mauris. Nulla aliquam, turpis a laoreet dignissim, velit nisl pellentesque elit, quis consequat est pede a nisi. Vestibulum libero augue, feugiat sed, cursus eu, consectetuer eget, elit. Nam mauris. Aliquam metus diam, malesuada vel, mattis id, tincidunt quis, nulla.</p>
+        <p>Donec vestibulum orci quis ipsum. Nam iaculis tempus odio. Nulla felis elit, vulputate id, ullamcorper gravida, scelerisque sed, massa. Suspendisse interdum leo pretium velit. Quisque fermentum sapien viverra erat rutrum semper. Vestibulum ac lacus. Duis molestie. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec vulputate. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae</p>
+        <h3>Code</h3>
+        <code><pre></pre></code>
+        <h3>Options</h3>
+        <table class="list" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Options</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>url</th>
+                    <td>data/ImgTools.php</td>
+                    <td>Image processing backend</td>
+                </tr>
+                <tr>
+                    <th>scale</th>
+                    <td>true</td>
+                    <td>Image scale plugin</td>
+                </tr>
+                <tr>
+                    <th>crop</th>
+                    <td>true</td>
+                    <td>Image crop plugin</td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
