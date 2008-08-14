@@ -634,7 +634,14 @@ Generic ThemeRoller Classes
 .ui-imgTools-buttonpane .separator {
     background:#666;
 }
-
+.ui-imgTools-msg {
+    float:right;
+    margin:0 30px 0 0;
+    padding:4px 10px 4px 0px;
+    color:#666;
+    font-weight:bold;
+    border-right:1px solid #ccc;
+}
 .ui-imgTools-buttonpane {
     text-align:left;
 }
