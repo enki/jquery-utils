@@ -26,6 +26,85 @@
  * - crop: scale.save -> crop -> crop.save = wrong offset
  * */
 
+(function($){
+    $._i18n = { trans: {}, default:  'en', language: 'en' };
+    $.i18n = function() {
+        var getTrans = function(ns, str) {
+            var trans = false;
+            // check if string exists in translation
+            if ($._i18n.trans[$._i18n.language] 
+                && $._i18n.trans[$._i18n.language][ns]
+                && $._i18n.trans[$._i18n.language][ns][str]) {
+                trans = $._i18n.trans[$._i18n.language][ns][str];
+            }
+            // or exists in default
+            else if ($._i18n.trans[$._i18n.default] 
+                     && $._i18n.trans[$._i18n.default][ns]
+                     && $._i18n.trans[$._i18n.default][ns][str]) {
+                trans = $._i18n.trans[$._i18n.default][ns][str];
+            }
+            // return trans or original string
+            return trans || str;
+        };
+        // Set language
+        if (arguments.length < 2 && arguments[0].length == 2) {
+            return $._i18n.language = arguments[0];
+        }
+        else {
+            // get translation
+            if (typeof(arguments[1]) == 'string') {
+                var trans = getTrans(arguments[0], arguments[1]);
+                // has variables for string formating
+                if (arguments[2] && typeof(arguments[2]) == 'object') {
+                    return $.format(trans, arguments[2]);
+                }
+                else {
+                    return trans;
+                }
+            }
+            // set translation
+            else {
+                var tmp  = arguments[0].split('.');
+                var lang = tmp[0];
+                var ns   = tmp[1] || 'jQuery';
+                if (!$._i18n.trans[lang]) {
+                    $._i18n.trans[lang] = {};
+                    $._i18n.trans[lang][ns] = arguments[1];
+                }
+                else {
+                    $.extend($._i18n.trans[lang][ns], arguments[1]);
+                }
+            }
+        }
+    };
+})(jQuery);
+
+// Translations 
+/* English (UTF-8) initialisation for the jQuery UI imgTools plugin. *///{{{
+/* Written by Maxime Haineault (haineault@gmail.com). */
+$.i18n('fr.imgTools', {
+    'Ok':     'Appliquer',
+    'Cancel': 'Annuler',
+    'Scale':  'Redimensioner',
+    'Crop':   'Cadrer',
+    'Text':   'Texte',
+
+    'T: {x:d}, L: {y:d} - H: {h:d}, W: {w:d}':
+    'T: {x:d}, L: {y:d} - H: {h:d}, W: {w:d}',
+
+    'Select a portion of the image':
+    'Selectionner une portion de l\'image',
+
+    'Close toolbar':
+    'Fermer la barre d\'outils'
+});
+(function($){
+
+function _(str, args) {
+    return $.i18n('imgTools', str, args);
+}
+
+// {{{
 $.widget('ui.imgTools', {
     plugins: {},
 	init: function(){
@@ -168,7 +247,7 @@ $.widget('ui.imgTools', {
         var opt = $.extend({
             hide:  true,
             menu:  true,
-            label: options && options.label || ns
+            label: options && options.label || _(ns)
         }, options);
         self.interface[ns] = {
             wrapper: $('<div class="ui-imgTools-%ns ui-imgTools-plugin" />'.replace('%ns', ns))
@@ -209,7 +288,7 @@ $.widget('ui.imgTools', {
     },
 
     addSeparator: function(plugin) {
-        $('<span class="ui-imgTools-separator">').text('sep')
+        $('<span class="ui-imgTools-separator">')
             .appendTo(plugin && this.interface[ns].wrapper || this.interface.menu);
     },
 
@@ -239,15 +318,16 @@ $.widget('ui.imgTools', {
             }));
     },
 });
-
-$.extend($.ui.imgTools, {
+// }}}
+$.extend($.ui.imgTools, {//{{{
     getter:   '',
-    regional: [],
+    language: '',
     defaults: {
-        url:       'data/ImgTools.php',
-        history:   true,
-        crop:      true,
-        scale:     true,
+        url:     'data/ImgTools.php',
+        history: true,
+        crop:    true,
+        scale:   true,
+        text:    true,
         plugins: {
             crop: {
                 areaInfo: true
@@ -255,13 +335,10 @@ $.extend($.ui.imgTools, {
             scale: {}
         }
     }
-});
+});//}}}
 
-
-/*
- * imgSelection plugins
- */
-$.ui.plugin.add('imgTools', 'crop', {
+// Plugins
+$.ui.plugin.add('imgTools', 'crop', {//{{{
     init: function(e, ui){
         var self = $(ui.element).data('imgTools');
         self.interface.crop = {
@@ -269,9 +346,9 @@ $.ui.plugin.add('imgTools', 'crop', {
         };
         $(self.interface.bar).append(self.interface.crop.wrapper);
 
-        self.addPlugin('crop', {label: 'Crop', desc: 'Select a portion of the image'});
-        self.addButton('crop', {name: 'save',   label: 'Save',   callback: 'save'});
-        self.addButton('crop', {name: 'cancel', label: 'Cancel', callback: 'deactivate'});
+        self.addPlugin('crop', {label: _('Crop'),   desc: _('Select a portion of the image')});
+        self.addButton('crop', {label: _('Save'),   name: 'save',   callback: 'save'});
+        self.addButton('crop', {label: _('Cancel'), name: 'cancel', callback: 'deactivate'});
     },
     activate: function(e, ui) {
         var self = $(ui.element).data('imgTools');
@@ -285,10 +362,10 @@ $.ui.plugin.add('imgTools', 'crop', {
         };
         var update = function(){
             var c = $($(self.element).imgSelection('getSelections'))[0];
-            self.message('X %x, Y %y, H %h, W %w'
-                .replace('%x', c.x >= 2 && c.x - 2 || 0)
-                .replace('%y', c.y >= 2 && c.y - 2 || 0)
-                .replace('%h', c.h).replace('%w', c.w));
+            self.message(_('T: {x:d}, L: {y:d} - H: {h:d}, W: {w:d}', {
+                x: c.x >= 2 && c.x - 2 || 0,
+                y: c.y >= 2 && c.y - 2 || 0,
+                h: c.h, w: c.w }));
         };
         $(self.interface.menu).hide('fast');
         $(self.interface.bar).slideDown('slow'); 
@@ -326,12 +403,11 @@ $.ui.plugin.add('imgTools', 'crop', {
         self.actions.set({label: 'Crop', plugin: 'crop', val: v}, true);
         self.callPlugin('crop', 'deactivate', [e, ui, true]);
     }
-});
-
-$.ui.plugin.add('imgTools', 'scale', {
+});//}}}
+$.ui.plugin.add('imgTools', 'scale', {//{{{
     init: function(e, ui){
         var self = $(ui.element).data('imgTools');
-        self.addPlugin('scale', {label: 'Scale', desc: 'Change the image size proportionally'});
+        self.addPlugin('scale', {label: _('Scale'), desc: 'Change the image size proportionally'});
         self.addButton('scale', {name: 'save',   label: 'Ok',     callback: 'save'});
         self.addButton('scale', {name: 'cancel', label: 'Cancel', callback: 'deactivate'});
         self.addWidget('scale', {name:  'slider', 
@@ -385,8 +461,8 @@ $.ui.plugin.add('imgTools', 'scale', {
         $(self.element).attr('src', self.options.url + ((getStr && '?'+getStr+'&img=' || '?img=') + self.getSearchHash().img));
         self.callPlugin('scale', 'deactivate', [e, ui, true]);
     }
-});
-$.ui.plugin.add('imgTools', 'history', {
+});//}}}
+$.ui.plugin.add('imgTools', 'history', {//{{{
     init: function(e, ui){
         var self = $(ui.element).data('imgTools');
         self.interface.history = {
@@ -403,24 +479,37 @@ $.ui.plugin.add('imgTools', 'history', {
                 .appendTo(self.interface.history.wrapper);
         });
     }
-});
+});//}}}
 
-$.ui.imgTools.regional[''] = {
-    crop:   'crop',
-    scale:  'scale',
-    save:   'apply',
-    cancel: 'cancel'
-};
+$.ui.plugin.add('imgTools', 'text', {//{{{
+    init: function(e, ui){
+        var self = $(ui.element).data('imgTools');
+        self.addPlugin('text', {label: _('Text'), desc: 'Add text cation'});
+        self.addButton('text', {name:  'save',   label: 'Ok',     callback: 'save'});
+        self.addButton('text', {name:  'cancel', label: 'Cancel', callback: 'deactivate'});
+        self.addSeparator();
+        self.addWidget('text', {name:  'input', 
+            element:  $('<input type="text" value="Enter text">')
+        });
+        self.addWidget('text', {name:  'slider', 
+            element: $('<div class="ui-slider"><div class="ui-slider-handle" /></div>')
+                .slider()
+                .bind('slide', function(e, ui){ 
+                    $(self.element).css({
+                        width:  parseInt(self.state.actual.width * ui.value / 100, 10), 
+                        height: 'auto'
+                    });
+                    self.message('%d%'.replace('%d',ui.value));
+                })});
+    },
+});//}}}
 
-/* English (UTF-8) initialisation for the jQuery UI imgTools plugin. */
-/* Written by Maxime Haineault (haineault@gmail.com). */
-jQuery(function($){
-	$.ui.imgTools.regional['fr'] = {
-            crop:   'cadrer',
-            scale:  'redimenssioner',
-            save:   'appliquer',
-            cancel: 'annuler'
-    };
-	//$.ui.imgTools.setDefaults($.ui.imgTools.regional['fr']);
-});
+//_('Ze image is %x pixels by %y pixels', {x:10, y:20});
+
+
+})(jQuery);
+
+
+
+
 

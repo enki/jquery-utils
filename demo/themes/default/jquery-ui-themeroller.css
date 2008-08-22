@@ -611,6 +611,17 @@ Generic ThemeRoller Classes
 	border: 1px solid #999999;
     -moz-border-radius:5px;
 }
+.ui-imgTools-buttonpane input {
+    background:#f4f4f4;
+    border:1px solid #D3D3D3;
+    color:#555555;
+    cursor:pointer;
+    font-size:1.2em;
+    line-height:1.4em;
+    margin:-0.1em 0 0.5em 0.5em;
+    padding:0.2em 0.6em 0.3em;
+    float:left;
+}
 .ui-imgTools-buttonpane button:hover {
     background:#dee url(images/ddeeee_40x100_textures_02_glass.png) repeat-x scroll 0 50%;
     border:1px solid #999;
@@ -631,8 +642,12 @@ Generic ThemeRoller Classes
     display:block;
     padding:0 0 0 20px;
 }
-.ui-imgTools-buttonpane .separator {
-    background:#666;
+.ui-imgTools-separator {
+   background:#666 none repeat scroll 0 0;
+    border-left:1px solid #ccc;
+    margin:8px;
+    padding:0 0 11px;
+    width:0;
 }
 .ui-imgTools-msg {
     float:right;
@@ -659,6 +674,11 @@ Generic ThemeRoller Classes
 .ui-imgTools-close:hover {
 	background: url(images/454545_11x11_icon_close.gif) 0 0 no-repeat;
 }
+.ui-imgTools-plugin .ui-slider {
+   width:500px;
+   float:left; 
+   margin:0.5em 0 0 1em;
+}
 
 /*imgTools:scale*/
 
@@ -674,15 +694,15 @@ Generic ThemeRoller Classes
 .ui-imgTools-button-save span {
     background:transparent url(images/accept.png) no-repeat scroll 0 50%;
 }
-.ui-imgTools-scale .ui-slider {
-   width:500px;
-   float:left; 
-   margin:0.5em 0 0 1em;
-}
 
 /*imgTools:crop*/
 
 .ui-imgSelection-area {
     border:1px solid #55FF00;
+}
 
+/*imgTools:text*/
+
+.ui-imgTools-button-text span {
+    background:transparent url(images/style.png) no-repeat scroll 0 50%;
 }
