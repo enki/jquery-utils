@@ -20,9 +20,9 @@
 
     var yl2e = {
         onclick: function() {
-            if ($(this).next().hasClass('youtubeLinksToEmbed')) return false;
+            if ($(this).next().hasClass('youtubeLinksToEmbed')) { return false; }
 
-            href    =  youtubeURL + this.href.match(/[a-zA-Z0-9-_]+$/) + '&rel=1'
+            href    =  youtubeURL + this.href.match(/[a-zA-Z0-9-_]+$/) + '&rel=1';
             wrapper = $('<div class="youtubeLinksToEmbed" style="display:none;"><span>Loading...</span><div style="display:none;"></div></div>');
             player  = $('div:first', wrapper);
 
@@ -50,14 +50,14 @@
 
             return false;
         }    
-    }
+    };
 
     $.extend($.fn, {
         youtubeLinksToEmbed: function(options){
             $(this).find('a[href~=youtube.com/watch?v=]')
                 .addClass('youtubeLinksToEmbed')
                 .each(function(){ 
-                    $(this).click(yl2e.onclick) });
+                    $(this).click(yl2e.onclick); });
         }
     });
 })(jQuery);

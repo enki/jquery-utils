@@ -17,12 +17,12 @@ test('Countdown tests', function() {
     equals($('#countdown3').text(), 'Now!', 'Custom now message');
     $('#countdown3').data('countdown').stop();
 
-    $('#countdown4').countdown({msgFormat: '%y', year: '+1' });
-    equals($('#countdown4').text(), '1', 'Functional argument (year)');
+    $('#countdown4').countdown({msgFormat: '%d', year: '+1' });
+    equals($('#countdown4').text(), '364', 'Functional argument (year)');
     $('#countdown4').data('countdown').stop();
 
     $('#countdown5').countdown({msgFormat: '%M', month: '+1' });
-    equals($('#countdown5').text(), '1', 'Functional argument (month)');
+    equals($('#countdown5').text(), '2', 'Functional argument (month)');
     $('#countdown5').data('countdown').stop();
     // $('#countdown-5').countdown({msgFormat: '%d', day: '+1' });
     // equals($('#countdown-5').text(), '1', 'Functional argument (day)');

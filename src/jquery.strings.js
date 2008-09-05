@@ -39,9 +39,12 @@
         //+ Jonas Raoni Soares Silva
         //@ http://jsfromhell.com/string/pad [v1.0]
         __pad: function(str, l, s, t){
-            return s || (s = " "), (l -= str.length) > 0 ? (s = new Array(Math.ceil(l / s.length)
-                + 1).join(s)).substr(0, t = !t ? l : t == 1 ? 0 : Math.ceil(l / 2))
-                + str + s.substr(0, l - t) : str;
+            var p = s || ' ';
+            var o = str;
+            if (l - str.length > 0) {
+                o = new Array(Math.ceil(l / p.length)).join(p).substr(0, t = !t ? l : t == 1 ? 0 : Math.ceil(l / 2)) + str + p.substr(0, l - t);
+            }
+            return o;
         },
         __getInput: function(arg, args) {
              var key = arg.getKey();
@@ -64,9 +67,9 @@
                 break;
                 case 'array': 
                     key = parseInt(key, 10);
-                    if (arg.getFormat().match(/\.\*/) && typeof(args[key+1]) != 'undefined') return args[key+1];
-                    else if (typeof(args[key]) != 'undefined') return args[key];
-                    else return key;
+                    if (arg.getFormat().match(/\.\*/) && typeof args[key+1] != 'undefined') { return args[key+1]; }
+                    else if (typeof args[key] != 'undefined') { return args[key]; }
+                    else { return key; }
                 break;
             }
             return '{'+key+'}';
@@ -80,8 +83,8 @@
         d: function(input, arg){
             var o = parseInt(input, 10); // enforce base 10
             var p = arg.getPaddingLength();
-            if (p) return this.__pad(o.toString(), p, arg.getPaddingString(), 0);
-            else return o;
+            if (p) { return this.__pad(o.toString(), p, arg.getPaddingString(), 0); }
+            else   { return o; }
         },
         // Signed integer decimal.
         i: function(input, args){ 
@@ -90,7 +93,7 @@
         // Unsigned octal
         o: function(input, arg){ 
             var o = input.toString(8);
-            if (arg.isAlternate()) o = this.__pad(o, o.length+1, '0', 0); 
+            if (arg.isAlternate()) { o = this.__pad(o, o.length+1, '0', 0); }
             return this.__pad(o, arg.getPaddingLength(), arg.getPaddingString(), 0);
         },
         // Unsigned decimal
@@ -101,7 +104,7 @@
         x: function(input, arg){
             var o = parseInt(input, 10).toString(16);
             o = this.__pad(o, arg.getPaddingLength(), arg.getPaddingString(),0);
-            return (arg.isAlternate())? '0x'+o: o;
+            return arg.isAlternate() ? '0x'+o : o;
         },
         // Unsigned hexadecimal (uppercase)
         X: function(input, arg){
@@ -164,36 +167,37 @@
         };
         this.getPrecision = function(){
             var match = this.getFormat().match(/\.(\d+|\*)/g);
-            if (!match) return this.__def_precision;
+            if (!match) { return this.__def_precision; }
             else {
                 match = match[0].slice(1);
-                if (match != '*') return parseInt(match, 10);
+                if (match != '*') { return parseInt(match, 10); }
                 else if(conversion.__getType(this.__args) == 'array') {
                     return this.__args[1] && this.__args[0] || this.__def_precision;
                 }
                 else if(conversion.__getType(this.__args) == 'object') {
                     return this.__args[this.getKey()] && this.__args[this.getKey()][0] || this.__def_precision;
                 }
-                else return this.__def_precision;
+                else { return this.__def_precision; }
             }
         };
         this.getPaddingLength = function(){
+            var match = false;
             if (this.isAlternate()) {
-                var match = this.getString().match(/0?#0?(\d+)/);
-                if (match && match[1]) return parseInt(match[1], 10);
+                match = this.getString().match(/0?#0?(\d+)/);
+                if (match && match[1]) { return parseInt(match[1], 10); }
             }
-            var match = this.getString().match(/(0|\.)(\d+|\*)/g)
+            match = this.getString().match(/(0|\.)(\d+|\*)/g);
             return match && parseInt(match[0].slice(1), 10) || 0;
         };
         this.getPaddingString = function(){
             var o = '';
-            if (this.isAlternate()) o = ' ';
+            if (this.isAlternate()) { o = ' '; }
             // 0 take precedence on alternate format
-            if (this.getFormat().match(/#0|0#|^0|\.\d+/)) o = '0'; 
+            if (this.getFormat().match(/#0|0#|^0|\.\d+/)) { o = '0'; }
             return o;
         };
         this.getFlags = function(){
-            var match = this.getString().match(/^(0|\#|\-|\+|\s)+/);
+            var match = this.getString().matc(/^(0|\#|\-|\+|\s)+/);
             return match && match[0].split('') || [];
         };
         this.isAlternate = function() {
@@ -202,11 +206,10 @@
     };
 
     var arguments2Array = function(args, shift) {
-        var shift = shift || 0;
         var o = [];
-        for (l=args.length, x=shift-1; x<l;x++) o.push(args[x]);
+        for (l=args.length, x=(shift || 0)-1; x<l;x++) { o.push(args[x]); }
         return o;
-    }
+    };
 
     var format = function(str, args) {
         var end    = 0;
@@ -214,15 +217,14 @@
         var match  = false;
         var buffer = [];
         var token  = '';
-        var args   = (typeof(arguments[1]) != 'object')? arguments2Array(arguments, 2): args || [];
         var tmp    = str.split('');
         for(start=0; start < tmp.length; start++) {
             if (tmp[start] == '{' && tmp[start+1] !='{') {
                 end   = str.indexOf('}', start);
                 token = tmp.slice(start+1, end).join('');
-                buffer.push(conversion.__formatToken(token, args));
+                buffer.push(conversion.__formatToken(token, (typeof arguments[1] != 'object')? arguments2Array(arguments, 2): args || []));
             }
-            else if (start > end || buffer.length < 1)  buffer.push(tmp[start]);
+            else if (start > end || buffer.length < 1) { buffer.push(tmp[start]); }
         }
         return (buffer.length > 1)? buffer.join(''): buffer[0];
     };

@@ -74,14 +74,14 @@
         };
         var parse = function(type, val) {
            function calc(str, i) {
-               if (str.slice(0,1) == '+') return i + parseInt(str.match(/\d+/)||0, 10)+1;
-               else return i - parseInt(str.match(/\d+/)||0, 10)+1;
+               if (str.slice(0,1) == '+') return i + parseInt(str.match(/\d+/)||0, 10);
+               else return i - parseInt(str.match(/\d+/)||0, 10);
            }
            if (typeof(val)=='number') return val;
            else {
                switch(type) {
                    case 'year':  return calc(val, (new Date()).getFullYear());
-                   case 'month': return calc(val, (new Date()).getMonth());
+                   case 'month': return calc(val, (new Date()).getMonth()+1);
                    //case 'day':   return calc(val, (new Date()).getDate());
                    //case 'hour':  return calc(val, (new Date()).getHours());
                    //case 'min':   return calc(val, (new Date()).getMinutes());

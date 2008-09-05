@@ -8,35 +8,41 @@ DIST_DIR = ${PREFIX}/dist
 SPEED_DIR = ${PREFIX}/speed
 
 BASE_FILES = ${SRC_DIR}/jquery.utils.js\
-	${SRC_DIR}/jquery.anchorHandler.js\
-	${SRC_DIR}/jquery.cookie.js\
-	${SRC_DIR}/jquery.countdown.js\
+    ${SRC_DIR}/jquery.anchorHandler.js\
+    ${SRC_DIR}/jquery.cookie.js\
+    ${SRC_DIR}/jquery.countdown.js\
     ${SRC_DIR}/jquery.cycle.js\
-    ${SRC_DIR}/jquery.delayedObserver.js\
     ${SRC_DIR}/jquery.flash.js\
-    ${SRC_DIR}/jquery.forms.js\
     ${SRC_DIR}/jquery.ifixpng.js\
     ${SRC_DIR}/jquery.strings.js\
-    ${SRC_DIR}/jquery.valid.js\
     ${SRC_DIR}/jquery.youtubeLinksToEmbed.js\
-	${SRC_DIR}/ui.toaster.js\
-	${SRC_DIR}/ui.awesomebar.js\
-	${SRC_DIR}/ctrl.datetime.js\
-	${SRC_DIR}/ctrl.keynav.js
+    ${SRC_DIR}/ui.toaster.js\
+    ${SRC_DIR}/ctrl.delayedObserver.js\
+ 	${SRC_DIR}/ctrl.masked.js\
+#   ${SRC_DIR}/jquery.valid.js\
+#   ${SRC_DIR}/api.youtube.js\
+#	${SRC_DIR}/ctrl.datetime.js\
+#	${SRC_DIR}/ctrl.keynav.js\
+#   ${SRC_DIR}/jquery.forms.js\
+#   ${SRC_DIR}/jquery.jpath.js\
+#	${SRC_DIR}/ui.awesomebar.js\
+#	${SRC_DIR}/ui.imgSelection.js\
+#	${SRC_DIR}/ui.imgTools.js\
+#	${SRC_DIR}/ui.window.js\
 
 MODULES = ${BASE_FILES}
 
 JQ = ${DIST_DIR}/jquery.utils.js
 #JQ_LITE = ${DIST_DIR}/jquery-utils.lite.js
 JQ_MIN = ${DIST_DIR}/jquery.utils.min.js
-JQ_PACK = ${DIST_DIR}/jquery.utils.pack.js
+#JQ_PACK = ${DIST_DIR}/jquery.utils.pack.js
 
 JQ_VER = `cat version.txt`
 VER = sed s/@VERSION/${JQ_VER}/
 
 JAR = java -jar ${BUILD_DIR}/js.jar
 
-all: jquery lite min pack #speed
+all: jquery lite min #pack #speed
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
@@ -64,16 +70,16 @@ ${JQ_LITE}: ${JQ}
 	@@echo ${JQ_LITE} "Built"
 	@@echo
 
-pack: ${JQ_PACK}
-
-${JQ_PACK}: ${JQ}
-	@@echo "Building" ${JQ_PACK}
-
-	@@echo " - Compressing using Packer"
-	@@${JAR} ${BUILD_DIR}/build/pack.js ${JQ} ${JQ_PACK}
-
-	@@echo ${JQ_PACK} "Built"
-	@@echo
+#pack: ${JQ_PACK}
+#
+#${JQ_PACK}: ${JQ}
+#	@@echo "Building" ${JQ_PACK}
+#
+#	@@echo " - Compressing using Packer"
+#	@@${JAR} ${BUILD_DIR}/build/pack.js ${JQ} ${JQ_PACK}
+#
+#	@@echo ${JQ_PACK} "Built"
+#	@@echo
 
 min: ${JQ_MIN}
 
