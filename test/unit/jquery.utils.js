@@ -1,5 +1,5 @@
 $(function(){
-    module('jquery.countdown.js');
+    module('jquery.utils.js');
 
     test('jQuery utils core tests', function() {
         expect(33);
