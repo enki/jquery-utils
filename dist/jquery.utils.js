@@ -10,8 +10,8 @@
 */
 
 (function($){
-    // I use the ui widget api for controls and images 
-    $.ctrl  = { widget: $.ui.widget, plugins: $.ui.plugins };
+    // I use the ui widget api for controls
+    if ($.ui) { $.ctrl  = { widget: $.ui.widget, plugins: $.ui.plugins }; }
 
 	$.extend({ 
 		isRegExp: function(o) {
@@ -206,7 +206,7 @@ jQuery.cookie = function(name, value, options) {
             return Math.ceil((((date - onejan) / 86400000) + onejan.getDay())/7); };
 
         var options = $.extend({
-                year : now.getFullYear(), month: now.getMonth(), day: now.getDay(),
+                year : now.getFullYear(), month: now.getMonth(), day: now.getDate(),
                 week: getWeek(now), hour: now.getHours(), min: now.getMinutes(), sec: now.getSeconds(),
                 msgFormat: '%d [day|days] %hh %mm %ss', msgNow: 'Now !',
                 interval:  1000 }, options); 
@@ -260,18 +260,19 @@ jQuery.cookie = function(name, value, options) {
         };
         var parse = function(type, val) {
            function calc(str, i) {
-               if (str.slice(0,1) == '+') return i + parseInt(str.match(/\d+/)||0, 10);
-               else return i - parseInt(str.match(/\d+/)||0, 10);
+               if (str.slice(0,1) == '+') { var o = i + parseInt(str.match(/\d+/)||0, 10); }
+               else { var o = i - parseInt(str.match(/\d+/)||0, 10); }
+               return o;
            }
            if (typeof(val)=='number') return val;
            else {
                switch(type) {
                    case 'year':  return calc(val, (new Date()).getFullYear());
                    case 'month': return calc(val, (new Date()).getMonth()+1);
-                   //case 'day':   return calc(val, (new Date()).getDate());
-                   //case 'hour':  return calc(val, (new Date()).getHours());
-                   //case 'min':   return calc(val, (new Date()).getMinutes());
-                   //case 'sec':   return calc(val, (new Date()).getSeconds());
+                   case 'day':   return calc(val, (new Date()).getDate());
+                   case 'hour':  return calc(val, (new Date()).getHours());
+                   case 'min':   return calc(val, (new Date()).getMinutes());
+                   case 'sec':   return calc(val, (new Date()).getSeconds());
                }
            }
         };
@@ -284,7 +285,8 @@ jQuery.cookie = function(name, value, options) {
                              parse('hour', options.hour), parse('min', options.min),     parse('sec', options.sec)) 
         };
         $(el).data('countdown', cd);
-        return  update(), $(el).data('countdown');
+        update();
+        return $(el).data('countdown');
     };
     $.fn.countdown = function(args) { if(this.get(0)) return new countdown(this.get(0), args); };
 })(jQuery);
@@ -1179,6 +1181,55 @@ $.fn.cycle.transitions.wipe = function($cont, $slides, opts) {
 };
 
 })(jQuery);
+/*
+ jQuery delayed observer - 0.5
+ http://code.google.com/p/jquery-utils/
+
+ (c) Maxime Haineault <haineault@gmail.com>
+ http://haineault.com
+ 
+ MIT License (http://www.opensource.org/licenses/mit-license.php)
+ 
+ Changelog
+ =========
+ 0.2 using closure, special thanks to Stephen Goguen & Tane Piper.
+ 0.3 now allow object chaining, added license
+ 0.4 code cleanup, added support for other events than keyup, fixed variable scope
+ 0.5 changed filename, included in jquery-utils 
+ 0.6 complete rewrite, same structure but more compact, 
+     now using jquery's "data" method instead of a stack to store data
+     it's now possible to change the condition, by default it's "if new this.val == this.oldval"
+     now using this.each to support multiple observed elements
+*/
+
+(function($){
+    $.extend($.fn, {
+        delayedObserver: function(callback, delay, options){
+            this.each(function(){
+                var $obj    = $(this);
+                var options = options || {};
+                $obj.data('oldval',    $obj.val())
+                    .data('delay',     delay || 0.5)
+                    .data('condition', options.condition || function() {
+                        return ($(this).data('oldval') == $(this).val());
+                    })
+                    .data('callback',  callback)
+                    [(options.event||'keyup')](function(){
+                        if ($obj.data('condition').apply($obj)) return;
+                        else {
+                            if ($obj.data('timer')) clearTimeout($obj.data('timer'));
+                          
+                            $obj.data('timer', setTimeout(function(){
+                                $obj.data('callback').apply($obj);
+                            }, $obj.data('delay') * 1000));
+                          
+                            $obj.data('oldval', $obj.val());
+                        }
+                    });
+                });
+        }
+    });
+})(jQuery);
 /**
  * Flash (http://jquery.lukelutman.com/plugins/flash)
  * A jQuery plugin for embedding Flash movies.
@@ -1845,6 +1896,72 @@ if (window.attachEvent) {
 
 })(jQuery);
 /*
+  jQuery valid - 0.1
+  http://code.google.com/p/jquery-utils
+
+  (c) Maxime Haineault <haineault@gmail.com>
+  http://haineault.com   
+
+  MIT License (http://www.opensource.org/licenses/mit-license.php)
+
+*/
+
+(function($){
+    var valid = {
+        // Types
+        integer:  function(i, args)  { return /(^-?\d\d*$)/.test(i); },
+        numeric:  function(i, args)  { return /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)/.test(i); },
+        'boolean':function(i, args)  { return (args && args.strict)? /^0|1|true|false$/.test(i): /^0|1$/.test(i); },
+        alphanum: function(i, args)  { return /^[a-zA-Z0-9.\-_]+$/.test(i); },
+        // Networking
+        net: {
+            // http://regular-expressions.info/email.html 
+            email: function(i, args)  { return /^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)\b$/.test(i); }, 
+            ip: function(i){ return /(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/.test(i); },
+            macaddress: function(){},
+            uri: function(i, args){ $.extend({type:'http'});}
+        },
+        // Locals
+        canadian: {
+            // (yyyy-mm-dd || yyyy/mm/dd || yyyy.mm.dd)
+            date: function(i, args)  { return /^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(i); }, 
+            // (HH:MM || HH:MM:SS || HH:MM:SS.mmm)
+            time: function(i, args)  { return /^([0]?[1-9]|1[0-2]):[0-5]\d(:[0-5]\d(\.\d{1,3})?)?$/.test(i); }, 
+            currency: function() {},
+            postalCode:  function() {},
+            phoneNumber: function() {},
+            ssn: function() {},
+            sin: function() {}
+        },
+        // MySQL
+        mysql: {
+            date: function() {},
+            datetime: function() {},
+            timestamp: function() {}, // default Mysql 5+
+            time: function() {}
+        }
+        
+    };
+
+    $.extend({ 
+        validation: valid,
+        isValid: function(i, validation, args) {
+            var parts = validation.split('.');
+            if (parts[1] && valid[parts[0]] && valid[parts[0]][parts[1]]) {
+                 return valid[parts[0]][parts[1]](i, args);
+            }
+            else if ($.isFunction(valid[parts[0]])) {
+                 return valid[parts[0]](i, args);
+            }
+        }
+    });
+})(jQuery);
+
+// API example
+// $('.price').valid('currency', 'us')
+// $.valid(price, 'currency')
+// $('input').isValid('currency')
+/*
   jQuery youtubeLinksToEmbed - 0.2
   http://code.google.com/p/jquery-utils/
 
@@ -1923,6 +2040,7 @@ $(document).ready(function(){
  *
  * */
 
+if ($.ui) {
 $.widget('ui.toaster', {
 	init: function(){
 		var self	= this;
@@ -2018,56 +2136,7 @@ $.ui.toaster.defaults = {
 	hide:	  $.fn.fadeOut,   // closing effect (by user)
 	close:    $.fn.slideUp    // hiding effect (timeout)
 };
-
-/*
- jQuery delayed observer - 0.5
- http://code.google.com/p/jquery-utils/
-
- (c) Maxime Haineault <haineault@gmail.com>
- http://haineault.com
- 
- MIT License (http://www.opensource.org/licenses/mit-license.php)
- 
- Changelog
- =========
- 0.2 using closure, special thanks to Stephen Goguen & Tane Piper.
- 0.3 now allow object chaining, added license
- 0.4 code cleanup, added support for other events than keyup, fixed variable scope
- 0.5 changed filename, included in jquery-utils 
- 0.6 complete rewrite, same structure but more compact, 
-     now using jquery's "data" method instead of a stack to store data
-     it's now possible to change the condition, by default it's "if new this.val == this.oldval"
-     now using this.each to support multiple observed elements
-*/
-
-(function($){
-    $.extend($.fn, {
-        delayedObserver: function(callback, delay, options){
-            this.each(function(){
-                var $obj    = $(this);
-                var options = options || {};
-                $obj.data('oldval',    $obj.val())
-                    .data('delay',     delay || 0.5)
-                    .data('condition', options.condition || function() {
-                        return ($(this).data('oldval') == $(this).val());
-                    })
-                    .data('callback',  callback)
-                    [(options.event||'keyup')](function(){
-                        if ($obj.data('condition').apply($obj)) return;
-                        else {
-                            if ($obj.data('timer')) clearTimeout($obj.data('timer'));
-                          
-                            $obj.data('timer', setTimeout(function(){
-                                $obj.data('callback').apply($obj);
-                            }, $obj.data('delay') * 1000));
-                          
-                            $obj.data('oldval', $obj.val());
-                        }
-                    });
-                });
-        }
-    });
-})(jQuery);
+}
 /*
  * Copyright (c) 2007-2008 Josh Bush (digitalbush.com)
  * 
