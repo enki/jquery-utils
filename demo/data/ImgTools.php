@@ -1,5 +1,5 @@
 <?php
-
+define('_ImgTools_debug_', false);
 define('_ImgTools_src_', './');       // Source
 define('_ImgTools_dst_', './cache/'); // Destination
 
@@ -47,11 +47,13 @@ class ImgTools {
     }
 
     private function serve() {
-        switch ($this->type) {
-            case 'jpg':
-            case 'jpeg': header('Content-type: image/jpg'); break;
-            case 'gif':  header('Content-type: image/gif'); break;
-            case 'png':  header('Content-type: image/png'); break;
+        if (!_ImgTools_debug_) {
+            switch ($this->type) {
+                case 'jpg':
+                case 'jpeg': header('Content-type: image/jpg'); break;
+                case 'gif':  header('Content-type: image/gif'); break;
+                case 'png':  header('Content-type: image/png'); break;
+            }
         }
 
         die(readfile($this->cache())); // TODO: try redirect instead
