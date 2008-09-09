@@ -10,6 +10,7 @@
  *
  * */
 
+if ($.ui) {
 $.widget('ui.toaster', {
 	init: function(){
 		var self	= this;
@@ -105,4 +106,4 @@ $.ui.toaster.defaults = {
 	hide:	  $.fn.fadeOut,   // closing effect (by user)
 	close:    $.fn.slideUp    // hiding effect (timeout)
 };
-
+}

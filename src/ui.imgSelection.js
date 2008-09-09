@@ -7,6 +7,7 @@
  *
  * */
 
+if ($.ui) {
 $.ui.log = (typeof(console) != 'undefined')? console.log: function(){};
 
 $.widget('ui.imgSelection', {
@@ -312,3 +313,4 @@ $.ui.plugin.add('imgSelection', 'areaInfos', {
         ui.options._setAreaStatus(e, ui, e.target);
     }
 });
+}

@@ -12,14 +12,14 @@ BASE_FILES = ${SRC_DIR}/jquery.utils.js\
     ${SRC_DIR}/jquery.cookie.js\
     ${SRC_DIR}/jquery.countdown.js\
     ${SRC_DIR}/jquery.cycle.js\
+    ${SRC_DIR}/jquery.delayedObserver.js\
     ${SRC_DIR}/jquery.flash.js\
     ${SRC_DIR}/jquery.ifixpng.js\
     ${SRC_DIR}/jquery.strings.js\
+    ${SRC_DIR}/jquery.valid.js\
     ${SRC_DIR}/jquery.youtubeLinksToEmbed.js\
     ${SRC_DIR}/ui.toaster.js\
-    ${SRC_DIR}/ctrl.delayedObserver.js\
  	${SRC_DIR}/ctrl.masked.js\
-#   ${SRC_DIR}/jquery.valid.js\
 #   ${SRC_DIR}/api.youtube.js\
 #	${SRC_DIR}/ctrl.datetime.js\
 #	${SRC_DIR}/ctrl.keynav.js\

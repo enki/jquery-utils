@@ -7,6 +7,7 @@
  *
  * */
 
+if ($.ui) {
 $.ui.log = (typeof(console) != 'undefined')? console.log: function(){};
 
 $.widget('ui.window', {
@@ -101,3 +102,4 @@ $.ui.plugin.add('window', 'center', {
         }
     }
 });
+}

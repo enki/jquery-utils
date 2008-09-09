@@ -13,6 +13,7 @@
 
 */
 
+if ($.ui) {
 $.widget('ui.awesomebar', {
 	init: function(){
 		var self = this;
@@ -174,3 +175,4 @@ $.ui.awesomebar.defaults = {
         }
     }
 };
+}

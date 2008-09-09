@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <link rel="Stylesheet" media="screen" href="data/styles.css" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
+        <script type="text/javascript" src="../src/jquery.flash.js"></script>
+        <script type="text/javascript" src="../src/api.youtube.js"></script>
+
+        <script type="text/javascript">
+        $(document).ready(function(){
+            $('.api-youtube').youtube({
+                width:320,
+                height: 240
+            });
+        });
+        </script>
+        <style type="text/css">
+        </style>
+    </head>
+    <body id="body">
+        <h2>api.youtube.js</h2>
+        <div class="copyright">Copyright (c) 2008-2009 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
+        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <h3>Dependencies</h3>
+        <ul>
+            <li><a href="jquery-flash.html" target="_self">jquery.flash.js</a></li>
+        </ul>
+        <h3>Usage</h3>
+        <pre></pre>
+        <h3>Demo</h3>
+        <div class="demo">
+            <a class="api-youtube" href="http://www.youtube.com/v/ma9I9VBKPiw&amp;border=0">Video title</a>
+            <div id="hello"></div>
+        </div>
+    </body>
+</html>
+

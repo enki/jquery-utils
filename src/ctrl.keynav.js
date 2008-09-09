@@ -13,7 +13,7 @@
   - jquery.utils.js
 
 */
-
+if ($.ui) {
 $.widget('ctrl.keynav', {
     init: function(){
         var self = this;
@@ -255,3 +255,4 @@ $.extend($.ctrl.keynav.formats, {
         }
     }
 });
+}

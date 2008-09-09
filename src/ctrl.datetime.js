@@ -9,6 +9,7 @@
 
 */
 
+if ($.ui) {
 $.widget('ctrl.datetime', {
     init: function(){
         var self  = this;
@@ -47,4 +48,4 @@ $.ctrl.datetime.defaults = {
         dateFormat: 'yy-mm-dd'
     }
 };
-
+}
