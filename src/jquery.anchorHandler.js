@@ -31,7 +31,7 @@
 				else args = {r: regexp, cb: callback}; 
 
                 if (handleClick) $('a[href~=#]').each(function(i,a){
-                    if (a.href.match(regexp)) $(a).click(callback); });
+                    if (a.href.match(regexp)) $(a).bind('click.anchorHandler', callback); });
 
 				handlers.push(args || {});
 				return $.anchorHandler;

@@ -1,8 +1,6 @@
 // unsigned -> positive only
 // http://svn.python.org/projects/python/trunk/Lib/test/test_format.py
 
-if (!String.prototype.repeat) String.prototype.repeat = function(l) { return (new Array(l||1)).join(this)  };
-
 function test_format(a) {
     expect(a.length);
     $(a).each(function(){ 
@@ -91,14 +89,14 @@ test('Replacement and conversions', function() {
     ]);
 });
 
-
+/*
 test("Other tests", function() {
     expect(2);
     ok($.format('{a:f}', {a:1.0}).toString().length == '1.000000'.length, 'FLOATING POINT DECIMAL (f|F): 1.0 -> 1.000000 (default precision (6))');
     ok($.format('{a:.2f}', {a:1}).toString().length == '1.00'.length,     'FLOATING POINT DECIMAL (f|F): Unsigned decimal to float');
 //  ok($.format('{a:05.2f}', {a:1}).toString().length == '02.00'.length,  'FLOATING POINT DECIMAL (f|F): Unsigned decimal to float with zero padding');
 });
-
+*/
 /*
 test("Format - tests from python format_tests.py", function() {
     expect(11);

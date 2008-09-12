@@ -1,6 +1,5 @@
 function tests_valid(a) {
-    //$(a).each(function(){ equals(1, 1, this[3], this[4]||{}); });
-    $(a).each(function(){ equals(jQuery.isValid(this[0], this[1]), this[2], this[3], this[4]||{}); });
+    $(a).each(function(){ equals(jQuery.isValid(this[1], this[0]), this[2], this[3], this[4]||{}); });
 }
 module('jquery.valid.js');
 test('Generic data types', function() {

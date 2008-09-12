@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.1
+  jQuery utils - 0.2
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -78,7 +78,7 @@
 				else args = {r: regexp, cb: callback}; 
 
                 if (handleClick) $('a[href~=#]').each(function(i,a){
-                    if (a.href.match(regexp)) $(a).click(callback); });
+                    if (a.href.match(regexp)) $(a).bind('click.anchorHandler', callback); });
 
 				handlers.push(args || {});
 				return $.anchorHandler;
@@ -1904,10 +1904,52 @@ if (window.attachEvent) {
 
   MIT License (http://www.opensource.org/licenses/mit-license.php)
 
+  +-----------------+---+---+-----------------------------------------------------------+
+  | Validation      | I | T | Description                                               |
+  +-----------------+---+---+-----------------------------------------------------------+
+  | integer         | x | x | true if input is a valid integer                          |
+  | numeric         | x | x | true if input is a valid numeric value (float or integer) |
+  | boolean         | x | x | true if input is a valid boolean (1 or 0)                 |
+  | alphanum        | x | x | true if input is a valid alphanumeric value               |
+  | inrange         |   |   | true if input is within given range                       |
+  | minlength       |   |   | true if input is at least or equal the specified length   |
+  | maxlength       |   |   | true if input is less or equal than specified length      |
+  | net.email       | x | x | true if input is a valid email address                    |
+  | net.ip          | x | x | true if input is a valid IPv4 address                     |
+  | net.mac         |   |   | true if input is a valid MAC address                      |
+  | net.uri         |   |   | true if input is a valid URL (http, ftp, svn, ...)        |
+  | date            |   |   | true if input is a valid date (ISO)                       |
+  | creditcard      |   |   | true if input is a valid credit card number               |
+  | mysql.date      |   |   | true if input is a valid MySQL date                       |
+  | mysql.datetime  |   |   | true if input is a valid MySQL datetime                   |
+  | mysql.time      |   |   | true if input is a valid MySQL time                       |
+  | mysql.timestamp |   |   | true if input is a valid MySQL timestamp                  |
+  | ca.date         |   |   | true if input is a valid Canadian date                    |
+  | ca.time         |   |   | true if input is a valid Canadian time                    |
+  | ca.currency     |   |   | true if input is a valid Canadian currency                |
+  | ca postalCode   |   |   | true if input is a valid Canadian postalCode              |
+  | ca.phoneNumber  |   |   | true if input is a valid Canadian phoneNumber             |
+  | ca.ssn          |   |   | true if input is a valid Canadian Social Security Number  |
+  | ca.sin          |   |   | true if input is a valid Canadian Social Insurange Number |
+  +-----------------+---+---+-----------------------------------------------------------+
 */
 
 (function($){
-    var valid = {
+    $.extend({ 
+        validator: {},
+        isValid: function(validation, i, args) {
+            var parts = validation.split('.');
+            // namespaced
+            if (parts[1] && $.validator[parts[0]] && $.validator[parts[0]][parts[1]]) {
+                 return $.validator[parts[0]][parts[1]](i, args);
+            }
+            else if ($.isFunction($.validator[parts[0]])) {
+                 return $.validator[parts[0]](i, args);
+            }
+        }
+    });
+
+    $.extend($.validator, {
         // Types
         integer:  function(i, args)  { return /(^-?\d\d*$)/.test(i); },
         numeric:  function(i, args)  { return /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)/.test(i); },
@@ -1917,12 +1959,17 @@ if (window.attachEvent) {
         net: {
             // http://regular-expressions.info/email.html 
             email: function(i, args)  { return /^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)\b$/.test(i); }, 
-            ip: function(i){ return /(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/.test(i); },
-            macaddress: function(){},
-            uri: function(i, args){ $.extend({type:'http'});}
+            ip: function(i){ return /(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/.test(i); }
+        },
+        // MySQL
+        mysql: {
+            date: function() {},
+            datetime: function() {},
+            timestamp: function() {}, // default Mysql 5+
+            time: function() {}
         },
         // Locals
-        canadian: {
+        ca: {
             // (yyyy-mm-dd || yyyy/mm/dd || yyyy.mm.dd)
             date: function(i, args)  { return /^\d{4}(\-|\/|\.)\d{1,2}\1\d{1,2}$/.test(i); }, 
             // (HH:MM || HH:MM:SS || HH:MM:SS.mmm)
@@ -1932,35 +1979,61 @@ if (window.attachEvent) {
             phoneNumber: function() {},
             ssn: function() {},
             sin: function() {}
-        },
-        // MySQL
-        mysql: {
-            date: function() {},
-            datetime: function() {},
-            timestamp: function() {}, // default Mysql 5+
-            time: function() {}
-        }
-        
-    };
-
-    $.extend({ 
-        validation: valid,
-        isValid: function(i, validation, args) {
-            var parts = validation.split('.');
-            if (parts[1] && valid[parts[0]] && valid[parts[0]][parts[1]]) {
-                 return valid[parts[0]][parts[1]](i, args);
-            }
-            else if ($.isFunction(valid[parts[0]])) {
-                 return valid[parts[0]](i, args);
-            }
         }
     });
 })(jQuery);
-
-// API example
-// $('.price').valid('currency', 'us')
-// $.valid(price, 'currency')
-// $('input').isValid('currency')
+(function($){
+    $._i18n = { trans: {}, default:  'en', language: 'en' };
+    $.i18n = function() {
+        var getTrans = function(ns, str) {
+            var trans = false;
+            // check if string exists in translation
+            if ($._i18n.trans[$._i18n.language] 
+                && $._i18n.trans[$._i18n.language][ns]
+                && $._i18n.trans[$._i18n.language][ns][str]) {
+                trans = $._i18n.trans[$._i18n.language][ns][str];
+            }
+            // or exists in default
+            else if ($._i18n.trans[$._i18n.default] 
+                     && $._i18n.trans[$._i18n.default][ns]
+                     && $._i18n.trans[$._i18n.default][ns][str]) {
+                trans = $._i18n.trans[$._i18n.default][ns][str];
+            }
+            // return trans or original string
+            return trans || str;
+        };
+        // Set language
+        if (arguments.length < 2 && arguments[0].length == 2) {
+            return $._i18n.language = arguments[0];
+        }
+        else {
+            // get translation
+            if (typeof(arguments[1]) == 'string') {
+                var trans = getTrans(arguments[0], arguments[1]);
+                // has variables for string formating
+                if (arguments[2] && typeof(arguments[2]) == 'object') {
+                    return $.format(trans, arguments[2]);
+                }
+                else {
+                    return trans;
+                }
+            }
+            // set translation
+            else {
+                var tmp  = arguments[0].split('.');
+                var lang = tmp[0];
+                var ns   = tmp[1] || 'jQuery';
+                if (!$._i18n.trans[lang]) {
+                    $._i18n.trans[lang] = {};
+                    $._i18n.trans[lang][ns] = arguments[1];
+                }
+                else {
+                    $.extend($._i18n.trans[lang][ns], arguments[1]);
+                }
+            }
+        }
+    };
+})(jQuery);
 /*
   jQuery youtubeLinksToEmbed - 0.2
   http://code.google.com/p/jquery-utils/
