@@ -24,7 +24,7 @@
                         if (a.href.match(regexp)) { 
                             $(a).bind('click.anchorHandler', function(){
                                 if (opt.preserveHash) { window.location.hash = a.hash; }
-                                callback.apply(this, [regexp, a.href]);
+                                return callback.apply(this, [regexp, a.href]);
                             });}}); 
                 }
 				handlers.push({r: regexp, cb: callback});

@@ -46,7 +46,7 @@
 	});
 })(jQuery);
 /*
-  jQuery anchor handler - 0.3
+  jQuery anchor handler - 0.4
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com>
@@ -54,34 +54,24 @@
 
   MIT License (http://www.opensource.org/licenses/mit-license.php)
 
-  Changelog
-  =========
-  - fixed bug in IE
-  - added handleClick argument (default to false)
-  - added stronger typecheck for the regexp variable
-  - fixed variable scope of "handlers"
-  - now using builtin hash window.location.hash instead of full URL
-  - now using object to provide options to be more consistent with other jQuery plugins
-  - now preserving accessibility by updating the URL hash
-  - handleClick is now true by default
-  - fixed variable scope
-  - removed support for array input since it's somewhat useless and makes the code less readable
 */
 
 (function($){
     var hash = window.location.hash;
     var handlers  = [];
     var opt = {};
+
 	$.extend({
 		anchorHandler: {
 			add: function(regexp, callback, options) {
                 var opt  = $.extend({handleClick: true, preserveHash: true}, options);
+
                 if (opt.handleClick) { 
                     $('a[href~=#]').each(function(i,a){
                         if (a.href.match(regexp)) { 
                             $(a).bind('click.anchorHandler', function(){
                                 if (opt.preserveHash) { window.location.hash = a.hash; }
-                                callback.apply(this, [regexp, a.href]);
+                                return callback.apply(this, [regexp, a.href]);
                             });}}); 
                 }
 				handlers.push({r: regexp, cb: callback});
