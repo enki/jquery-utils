@@ -30,7 +30,7 @@ $.widget('ctrl.keynav', {
         self.keynav = $.ctrl.keynav.formats[self.options.format];
         $.each(['focus', 'blur'], function(i, callback) {
             if (self.keynav[callback] && $(self.element)[callback]) {
-                console.log(callback);
+                //console.log($(self.element)[callback]);
                 $(self.element)[callback].apply(self, [self.keynav[callback]]);
             }
         });
@@ -203,7 +203,6 @@ $.extend($.ctrl.keynav.formats, {
         capture: [37, 38, 39, 40], // left, top, right, bottom arrows
         chars: 'abcdefghijklmnopqrstuvwxyz',
         focus: function(e) {
-            console.log(this);
             $(this.element).selectRange(1, 2);
             e.preventDefault();
             e.stopPropagation();

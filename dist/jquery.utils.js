@@ -61,33 +61,39 @@
   - added stronger typecheck for the regexp variable
   - fixed variable scope of "handlers"
   - now using builtin hash window.location.hash instead of full URL
+  - now using object to provide options to be more consistent with other jQuery plugins
+  - now preserving accessibility by updating the URL hash
+  - handleClick is now true by default
+  - fixed variable scope
+  - removed support for array input since it's somewhat useless and makes the code less readable
 */
 
 (function($){
     var hash = window.location.hash;
-    var handlers = [];
-	
+    var handlers  = [];
+    var opt = {};
 	$.extend({
 		anchorHandler: {
-			add: function(regexp, callback, handleClick) {
-				
-                if (regexp.constructor.toString().indexOf('Array()') != -1) {
-                     $.map(regexp, function(arg){
-						args = {r: arg[0], cb: arg[1]};});
+			add: function(regexp, callback, options) {
+                var opt  = $.extend({handleClick: true, preserveHash: true}, options);
+                if (opt.handleClick) { 
+                    $('a[href~=#]').each(function(i,a){
+                        if (a.href.match(regexp)) { 
+                            $(a).bind('click.anchorHandler', function(){
+                                if (opt.preserveHash) { window.location.hash = a.hash; }
+                                callback.apply(this, [regexp, a.href]);
+                            });}}); 
                 }
-				else args = {r: regexp, cb: callback}; 
-
-                if (handleClick) $('a[href~=#]').each(function(i,a){
-                    if (a.href.match(regexp)) $(a).bind('click.anchorHandler', callback); });
-
-				handlers.push(args || {});
+				handlers.push({r: regexp, cb: callback});
 				return $.anchorHandler;
 			}
 		}
 	})(document).ready(function(){
 		$.map(handlers, function(handler){
 			var match = hash.match(handler.r) && hash.match(handler.r)[0] || false;
-			if (match)  handler.cb.apply(this, [match, (hash || false)]);});});
+			if (match)  { handler.cb.apply(this, [match, (hash || false)]); }
+        });
+    });
 })(jQuery);
 /**
  * Cookie plugin
@@ -1895,6 +1901,58 @@ if (window.attachEvent) {
     });
 
 })(jQuery);
+(function($){
+    $._i18n = { trans: {}, default:  'en', language: 'en' };
+    $.i18n = function() {
+        var getTrans = function(ns, str) {
+            var trans = false;
+            // check if string exists in translation
+            if ($._i18n.trans[$._i18n.language] 
+                && $._i18n.trans[$._i18n.language][ns]
+                && $._i18n.trans[$._i18n.language][ns][str]) {
+                trans = $._i18n.trans[$._i18n.language][ns][str];
+            }
+            // or exists in default
+            else if ($._i18n.trans[$._i18n.default] 
+                     && $._i18n.trans[$._i18n.default][ns]
+                     && $._i18n.trans[$._i18n.default][ns][str]) {
+                trans = $._i18n.trans[$._i18n.default][ns][str];
+            }
+            // return trans or original string
+            return trans || str;
+        };
+        // Set language
+        if (arguments.length < 2 && arguments[0].length == 2) {
+            return $._i18n.language = arguments[0];
+        }
+        else {
+            // get translation
+            if (typeof(arguments[1]) == 'string') {
+                var trans = getTrans(arguments[0], arguments[1]);
+                // has variables for string formating
+                if (arguments[2] && typeof(arguments[2]) == 'object') {
+                    return $.format(trans, arguments[2]);
+                }
+                else {
+                    return trans;
+                }
+            }
+            // set translation
+            else {
+                var tmp  = arguments[0].split('.');
+                var lang = tmp[0];
+                var ns   = tmp[1] || 'jQuery';
+                if (!$._i18n.trans[lang]) {
+                    $._i18n.trans[lang] = {};
+                    $._i18n.trans[lang][ns] = arguments[1];
+                }
+                else {
+                    $.extend($._i18n.trans[lang][ns], arguments[1]);
+                }
+            }
+        }
+    };
+})(jQuery);
 /*
   jQuery valid - 0.1
   http://code.google.com/p/jquery-utils
@@ -1981,58 +2039,6 @@ if (window.attachEvent) {
             sin: function() {}
         }
     });
-})(jQuery);
-(function($){
-    $._i18n = { trans: {}, default:  'en', language: 'en' };
-    $.i18n = function() {
-        var getTrans = function(ns, str) {
-            var trans = false;
-            // check if string exists in translation
-            if ($._i18n.trans[$._i18n.language] 
-                && $._i18n.trans[$._i18n.language][ns]
-                && $._i18n.trans[$._i18n.language][ns][str]) {
-                trans = $._i18n.trans[$._i18n.language][ns][str];
-            }
-            // or exists in default
-            else if ($._i18n.trans[$._i18n.default] 
-                     && $._i18n.trans[$._i18n.default][ns]
-                     && $._i18n.trans[$._i18n.default][ns][str]) {
-                trans = $._i18n.trans[$._i18n.default][ns][str];
-            }
-            // return trans or original string
-            return trans || str;
-        };
-        // Set language
-        if (arguments.length < 2 && arguments[0].length == 2) {
-            return $._i18n.language = arguments[0];
-        }
-        else {
-            // get translation
-            if (typeof(arguments[1]) == 'string') {
-                var trans = getTrans(arguments[0], arguments[1]);
-                // has variables for string formating
-                if (arguments[2] && typeof(arguments[2]) == 'object') {
-                    return $.format(trans, arguments[2]);
-                }
-                else {
-                    return trans;
-                }
-            }
-            // set translation
-            else {
-                var tmp  = arguments[0].split('.');
-                var lang = tmp[0];
-                var ns   = tmp[1] || 'jQuery';
-                if (!$._i18n.trans[lang]) {
-                    $._i18n.trans[lang] = {};
-                    $._i18n.trans[lang][ns] = arguments[1];
-                }
-                else {
-                    $.extend($._i18n.trans[lang][ns], arguments[1]);
-                }
-            }
-        }
-    };
 })(jQuery);
 /*
   jQuery youtubeLinksToEmbed - 0.2
