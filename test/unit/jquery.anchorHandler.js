@@ -10,6 +10,5 @@ $(function(){
         ok(window.location.hash == '#test', 'hanchor preservation');
     });
     // cleanup
-    window.location.hash = '';
     $('#anchorHandler1').remove();
 });

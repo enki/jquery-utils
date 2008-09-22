@@ -1896,7 +1896,7 @@ if (window.attachEvent) {
 
 })(jQuery);
 (function($){
-    $._i18n = { trans: {}, default:  'en', language: 'en' };
+    $._i18n = { trans: {}, 'default':  'en', language: 'en' };
     $.i18n = function() {
         var getTrans = function(ns, str) {
             var trans = false;
@@ -1907,10 +1907,10 @@ if (window.attachEvent) {
                 trans = $._i18n.trans[$._i18n.language][ns][str];
             }
             // or exists in default
-            else if ($._i18n.trans[$._i18n.default] 
-                     && $._i18n.trans[$._i18n.default][ns]
-                     && $._i18n.trans[$._i18n.default][ns][str]) {
-                trans = $._i18n.trans[$._i18n.default][ns][str];
+            else if ($._i18n.trans[$._i18n['default']] 
+                     && $._i18n.trans[$._i18n['default']][ns]
+                     && $._i18n.trans[$._i18n['default']][ns][str]) {
+                trans = $._i18n.trans[$._i18n['default']][ns][str];
             }
             // return trans or original string
             return trans || str;
