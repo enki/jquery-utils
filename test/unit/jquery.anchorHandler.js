@@ -3,7 +3,7 @@ $(function(){
 
     module('jquery.anchorHandler.js');
     test('onclick event handling', function() {
-        expect(2);
+        expect(3);
         $.anchorHandler.add(/#test/, function(){
             ok(true, 'simple onClick handling'); });
         $('#anchorHandler1').trigger('click');
