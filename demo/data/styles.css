@@ -59,7 +59,7 @@ body#nav h2 {
     font-size:1.2em;
     margin:14px 10px 8px 10px;
 
-    color:#269;
+    color:#176092;
 }
 
 /* content */
@@ -73,6 +73,7 @@ body#nav h2 {
     background:#B6BABE url(bg_subtleGrayGrad.gif) repeat-x top left;
     border:1px solid #ddd;
     float:none!important;
+    -moz-border-radius:5px;
 }
 #body h2 {
     margin:20px 40px;
@@ -159,6 +160,7 @@ table.list tbody td {
     text-decoration:none;
     background-position:5px 50%;
     background-repeat:no-repeat;
+    -moz-border-radius:5px;
 }
 .related-links.documentation {
     background-image:url(help.png);

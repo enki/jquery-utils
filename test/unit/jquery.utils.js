@@ -2,7 +2,7 @@ $(function(){
     module('jquery.utils.js');
 
     test('jQuery utils core tests', function() {
-        expect(33);
+        expect(34);
         
         // jquery.utils integrity check
         ok(typeof $.ui             == 'object',   'jQuery UI is defined')
@@ -11,6 +11,7 @@ $(function(){
         ok(typeof $.isArray        == 'function', 'jQuery isArray is defined')
         ok(typeof $.toCurrency     == 'function', 'jQuery toCurrency is defined')
         ok(typeof $.fn.selectRange == 'function', 'jQuery.fn selectRange is defined')
+        ok(typeof $.fn.mousewheel  == 'function', 'jQuery.fn mousewheel is defined')
 
 
         // isRegExp

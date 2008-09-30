@@ -21,7 +21,7 @@ p.result {
 }
 #jQueryVersion span {
     font-weight:bold;
-    color:#269;
+    color:#176092;
 }
 #banner {
     color:#fff!important;
@@ -42,7 +42,7 @@ h3 {margin-top:0!important;}
 #banner.fail span.fail { display:inline!important; color:#fff!important;}
 #banner.pass span.fail,
 #banner.fail span.pass { display:none!important;  }
-#banner.pass { background: #269; }
+#banner.pass { background: #176092; }
 #banner.fail { background: #c30;}
 
 ol#tests > li > strong { cursor:pointer; }
