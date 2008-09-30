@@ -14,10 +14,11 @@ BASE_FILES = ${SRC_DIR}/jquery.utils.js\
     ${SRC_DIR}/jquery.cycle.js\
     ${SRC_DIR}/jquery.delayedObserver.js\
     ${SRC_DIR}/jquery.flash.js\
+    ${SRC_DIR}/jquery.i18n.js\
     ${SRC_DIR}/jquery.ifixpng.js\
     ${SRC_DIR}/jquery.mousewheel.js\
     ${SRC_DIR}/jquery.strings.js\
-    ${SRC_DIR}/jquery.i18n.js\
+    ${SRC_DIR}/jquery.timeago.js\
     ${SRC_DIR}/jquery.valid.js\
     ${SRC_DIR}/jquery.youtubeLinksToEmbed.js\
     ${SRC_DIR}/ui.toaster.js\

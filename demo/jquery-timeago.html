@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <title>jQuery utils</title>
+        <link rel="Stylesheet" media="screen" href="data/styles.css" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
+        <script type="text/javascript" src="../src/ctrl.masked.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+            });
+        </script>
+        <style type="text/css">
+        </style>
+    </head>
+    <body id="body">
+        <h2>jquery.timeago.js</h2>
+        <div class="copyright">Copyright (c) 2008 Ryan McGeary (<a href="http://mcgeary.org/" target="_blank">mcgeary.org</a>)</div>
+        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <a class="related-links documentation" href="http://timeago.yarp.com/">Documentation</a>
+        <p>Timeago is a jQuery plugin that makes it easy to support automatically updating fuzzy timestamps (e.g. "4 minutes ago" or "about 1 day ago").</p>
+        <p>Timeago was originally built for use with <a href="http://yarp.com">Yarp.com</a> to timestamp comments.</p>
+        <ul>
+            <li>Avoid timestamps dated "1 minute ago" even though the page was opened 10 minutes ago; timeago refreshes automatically</li>
+            <li>You can take full advantage of page caching in your web applications, because the timestamps aren't calculated on the server</li>
+            <li>You get to use <a href="http://microformats.org/">microformats</a> like the cool kids</li>
+        </ul>
+        <h3>Basic usage</h3>
+        <p>
+            First, load <a href="http://jquery.com/">jQuery</a> and the plugin:
+        </p>
+        <pre>&lt;script src="jquery.min.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;script src="jquery.timeago.js" type="text/javascript"&gt;&lt;/script&gt;</pre>
+        <p>
+          Now, let's attach it to your timestamps on DOM ready:
+        </p>
+        <pre>jQuery(document).ready(function() {
+  jQuery('abbr[class*=timeago]').timeago();
+});</pre>
+        <p>
+          This will turn all <tt>abbr</tt> elements with a class
+          of <tt>timeago</tt> and an <a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> timestamp in the title:
+        </p>
+
+        <pre>&lt;abbr class="<em>timeago</em>" title="<em>2008-07-17T09:24:17Z</em>"&gt;July 17, 2008&lt;/abbr&gt;</pre>
+        <p>
+          into something like this:
+        </p>
+        <pre>&lt;abbr class="timeago" title="2008-07-17T09:24:17Z"&gt;<em><abbr class="timeago" title="2008-07-17T09:24:17Z">2 months ago</abbr></em>&lt;/abbr&gt;</pre>
+
+        <p>
+          which yields: <abbr class="timeago" title="2008-07-17T09:24:17Z">2 months ago</abbr>.  As time passes, the timestamps will automatically update.
+        </p>
+
+        <p>
+          You can also use it programmatically:
+        </p>
+        <pre>jQuery.timeago(new Date());             //=&gt; "<span id="prog_date">less than a minute ago</span>"
+jQuery.timeago("2008-07-17");           //=&gt; "<span id="prog_string">2 months ago</span>"
+jQuery.timeago(jQuery("abbr#some_id")); //=&gt; "<span id="prog_element">2 months ago</span>"     // [title="2008-07-20"]</pre>
+
+        <p>
+          To support timestamps in the future, use the <tt>allowFuture</tt> setting:
+        </p>
+        <pre>jQuery.timeago.settings.allowFuture = true;</pre>
+        <hr size="1" />
+        <h3>localization</h3>
+        <p>Yes, timeago has locale/i18n/language support.  Here are some <a href="http://gist.github.com/6251">configuration examples</a>.  Email <a href="http://ryan.mcgeary.org">Ryan McGeary</a> for corrections or additional languages.</p>
+    </body>
+</html>
