@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.2
+  jQuery utils - 0.3
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -10,9 +10,6 @@
 */
 
 (function($){
-    // I use the ui widget api for controls
-    if ($.ui) { $.ctrl  = { widget: $.ui.widget, plugins: $.ui.plugins }; }
-
 	$.extend({ 
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;

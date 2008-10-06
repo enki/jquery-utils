@@ -1,5 +1,5 @@
 /*
-  jQuery ctrl.keynav - 0.1
+  jQuery ui.keynav - 0.2
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -13,21 +13,21 @@
   - jquery.utils.js
 
 */
-if ($.ui) {
-$.widget('ctrl.keynav', {
+
+$.widget('ui.keynav', {
     init: function(){
         var self = this;
 
         // try to guess format from class if none is specified
         if (!self.options.format) {
-            var match = $(self.element).attr('class').match(/ctrl-keynav-(\w+)/i);
+            var match = $(self.element).attr('class').match(/ui-keynav-(\w+)/i);
             self.options.format = match && match[1] || 'int';
         }
         else {
-            $(self.element).addClass('ctrl-keynav ctrl-keynav-'+ self.options.format);
+            $(self.element).addClass('ui-keynav ui-keynav-'+ self.options.format);
         }
 
-        self.keynav = $.ctrl.keynav.formats[self.options.format];
+        self.keynav = $.ui.keynav.formats[self.options.format];
         $.each(['focus', 'blur'], function(i, callback) {
             if (self.keynav[callback] && $(self.element)[callback]) {
                 //console.log($(self.element)[callback]);
@@ -74,13 +74,13 @@ $.widget('ctrl.keynav', {
     },
 });
 
-$.ctrl.keynav.defaults = {
+$.ui.keynav.defaults = {
     format:  false,
     delayed: $.fn.delayedObserver || false,
     delay:   0.3
 };
 
-$.ctrl.keynav.formats  = {
+$.ui.keynav.formats  = {
     int: {
         capture: [38, 40], // top, bottom arrows
         val: function(v) {
@@ -198,7 +198,7 @@ $.ctrl.keynav.formats  = {
     }
 };
 
-$.extend($.ctrl.keynav.formats, {
+$.extend($.ui.keynav.formats, {
     alphabet: {
         capture: [37, 38, 39, 40], // left, top, right, bottom arrows
         chars: 'abcdefghijklmnopqrstuvwxyz',
@@ -254,4 +254,3 @@ $.extend($.ctrl.keynav.formats, {
         }
     }
 });
-}

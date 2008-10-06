@@ -22,10 +22,10 @@ BASE_FILES = ${SRC_DIR}/jquery.utils.js\
     ${SRC_DIR}/jquery.valid.js\
     ${SRC_DIR}/jquery.youtubeLinksToEmbed.js\
     ${SRC_DIR}/ui.toaster.js\
- 	${SRC_DIR}/ctrl.masked.js\
+ 	${SRC_DIR}/ui.masked.js\
 #   ${SRC_DIR}/api.youtube.js\
-#	${SRC_DIR}/ctrl.datetime.js\
-#	${SRC_DIR}/ctrl.keynav.js\
+#	${SRC_DIR}/ui.datetime.js\
+#	${SRC_DIR}/ui.keynav.js\
 #   ${SRC_DIR}/jquery.forms.js\
 #   ${SRC_DIR}/jquery.jpath.js\
 #	${SRC_DIR}/ui.awesomebar.js\

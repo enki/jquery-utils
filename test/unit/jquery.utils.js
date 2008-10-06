@@ -2,11 +2,10 @@ $(function(){
     module('jquery.utils.js');
 
     test('jQuery utils core tests', function() {
-        expect(34);
+        expect(33);
         
         // jquery.utils integrity check
         ok(typeof $.ui             == 'object',   'jQuery UI is defined')
-        ok(typeof $.ctrl           == 'object',   'jQuery CTRL is defined')
         ok(typeof $.isRegExp       == 'function', 'jQuery isRegExp is defined')
         ok(typeof $.isArray        == 'function', 'jQuery isArray is defined')
         ok(typeof $.toCurrency     == 'function', 'jQuery toCurrency is defined')

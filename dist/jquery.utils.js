@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.2
+  jQuery utils - 0.3
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -10,9 +10,6 @@
 */
 
 (function($){
-    // I use the ui widget api for controls
-    if ($.ui) { $.ctrl  = { widget: $.ui.widget, plugins: $.ui.plugins }; }
-
 	$.extend({ 
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;
@@ -2170,7 +2167,7 @@ $.fn.extend({
   | maxlength       |   |   | true if input is less or equal than specified length      |
   | net.email       | x | x | true if input is a valid email address                    |
   | net.ip          | x | x | true if input is a valid IPv4 address                     |
-  | net.mac         | x |   | true if input is a valid MAC address                      |
+  | net.mac         | x | x | true if input is a valid MAC address                      |
   | net.uri         |   |   | true if input is a valid URL (http, ftp, svn, ...)        |
   | date            |   |   | true if input is a valid date (ISO)                       |
   | creditcard      |   |   | true if input is a valid credit card number               |
