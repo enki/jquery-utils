@@ -1,7 +1,5 @@
-if (typeof(isRhino)=='undefined') { // Automated test suite doesn't like timers :/
-
 $(function(){
-    for (var x=1;x<7;x++) { $('#fixtures').append($('<span id="countdown'+x+'"></span>')); }
+    for (var x=1;x<7;x++) { $('<span id="countdown'+x+'"></span>').appendTo('#fixtures'); }
     module('jquery.countdown.js');
 
     test('Countdown tests', function() {
@@ -31,8 +29,4 @@ $(function(){
        $('#countdown6').countdown({msgFormat: '%h', day: '+1' });
        equals($('#countdown6').text(), '23', 'Functional argument (day)');
     });
-
-    $('#fixtures').html('');
 });
-}
-
