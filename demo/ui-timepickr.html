@@ -13,6 +13,7 @@
             });
         </script>
         <style type="text/css">
+        .niy * { color:#999!important; }
         .ui-timepickr {
             position:absolute;
             width:400px;
@@ -94,6 +95,132 @@
         <pre>$(function(){
     $('#test-1').timepickr();
 });</pre>
+        <h3>Options</h3>
+        <table class="list" cellpadding="0" cellspacing="0" summary="">
+            <thead>
+                <tr>
+                    <th>Options</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>hour</th>
+                    <td>[1,2,3,4,5,6,7,8,9,10,11,12]</td>
+                    <td>available hours to pick</td>
+                </tr>
+                <tr>
+                    <th>minute</th>
+                    <td>[0, 15, 30, 45]</td>
+                    <td>available minutes to pick</td>
+                </tr>
+                <tr>
+                    <th>second</th>
+                    <td>[0, 15, 30, 45]</td>
+                    <td>available seconds to pick</td>
+                </tr>
+                <tr>
+                    <th>amPm</th>
+                    <td>['am', 'pm']</td>
+                    <td>AM/PM labels</td>
+                </tr>
+                <tr>
+                    <th>showHour</th>
+                    <td>true</td>
+                    <td>Show the hour picker</td>
+                </tr>
+                <tr>
+                    <th>showMinute</th>
+                    <td>true</td>
+                    <td>Show the minute picker</td>
+                </tr>
+                <tr class="niy">
+                    <th>showSecond</th>
+                    <td>false</td>
+                    <td>Show the second picker</td>
+                </tr>
+                <tr>
+                    <th>showAmPm</th>
+                    <td>true</td>
+                    <td>Show the AM/PM picker</td>
+                </tr>
+                <tr>
+                    <th>showDelay</th>
+                    <td>0</td>
+                    <td>delay before showing (seconds)</td>
+                </tr>
+                <tr>
+                    <th>hideDelay</th>
+                    <td>0</td>
+                    <td>delay before hiding (seconds)</td>
+                </tr>
+                <tr>
+                    <th>timeout</th>
+                    <td>0</td>
+                    <td>time before automatically hiding (seconds, 0 == never)</td>
+                </tr>
+                <tr>
+                    <th>speed</th>
+                    <td>0</td>
+                    <td>animations speed</td>
+                </tr>
+                <tr><th>onClose</th> <td>false</td><td>callback before closing</td></tr>
+                <tr><th>onClosed</th><td>false</td><td>callback after closing</td></tr>
+                <tr><th>onOpen</th>  <td>false</td><td>callback before opening</td></tr>
+                <tr><th>onOpened</th><td>false</td><td>callback after opening</td></tr>
+                <tr class="niy"><th>onHide</th>  <td>false</td><td>callback when closed by user</td></tr>
+                <tr>
+                    <th>repSpeed</th>
+                    <td>50</td>
+                    <td>Repositioning speed</td>
+                </tr>
+                <tr>
+                    <th>repDelay</th>
+                    <td>10</td>
+                    <td>Repositioning delay</td>
+                </tr>
+                <tr>
+                    <th>val</th>
+                    <td>false</td>
+                    <td>Initial value</td>
+                </tr>
+                <tr>
+                    <th>formats</th>
+                    <td>{}</td>
+                    <td>Display formats (object)</td>
+                </tr>
+                <tr>
+                    <th>formats.field</th>
+                    <td>{hour:02d}:{min:02d} {amPm:s}</td>
+                    <td>Time format of the input field</td>
+                </tr>
+                <tr>
+                    <th>formats.hour</th>
+                    <td>{0:02d}</td>
+                    <td>Time format of hours</td>
+                </tr>
+                <tr>
+                    <th>formats.minute</th>
+                    <td>{0:02d}</td>
+                    <td>Time format of minutes</td>
+                </tr>
+                <tr>
+                    <th>formats.second</th>
+                    <td>{0:02d}</td>
+                    <td>Time format of seconds</td>
+                </tr>
+                <tr>
+                    <th>formats.amPm</th>
+                    <td>{0}</td>
+                    <td>AM/PM format</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>
+            <b>Note:</b> some of these options might not work correctly yet.
+        </p>
+
         <h3>Todo</h3>
         <ul>
             <li>Internationalization (different time formats)</li>
