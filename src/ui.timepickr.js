@@ -128,9 +128,9 @@ $.widget('ui.timepickr', {
         var self  = this;
         var pickr = pickr || 'hour';
         setTimeout(function(){
+            self.reposition.apply(self, [self.ui[pickr].find('li.selected, li:first').eq(0).get(0)]);
             if (self.options.onOpen) { self.options.onOpen.apply(self); }
-            self.ui[pickr].slideDown(self.options.speed);
-            self.reposition.apply(self, [self.ui[pickr].filter('li.selected, li:first').eq(0)]);
+            self.ui[pickr].show(self.options.speed);
             if (self.options.onOpened) { self.options.onOpened.apply(self); }
         }, self.options.showDelay * 1000);
     },
