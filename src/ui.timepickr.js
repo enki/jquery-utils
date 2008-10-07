@@ -182,5 +182,5 @@ $.ui.timepickr.defaults = {
         minute: '{0:02d}',
         second: '{0:02d}',
         amPm:   '{0}'
-    },
+    }
 };
