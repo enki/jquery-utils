@@ -1,0 +1,107 @@
+<html>
+    <head>
+        <link rel="Stylesheet" media="screen" href="data/styles.css" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
+        <script type="text/javascript" src="data/ui.js"></script>
+        <script type="text/javascript" src="../src/jquery.utils.js"></script>
+        <script type="text/javascript" src="../src/jquery.strings.js"></script>
+        <script type="text/javascript" src="../src/ui.timepickr.js"></script>
+
+        <script type="text/javascript">
+            $(function(){
+                $('#test-1').timepickr();
+            });
+        </script>
+        <style type="text/css">
+        .ui-timepickr {
+            position:absolute;
+            width:400px;
+        }
+        .ui-timepickr-field {
+            width:70px;
+        }
+        .ui-timepickr-hour,
+        .ui-timepickr-minute,
+        .ui-timepickr-amPm {
+            margin:0;padding:0;
+            height:24px;
+            clear:both;
+        }
+        .ui-timepickr-hour,
+        .ui-timepickr-minute,
+        .ui-timepickr-second,
+        .ui-timepickr-amPm {
+            position:absolute;
+        }
+        .ui-timepickr-minute { margin-top:24px; }
+        .ui-timepickr-second { margin-top:24px; }
+        .ui-timepickr-amPm{ margin-top:48px; }
+        .ui-timepickr-hour li,
+        .ui-timepickr-amPm li,
+        .ui-timepickr-minute li {
+            list-style:none;
+            float:left;
+            display:block;
+            width:22px;
+            font-size:.7em;
+            padding:4px 0 4px 0;
+            margin:2px 2px 2px 0;
+            border:1px solid ButtonShadow;
+            background:ButtonFace;
+            color:ButtonText;
+            text-align:center;
+            cursor:pointer;
+            -moz-border-radius:3px;
+        }
+        .ui-timepickr-hour li.hover,
+        .ui-timepickr-amPm li.hover,
+        .ui-timepickr-minute li.hover {
+            background:Highlight;
+            color:HighlightText;
+        }
+        </style>
+    </head>
+    <body id="body">
+        <h2>jquery.timepickr.js</h2>
+        <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
+        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <a class="related-links experimental">Experimental code !</a>
+        <p>
+            This is my humble attempt to enhence web time picking.
+        </p>
+        <p>
+            For the moment I'd call it a toy project, it might stay in experimental state evitam eternam.. I just wanted to see if I could create a better time picker.
+            I've seen lots of time pickers styles and approaches, but none seems to focus on user experience accross many platforms and beautiful degradation.
+        </p>
+        <p>
+            So I've determined a set of goals to achieve a better time picker.
+        </p>
+        <h3>Goals</h3>
+        <ul>
+            <li>Unobstrusive</li>
+            <li>Graceful degradation</li>
+            <li>Using maximum 2 clicks</li>
+            <li>Intuitive keyboard navigation</li>
+            <li>Be touch friendly (think iphone, tablet pc, etc..)</li>
+        </ul>
+        <h3>Demo</h3>
+        <p>
+            <label>Start time:</label> 
+            <input id="test-1" type="text" value="12:00">
+            <img src="data/clock.png" alt="Time" border="0" style="position:absolute;margin:4px 0 0 6px;" />
+        </p>
+        <h3>Basic usage</h3>
+        <pre>$(function(){
+    $('#test-1').timepickr();
+});</pre>
+        <h3>Todo</h3>
+        <ul>
+            <li>Internationalization (different time formats)</li>
+            <li>Custom positioning (left, center, right)</li>
+            <li>Make all options work</li>
+            <li>Support for seconds</li>
+            <li>Labels</li>
+        </ul>
+    </body>
+</html>
+

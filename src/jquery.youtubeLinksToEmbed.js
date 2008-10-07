@@ -1,17 +1,11 @@
 /*
-  jQuery youtubeLinksToEmbed - 0.2
+  jQuery youtubeLinksToEmbed - 0.3
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com>
   http://haineault.com   
 
   MIT License (http://www.opensource.org/licenses/mit-license.php)
-
-  Changelog
-  =========
-  0.2
-  - code cleanup
-  - now if the link is clicked twice nothing happens
 
 */
 
@@ -52,14 +46,25 @@
         }    
     };
 
-    $.extend($.fn, {
-        youtubeLinksToEmbed: function(options){
-            $(this).find('a[href~=youtube.com/watch?v=]')
-                .addClass('youtubeLinksToEmbed')
-                .each(function(){ 
-                    $(this).click(yl2e.onclick); });
-        }
-    });
+    $.fn.youtubeLinksToEmbed = function(options){
+        var opt = $.extend({autoOpen: false}, options);
+        $(this).find('a[href~=youtube.com/watch?v=]')
+            .addClass('youtubeLinksToEmbed')
+            .each(function(){ 
+                $(this).click(yl2e.onclick);
+                if (opt.autoOpen) {
+                    $(this).trigger('click');
+                }});
+    };
+
+    $.fn.youtubeInputsToEmbed = function(options) {
+        $(this).find('input[value~=youtube.com/watch?v=]')
+            .addClass('youtubeLinksToEmbed')
+            .each(function(){ 
+                $('<a href="'+ $(this).val() +'">watch</a>')
+                    .insertAfter(this);});
+        $(this).youtubeLinksToEmbed(options);
+    };
 })(jQuery);
 
 $(document).ready(function(){
