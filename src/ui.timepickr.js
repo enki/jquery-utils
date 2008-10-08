@@ -40,8 +40,10 @@ $.widget('ui.timepickr', {
             .append(self.ui.amPm)
             .insertAfter(self.element);
 
-        for (i in self.types) {
+        for (var i in self.types) {
             self.populateList(self.types[i]);
+            self.ui[self.types[i]].mousemove(function(e){
+                self.events.mousemove.apply(this, [e, self]); });
         }
         self.element
             .addClass('ui-timepickr-field ')
@@ -54,7 +56,7 @@ $.widget('ui.timepickr', {
     populateList: function(type) {
         var self   = this;
         var range  = self.getRange(type);
-        for (i in range) {
+        for (var i in range) {
             $($.format('<li class="ui-timepickr-{0:s}-btn">', type))
                 .mouseover(function(e){ self.events.mouseover.apply(this, [e, self]); })
                 .click(function(e){ self.hide(); })
@@ -85,13 +87,26 @@ $.widget('ui.timepickr', {
                     amPm: self.current.amPm || 'am'}));
     },
     events: {
+        mousemove: function(e, timepickr) {
+            var type = $(this).attr('class').match(/ui-timepickr-(hour|minute|second|amPm)/)[1];
+            var idx  = timepickr.types.indexOf(type);
+            if (timepickr.types[idx+1]) {
+                switch(timepickr.types[idx]) {
+                    case 'hour':
+                        timepickr.reposition2.apply(timepickr, [timepickr.types[idx+1]]);
+                    break;
+                }
+                //console.log(timepickr.types[idx+1]);
+                //timepickr.show(timepickr.types[idx+1]);
+            }
+        },
         mouseover: function(e, timepickr) {
             var type = $(this).parent().attr('class').match(/ui-timepickr-(hour|minute|second|amPm)/)[1];
             var idx  = timepickr.types.indexOf(type);
             $(this).parent().find('li').removeClass('hover');
             $(this).addClass('hover');
             timepickr.hover(type, $(this).text());
-            timepickr.reposition.apply(timepickr, [this]);
+            //timepickr.reposition.apply(timepickr, [this]);
             if (timepickr.types[idx+1]) {
                 timepickr.show(timepickr.types[idx+1]);
             }
@@ -105,6 +120,24 @@ $.widget('ui.timepickr', {
                 self.ui[type][func].apply(self.ui[type], args);
             }
         }
+    },
+    reposition2: function(pickr) {
+        var self   = this;
+        var prevOL = false;
+        var nextOL = false;
+        var method = self.options.repSpeed > 10 && 'animate' || 'css';
+        var offset = 0;
+        self.ui.wrapper.find('ol').each(function(){
+            var prevOL = $(this).prevAll('ol:visible:last');
+            var nextOL = $(this).nextAll('ol:visible:first');
+            if (prevOL.get(0)) {
+                var prevLI = prevOL.find('li.hover');
+                if (!prevLI.get(0)) {
+                    var prevLI = prevOL.find('li:first');
+                }
+                $(this).css({left: prevLI.position().left + offset});
+            }
+        });
     },
     reposition: function(pickr) {
         var self      = this;
@@ -128,10 +161,10 @@ $.widget('ui.timepickr', {
         var self  = this;
         var pickr = pickr || 'hour';
         setTimeout(function(){
-            self.reposition.apply(self, [self.ui[pickr].find('li.selected, li:first').eq(0).get(0)]);
             if (self.options.onOpen) { self.options.onOpen.apply(self); }
             self.ui[pickr].show(self.options.speed);
             if (self.options.onOpened) { self.options.onOpened.apply(self); }
+            self.reposition2.apply(self, [pickr]);
         }, self.options.showDelay * 1000);
     },
     hide: function() {
@@ -164,7 +197,7 @@ $.ui.timepickr.defaults = {
 	showDelay:   0,                // delay before showing (seconds)
 	hideDelay:   0,                // delay before hide (seconds)
 	timeout:     0,                // time before automatically hiding (seconds, 0 == never)
-	speed:       'fast',           // animations speed
+	speed:       0,                // animations speed
 	onClose:     false,            // callback before closing
 	onClosed:    false,            // callback after closing
 	onOpen:      false,            // callback before opening
