@@ -45,7 +45,8 @@ $.widget('ui.timepickr', {
 
         $(self.options.trigger)
             .bind(self.options.triggerEvent, function(){ 
-                  self.locked = false; });
+                   self.locked = false;
+                   self.show(); });
 
         if (self.options.val && !self.element.val()) {
              self.element.val(self.options.val)
