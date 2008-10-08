@@ -13,6 +13,7 @@ $.widget('ui.timepickr', {
     init: function() {
         var self     = this;
         var pos      = self.element.position();
+        self.locked  = false;
         self.types   = [];
         self.current = {hour:1, minute:0, second:0, amPm: 'am' };
 
@@ -23,35 +24,36 @@ $.widget('ui.timepickr', {
 
         self.ui = {
             wrapper: $('<div class="ui-timepickr" />').css({left: pos.left}),
-            hour:   $('<ol class="ui-timepickr-hour" style="display:none;" />'),
-            minute: $('<ol class="ui-timepickr-minute" style="display:none;" />'),
-            second: $('<ol class="ui-timepickr-second" style="display:none;" />'),
-            amPm:   $('<ol class="ui-timepickr-amPm" style="display:none;" />'),
             clear:  function(){ return $('<div style="clear:both;">'); }
         };
 
-        $(self.ui.wrapper)
-            .append(self.ui.hour)
-            .append(self.ui.clear())
-            .append(self.ui.minute)
-            .append(self.ui.clear())
-            .append(self.ui.second)
-            .append(self.ui.clear())
-            .append(self.ui.amPm)
-            .insertAfter(self.element);
-
         for (var i in self.types) {
-            self.populateList(self.types[i]);
-            self.ui[self.types[i]].mousemove(function(e){
-                self.events.mousemove.apply(this, [e, self]); });
+            var type = self.types[i];
+            self.ui[type] = $($.format('<ol class="ui-timepickr-{0:s}" style="display:none;" />', type))
+                .mousemove(function(e){ self.events.mousemove.apply(this, [e, self]); })
+                .appendTo(self.ui.wrapper);
+            self.ui.wrapper.append(self.ui.clear());
+            self.populateList(type);
         }
+
         self.element
             .addClass('ui-timepickr-field ')
-            .focus(function(){ self.show(); });
+            .blur(function(){  self.hide(); })
+            .focus(function(){ 
+                    self.locked = false;
+                    self.show(); });
+
+        $(self.options.trigger)
+            .bind(self.options.triggerEvent, function(){ 
+                  self.locked = false; 
+                  self.show(); });
 
         if (self.options.val && !self.element.val()) {
              self.element.val(self.options.val)
         }
+
+        $(self.ui.wrapper)
+            .insertAfter(self.element);
     },
     populateList: function(type) {
         var self   = this;
@@ -59,14 +61,13 @@ $.widget('ui.timepickr', {
         for (var i in range) {
             $($.format('<li class="ui-timepickr-{0:s}-btn">', type))
                 .mouseover(function(e){ self.events.mouseover.apply(this, [e, self]); })
-                .click(function(e){ self.hide(); })
+                .click(function(e){ self.select(); })
                 .appendTo(self.ui[type])
-                .text($.format(self.options.formats[type] ||  '', range[i]));
+                .text($.format(self.options.formats[type] || '', range[i]));
         }
     },
     hover: function() {
         var self = this;
-        
         if (arguments.length < 3 && typeof(arguments[0]) == 'string') { // type, value
             self.current[arguments[0]] = arguments[1];
         }
@@ -91,24 +92,19 @@ $.widget('ui.timepickr', {
             var type = $(this).attr('class').match(/ui-timepickr-(hour|minute|second|amPm)/)[1];
             var idx  = timepickr.types.indexOf(type);
             if (timepickr.types[idx+1]) {
-                switch(timepickr.types[idx]) {
-                    case 'hour':
-                        timepickr.reposition2.apply(timepickr, [timepickr.types[idx+1]]);
-                    break;
-                }
-                //console.log(timepickr.types[idx+1]);
-                //timepickr.show(timepickr.types[idx+1]);
+                timepickr.reposition.apply(timepickr, [timepickr.types[idx+1]]);
             }
         },
         mouseover: function(e, timepickr) {
-            var type = $(this).parent().attr('class').match(/ui-timepickr-(hour|minute|second|amPm)/)[1];
-            var idx  = timepickr.types.indexOf(type);
-            $(this).parent().find('li').removeClass('hover');
-            $(this).addClass('hover');
-            timepickr.hover(type, $(this).text());
-            //timepickr.reposition.apply(timepickr, [this]);
-            if (timepickr.types[idx+1]) {
-                timepickr.show(timepickr.types[idx+1]);
+            if (!timepickr.locked) {
+                var type = $(this).parent().attr('class').match(/ui-timepickr-(hour|minute|second|amPm)/)[1];
+                var idx  = timepickr.types.indexOf(type);
+                $(this).parent().find('li').removeClass('hover');
+                $(this).addClass('hover');
+                timepickr.hover(type, $(this).text());
+                if (timepickr.types[idx+1]) {
+                    timepickr.show(timepickr.types[idx+1]);
+                }
             }
         }
     },
@@ -116,12 +112,10 @@ $.widget('ui.timepickr', {
         var self = this;
         for (i in self.types) {
             var type = self.types[i];
-            if (self.ui[type][func]) {
-                self.ui[type][func].apply(self.ui[type], args);
-            }
+            func.apply(self.ui[type], args || []);
         }
     },
-    reposition2: function(pickr) {
+    reposition: function(pickr) {
         var self   = this;
         var prevOL = false;
         var nextOL = false;
@@ -139,41 +133,35 @@ $.widget('ui.timepickr', {
             }
         });
     },
-    reposition: function(pickr) {
-        var self      = this;
-        var pickr1    = $(pickr);
-        var pickr2    = $(pickr).parent().nextAll('ol:visible');
-        if (pickr2.length > 0) {
-            var pickr1Pos = pickr1.position();
-            var pickr2Pos = pickr2.position();
-            var method    = self.options.repSpeed > 10 && 'animate' || 'css';
-            var offsetL   = 0;
-            // cummulative offset plz 
-            $(pickr).parent().prevAll('ol:visible').each(function(){
-                offsetL = offsetL + $('li.hover, li:first',  this).eq(0).position().left;
-            });
-            setTimeout(function(){
-                pickr2[method]({left:pickr1Pos.left + offsetL + 1}, self.options.repSpeed);
-            }, self.options.repDelay);
-        }
+    select: function() {
+        var self = this;
+        self.locked = true;
+        self.hide();
+        self.update();
     },
     show: function(pickr) {
         var self  = this;
         var pickr = pickr || 'hour';
         setTimeout(function(){
-            if (self.options.onOpen) { self.options.onOpen.apply(self); }
-            self.ui[pickr].show(self.options.speed);
-            if (self.options.onOpened) { self.options.onOpened.apply(self); }
-            self.reposition2.apply(self, [pickr]);
+            self.signals('onOpen');
+            self.options.show.apply(self.ui[pickr], [self.options.speed])
+            self.reposition.apply(self, [pickr]);
+            self.signals('onOpened');
         }, self.options.showDelay * 1000);
     },
     hide: function() {
         var self = this;
         setTimeout(function(){
-            if (self.options.onClose) { self.options.onClose.apply(self); }
-            self.propagate('hide', [self.options.speed]);
-            if (self.options.onClosed) { self.options.onClosed.apply(self); }
+            self.signals('onClose');
+            self.propagate(self.options.hide, [self.options.speed]);
+            self.signals('onClosed');
         }, self.options.hideDelay * 1000);
+    },
+    signals: function(type, args) {
+        var self = this;
+        if (self.options[type] && $.isFunction(self.options[type])) {
+            self.options[type].apply(self, args || []);
+        }
     },
     getRange: function(type) {
         var self = this;
@@ -186,29 +174,30 @@ $.widget('ui.timepickr', {
 });
 
 $.ui.timepickr.defaults = {
-    hour:        [1,2,3,4,5,6,7,8,9,10,11,12], // available hours to pick
-    minute:      [0, 15, 30, 45],  // available minutes to pick
-    second:      [0, 15, 30, 45],  // available seconds to pick
-    amPm:        ['am', 'pm'],     // AM/PM labels
-    showHour:    true,
-    showMinute:  true,
-    showSecond:  false,
-    showAmPm:    true,
-	showDelay:   0,                // delay before showing (seconds)
-	hideDelay:   0,                // delay before hide (seconds)
-	timeout:     0,                // time before automatically hiding (seconds, 0 == never)
-	speed:       0,                // animations speed
-	onClose:     false,            // callback before closing
-	onClosed:    false,            // callback after closing
-	onOpen:      false,            // callback before opening
-	onOpened:    false,            // callback after opening
-	onHide:      false,            // callback when closed by user
-	show:	     $.fn.slideDown,   // showing effect
-	hide:	     $.fn.fadeOut,     // closing effect (by user)
-	close:       $.fn.slideUp,     // hiding effect (timeout)
-    repSpeed:    50,               // reposition speed
-    repDelay:    10,               // reposition delay
-    val:         false,            // default value
+    hour:         [1,2,3,4,5,6,7,8,9,10,11,12], // available hours to pick
+    minute:       [0, 15, 30, 45],  // available minutes to pick
+    second:       [0, 15, 30, 45],  // available seconds to pick
+    amPm:         ['am', 'pm'],     // AM/PM labels
+    showHour:     true,
+    showMinute:   true,
+    showSecond:   false,
+    showAmPm:     true,
+	showDelay:    0,                // delay before showing (seconds)
+	hideDelay:    0.3,              // delay before hide (seconds)
+	timeout:      0,                // time before automatically hiding (seconds, 0 == never)
+	speed:        'fast',           // animations speed
+	onClose:      false,            // callback before closing
+	onClosed:     false,            // callback after closing
+	onOpen:       false,            // callback before opening
+	onOpened:     false,            // callback after opening
+	onHide:       false,            // callback when closed by user
+	show:	      $.fn.slideDown,   // showing effect
+	hide:	      $.fn.fadeOut,     // closing effect (by user)
+    repSpeed:     0,                // reposition speed
+    repDelay:     0,                // reposition delay
+    val:          false,            // default value
+    trigger:      false,            // specify an element which will open the picker upon triggerEvent (click)
+    triggerEvent: 'click',          // trigger's event
     formats: {
         field:  '{hour:02d}:{min:02d} {amPm:s}',
         hour:   '{0:02d}',

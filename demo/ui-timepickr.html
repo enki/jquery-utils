@@ -9,7 +9,7 @@
 
         <script type="text/javascript">
             $(function(){
-                $('#test-1').timepickr();
+                $('#test-1').timepickr({trigger: '#trigger-test'});
             });
         </script>
         <style type="text/css">
@@ -93,7 +93,7 @@
         <p>
             <label>Start time:</label> 
             <input id="test-1" type="text" value="12:00">
-            <img src="data/clock.png" alt="Time" border="0" style="position:absolute;margin:4px 0 0 6px;" />
+            <img src="data/clock.png" alt="Time" border="0" style="position:absolute;margin:4px 0 0 6px;" id="trigger-test" />
         </p>
         <h3>Basic usage</h3>
         <pre>$(function(){
