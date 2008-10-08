@@ -40,13 +40,12 @@ $.widget('ui.timepickr', {
             .addClass('ui-timepickr-field ')
             .blur(function(){  self.hide(); })
             .focus(function(){ 
-                    self.locked = false;
-                    self.show(); });
+                   self.locked = false;
+                   self.show(); });
 
         $(self.options.trigger)
             .bind(self.options.triggerEvent, function(){ 
-                  self.locked = false; 
-                  self.show(); });
+                  self.locked = false; });
 
         if (self.options.val && !self.element.val()) {
              self.element.val(self.options.val)
@@ -117,19 +116,17 @@ $.widget('ui.timepickr', {
     },
     reposition: function(pickr) {
         var self   = this;
+        var prevLI = false;
         var prevOL = false;
         var nextOL = false;
         var method = self.options.repSpeed > 10 && 'animate' || 'css';
         var offset = 0;
         self.ui.wrapper.find('ol').each(function(){
-            var prevOL = $(this).prevAll('ol:visible:last');
-            var nextOL = $(this).nextAll('ol:visible:first');
+            prevOL = $(this).prevAll('ol:visible:first');
             if (prevOL.get(0)) {
-                var prevLI = prevOL.find('li.hover');
-                if (!prevLI.get(0)) {
-                    var prevLI = prevOL.find('li:first');
-                }
+                prevLI = prevOL.find('li.hover, li:first').eq(0);
                 $(this).css({left: prevLI.position().left + offset});
+                offset = offset + prevLI.position().left;
             }
         });
     },
