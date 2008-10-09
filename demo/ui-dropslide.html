@@ -1,0 +1,319 @@
+<html>
+    <head>
+        <link rel="Stylesheet" media="screen" href="data/styles.css" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
+        <script type="text/javascript" src="data/ui.js"></script>
+        <script type="text/javascript" src="../src/jquery.utils.js"></script>
+        <script type="text/javascript" src="../src/jquery.strings.js"></script>
+        <script type="text/javascript" src="../src/ui.timepickr.js"></script>
+
+        <script type="text/javascript">
+            $(function(){
+                $('#test-1').timepickr({trigger: '#trigger-test'});
+            });
+        </script>
+        <style type="text/css">
+        .niy * { color:#999!important; }
+        .ui-timepickr {
+            position:absolute;
+            width:400px;
+        }
+        .ui-timepickr-field {
+            width:70px;
+        }
+        .ui-timepickr-hour,
+        .ui-timepickr-minute,
+        .ui-timepickr-amPm {
+            margin:0;padding:0;
+            height:26px;
+            clear:both;
+        }
+        .ui-timepickr-hour,
+        .ui-timepickr-minute,
+        .ui-timepickr-second,
+        .ui-timepickr-amPm {
+            position:absolute;
+        }
+        .ui-timepickr-minute { margin-top:26px; }
+        .ui-timepickr-second { margin-top:26px; }
+        .ui-timepickr-amPm{ margin-top:52px; }
+        .ui-timepickr-hour li,
+        .ui-timepickr-amPm li,
+        .ui-timepickr-minute li {
+            list-style:none;
+            float:left;
+            display:block;
+            width:22px;
+            font-size:.7em;
+            padding:4px 0 4px 0;
+            margin:2px 2px 2px 0;
+            border:1px solid ButtonShadow;
+            background:ButtonFace;
+            color:ButtonText;
+            text-align:center;
+            cursor:pointer;
+            -moz-border-radius:3px;
+        }
+        .ui-timepickr-hour li.hover,
+        .ui-timepickr-amPm li.hover,
+        .ui-timepickr-minute li.hover {
+            background:Highlight;
+            color:HighlightText;
+        }
+
+
+        /* dropslide */
+
+        .ui-dropslide ol {
+            padding:0;
+        }
+        .ui-dropslide ol li {
+            float:left;
+            list-style:none;
+            margin:0;
+        }
+        .ui-dropslide ol li span {
+            display:block;
+            font-size:.7em;
+            padding:4px 6px 4px 6px;
+            margin:2px 2px 2px 0;
+            border:1px solid ButtonShadow;
+            background:ButtonFace;
+            color:ButtonText;
+            text-align:center;
+            cursor:pointer;
+            -moz-border-radius:3px;
+        }
+        </style>
+    </head>
+    <body id="body">
+        <h2>jquery.timepickr.js</h2>
+        <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
+        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <a class="related-links experimental">Experimental code !</a>
+        <p>
+            This is my humble attempt to enhence web time picking.
+        </p>
+        <p>
+            For the moment I'd call it a toy project, it might stay in experimental state evitam eternam.. I just wanted to see if I could create a better time picker.
+            I've seen lots of time pickers styles and approaches, but none seems to focus on user experience accross many platforms and beautiful degradation.
+        </p>
+        <p>
+            So I've determined a set of goals to achieve a better time picker.
+        </p>
+        <h3>Goals</h3>
+        <ul>
+            <li>Unobtrusive</li>
+            <li>Graceful degradation</li>
+            <li>Using maximum 2 clicks</li>
+            <li>Intuitive keyboard navigation</li>
+            <li>Be touch friendly (think iphone, tablet pc, etc..)</li>
+        </ul>
+        <h3>Demo</h3>
+        <p>
+            <b>Note:</b> Sorry as it is only a experimental plugin for the moment, it's only tested Firefox 3 so far. It seems
+            to work under Google Chrome and Safari but I have not extensively tested it.
+        </p>
+        <p>
+            <span class="ui-dropslide">
+                <img src="data/exclamation.png" alt="Time" border="0" class="ui-dropslide-trigger" />
+                <ol>
+                    <li><span>1</span></li>
+                    <li><span>2</span></li>
+                    <li><span>3</span></li>
+                </ol>
+                <ol>
+                    <li><span>A</span></li>
+                    <li><span>B</span></li>
+                    <li><span>C</span></li>
+                </ol>
+            </span>
+        </p>
+        <p>
+            <span class="ui-dropslide">
+                <img src="data/exclamation.png" alt="Time" border="0" class="ui-dropslide-trigger" />
+                <ol>
+                    <li>
+                        <span>Canada</span>
+                        <ol>
+                             <li><span>Ontario</span></li>
+                             <li><span>Quebec</span></li>
+                             <li><span>Nova Scotia</span></li>
+                             <li><span>New Brunswick</span></li>
+                             <li><span>Manitoba</span></li>
+                             <li><span>British Columbia</span></li>
+                             <li><span>Prince Edward Island</span></li>
+                             <li><span>Saskatchewan</span></li>
+                             <li><span>Alberta</span></li>
+                             <li><span>Newfoundland</span></li>
+                             <li><span>Labrador</span></li>
+                        </ol>
+                    </li>
+                    <li>
+                        <span>United States</span>
+                        <ol>
+                            <li><span>Newfoundland</span></li>
+                            <li><span>Labrador</span></li>
+                        </ol>
+                    </li>
+                </ol>
+            </span>
+        </p>
+        <p>
+            <label>Start time:</label> 
+            <input id="test-1" type="text" value="12:00">
+            <img src="data/clock.png" alt="Time" border="0" style="position:absolute;margin:4px 0 0 6px;" id="trigger-test" />
+        </p>
+        <h3>Basic usage</h3>
+        <pre>$(function(){
+    $('#test-1').timepickr();
+});</pre>
+        <h3>Options</h3>
+        <table class="list" cellpadding="0" cellspacing="0" summary="">
+            <thead>
+                <tr>
+                    <th>Options</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>hour</th>
+                    <td>[1,2,3,4,5,6,7,8,9,10,11,12]</td>
+                    <td>available hours to pick</td>
+                </tr>
+                <tr>
+                    <th>minute</th>
+                    <td>[0, 15, 30, 45]</td>
+                    <td>available minutes to pick</td>
+                </tr>
+                <tr>
+                    <th>second</th>
+                    <td>[0, 15, 30, 45]</td>
+                    <td>available seconds to pick</td>
+                </tr>
+                <tr>
+                    <th>amPm</th>
+                    <td>['am', 'pm']</td>
+                    <td>AM/PM labels</td>
+                </tr>
+                <tr>
+                    <th>showHour</th>
+                    <td>true</td>
+                    <td>Show the hour picker</td>
+                </tr>
+                <tr>
+                    <th>showMinute</th>
+                    <td>true</td>
+                    <td>Show the minute picker</td>
+                </tr>
+                <tr class="niy">
+                    <th>showSecond</th>
+                    <td>false</td>
+                    <td>Show the second picker</td>
+                </tr>
+                <tr>
+                    <th>showAmPm</th>
+                    <td>true</td>
+                    <td>Show the AM/PM picker</td>
+                </tr>
+                <tr>
+                    <th>showDelay</th>
+                    <td>0</td>
+                    <td>delay before showing (seconds)</td>
+                </tr>
+                <tr>
+                    <th>hideDelay</th>
+                    <td>0</td>
+                    <td>delay before hiding (seconds)</td>
+                </tr>
+                <tr>
+                    <th>timeout</th>
+                    <td>0</td>
+                    <td>time before automatically hiding (seconds, 0 == never)</td>
+                </tr>
+                <tr>
+                    <th>speed</th>
+                    <td>0</td>
+                    <td>animations speed</td>
+                </tr>
+                <tr><th>onClose</th> <td>false</td><td>callback before closing</td></tr>
+                <tr><th>onClosed</th><td>false</td><td>callback after closing</td></tr>
+                <tr><th>onOpen</th>  <td>false</td><td>callback before opening</td></tr>
+                <tr><th>onOpened</th><td>false</td><td>callback after opening</td></tr>
+                <tr class="niy"><th>onHide</th>  <td>false</td><td>callback when closed by user</td></tr>
+                <tr>
+                    <th>repSpeed</th>
+                    <td>50</td>
+                    <td>Repositioning speed</td>
+                </tr>
+                <tr>
+                    <th>repDelay</th>
+                    <td>10</td>
+                    <td>Repositioning delay</td>
+                </tr>
+                <tr>
+                    <th>val</th>
+                    <td>false</td>
+                    <td>Initial value</td>
+                </tr>
+                <tr>
+                    <th>formats</th>
+                    <td>{}</td>
+                    <td>Display formats (object)</td>
+                </tr>
+                <tr>
+                    <th>formats.field</th>
+                    <td>{hour:02d}:{min:02d} {amPm:s}</td>
+                    <td>Time format of the input field</td>
+                </tr>
+                <tr>
+                    <th>formats.hour</th>
+                    <td>{0:02d}</td>
+                    <td>Time format of hours</td>
+                </tr>
+                <tr>
+                    <th>formats.minute</th>
+                    <td>{0:02d}</td>
+                    <td>Time format of minutes</td>
+                </tr>
+                <tr>
+                    <th>formats.second</th>
+                    <td>{0:02d}</td>
+                    <td>Time format of seconds</td>
+                </tr>
+                <tr>
+                    <th>formats.amPm</th>
+                    <td>{0}</td>
+                    <td>AM/PM format</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>
+            <b>Note:</b> some of these options might not work correctly yet.
+        </p>
+
+        <h3>Todo</h3>
+        <ul>
+            <li>Internationalization (different time formats, <b>ex 24h</b>)</li>
+            <li>Custom positioning (left, center, right)</li>
+            <li>am/pm mouse follow should be optional</li>
+            <li>Fix remaining behavior bugs</li>
+            <li>Test browser compatibility</li>
+            <li>Make animation more smooth</li>
+            <li>Make all options work</li>
+            <li>Support for seconds</li>
+            <li>Allow custom handler (click clock icon = open picker)</li>
+            <li>keynav: <em>esc</em> = leave & reset</li>
+            <li>keynav: <em>enter, space</em> = commit</li>
+            <li>keynav: <em>arrows</em> = navigate</li>
+            <li>Labels for hour, min, sec</li>
+            <li>Allow custom positioning/orientation of am/pm picker</li>
+            <li>try to make a vertical version of it</li>
+        </ul>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script><script type="text/javascript">if(window.location.href.match(/http\:\/\/haineault.com/)) {_uacct="UA-409568-21";urchinTracker();}</script>
+
+    </body>
+</html>
+
