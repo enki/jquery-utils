@@ -11,7 +11,7 @@
 
 (function($){
     $.widget('ui.dropslide', $.extend({}, $.ui.mouse, {
-        getter: 'activate',
+        getter: 'showLevel showNextLevel',
         init: function(){
             var next     = this.element.next();
             this.wrapper = next.hasClass('ui-dropslide') && next || this.options.tree || false;
@@ -22,7 +22,7 @@
                     .data('dropslide', this)
                     .css({width:this.options.width})
                     .find('li').bind('mouseover.dropslide', onLiMouseover)
-                               .bind('mouseout.dropslide', onLiMouseout).end()
+                               .bind('click.dropslide',     onLiClick).end()
                     .find('ol').bind('mousemove.dropslide', onOlMousemove).hide();
             }
         },
@@ -59,8 +59,9 @@
         dropslide.showNextLevel();
     };
 
-    function onLiMouseout(e){
+    function onLiClick(e){
         var dropslide = getDropSlide(this);
+        dropslide.wrapper.find('ol').hide();
     };
 
     function onOlMousemove(e) {
@@ -81,11 +82,8 @@
     }
 
     function getDropSlide(el) {
-        if (!this.cache) {
-            this.cache = $(el).data('dropslide')
-                         || $(el).parents('.ui-dropslide').data('dropslide');
-        }
-        return this.cache;
+        return $(el).data('dropslide')
+                || $(el).parents('.ui-dropslide').data('dropslide');
     };
 })(jQuery);
 
