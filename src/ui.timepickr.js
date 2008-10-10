@@ -10,6 +10,7 @@
 */
 
 $.widget('ui.timepickr', {
+    // -- Internal methods
     init: function() {
         var self     = this;
         var pos      = self.element.position();
@@ -38,9 +39,11 @@ $.widget('ui.timepickr', {
 
         self.element
             .addClass('ui-timepickr-field ')
+            .keydown(function(e){ self.events.keydown.apply(this, [e, self]); })
             .blur(function(){  self.hide(); })
             .focus(function(){ 
                    self.locked = false;
+                   self.ui.wrapper.find('ol:first').addClass('active');
                    self.show(); });
 
         $(self.options.trigger)
@@ -70,6 +73,8 @@ $.widget('ui.timepickr', {
         var self = this;
         if (arguments.length < 3 && typeof(arguments[0]) == 'string') { // type, value
             self.current[arguments[0]] = arguments[1];
+            self.ui.wrapper.find('ol').removeClass('active');
+            self.ui[arguments[0]].addClass('active');
         }
         else { // hour, min, sec
             self.current['hour']   = arguments[0];
@@ -77,6 +82,7 @@ $.widget('ui.timepickr', {
             self.current['second'] = arguments[2];
             self.current['amPm']   = (arguments[3] && arguments[3] == 'pm') ? 'pm' : 'am';
         }
+
         self.update();
     },
     update: function() {
@@ -88,6 +94,23 @@ $.widget('ui.timepickr', {
                     amPm: self.current.amPm || 'am'}));
     },
     events: {
+        keydown: function(e, timepickr){
+            //console.log(this, e, timepickr);
+            switch(e.which) {
+                case 9:   // tab
+                case 40:  // down
+                    timepickr.moveDown();
+                    //timepickr.ui.wrapper.find('ol:first > li:first').addClass('hover');
+                break;
+                case 37:
+                    timepickr.moveLeft();
+                break;
+                case 39:
+                    timepickr.moveRight();
+                break;
+                e.preventDefault();
+            }
+        },
         mousemove: function(e, timepickr) {
             var type = $(this).attr('class').match(/ui-timepickr-(hour|minute|second|amPm)/)[1];
             var idx  = timepickr.types.indexOf(type);
@@ -120,7 +143,6 @@ $.widget('ui.timepickr', {
         var prevLI = false;
         var prevOL = false;
         var nextOL = false;
-        var method = self.options.repSpeed > 10 && 'animate' || 'css';
         var offset = 0;
         self.ui.wrapper.find('ol').each(function(){
             prevOL = $(this).prevAll('ol:visible:first');
@@ -168,6 +190,48 @@ $.widget('ui.timepickr', {
             return $.range(r[0], r[1]);
         }
         return self.options[type];
+    },
+    // -- Public methods
+    moveRight: function() {
+        var self = this; 
+        var ol = self.ui.wrapper.find('ol.active');
+        if (ol.length == 1) {
+            var li = ol.find('li.hover, li:first').eq(0);
+            var next = li.next();
+            li.removeClass('hover');
+            if (next.get(0)) {
+                next.addClass('hover');
+            }
+            else {
+                ol.find('li:first').addClass('hover');
+            }
+            self.update();
+        }
+    },
+    moveLeft: function() {
+        var self = this; 
+        var ol = self.ui.wrapper.find('ol.active');
+        if (ol.length == 1) {
+            var li = ol.find('li.hover, li:last').eq(0);
+            var prev = li.prev();
+            li.removeClass('hover');
+            if (prev.get(0)) {
+                prev.addClass('hover');
+            }
+            else {
+                ol.find('li:last').addClass('hover');
+            }
+            self.update();
+        }
+    },
+    moveUp: function() {},
+    moveDown: function() {
+        var self = this; 
+        var ol = self.ui.wrapper.find('ol.active');
+        if (ol.length == 1) {
+             
+            ol.nextAll('ol:first').show().addClass('active');
+        }
     }
 });
 

@@ -23,7 +23,7 @@
                     .css({width:this.options.width})
                     .find('li').bind('mouseover.dropslide', onLiMouseover)
                                .bind('mouseout.dropslide', onLiMouseout).end()
-                    .find('ol').hide();
+                    .find('ol').bind('mousemove.dropslide', onOlMousemove).hide();
             }
         },
         showLevel: function(id) {
@@ -43,7 +43,7 @@
         clear:   function() {
             return $('<span style="clear:both;" />');
         },
-        width:    500
+        top: 6,
     };
 
     function onActivate(e){
@@ -62,6 +62,23 @@
     function onLiMouseout(e){
         var dropslide = getDropSlide(this);
     };
+
+    function onOlMousemove(e) {
+        var dropslide = getDropSlide(this);
+        var prevLI = false;
+        var prevOL = false;
+        var nextOL = false;
+        var pos    = false;
+        var offset = dropslide.element.position().left;
+        dropslide.wrapper.find('ol').each(function(){
+            prevOL = $(this).prevAll('ol:visible:first');
+            if (prevOL.get(0)) {
+                prevLI = prevOL.find('li.hover, li:first').eq(0);
+                $(this).css({top: prevOL.position().top + prevLI.height() + dropslide.options.top, left: prevLI.position().left + offset});
+                offset = offset + prevLI.position().left;
+            }
+        });
+    }
 
     function getDropSlide(el) {
         if (!this.cache) {
