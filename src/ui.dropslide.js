@@ -9,51 +9,66 @@
 
 */
 
-$.widget('ui.dropslide', {
-    getter: 'activate',
-    init: function(){
-        var self = this;
-        var ds   = self.element.parent();
-        self.dropslide = ds.get(0) && ds || self.options.tree;
+(function($){
+    $.widget('ui.dropslide', $.extend({}, $.ui.mouse, {
+        getter: 'activate',
+        init: function(){
+            var next     = this.element.next();
+            this.wrapper = next.hasClass('ui-dropslide') && next || this.options.tree || false;
 
-        if (self.dropslide) {
-            self.active = self.options.active;
-            self.element.bind(self.options.trigger, self.activate);
-            console.log(self.dropslide);
-            self.dropslide
-                .find('ol').insertAfter(self.options.clear()).end();
+            if (this.wrapper) {
+                this.element.bind(this.options.trigger +'.dropslide', onActivate);
+                this.wrapper
+                    .data('dropslide', this)
+                    .css({width:this.options.width})
+                    .find('li').bind('mouseover.dropslide', onLiMouseover)
+                               .bind('mouseout.dropslide', onLiMouseout).end()
+                    .find('ol').hide();
+            }
+        },
+        showLevel: function(id) {
+           this.wrapper.find('ol').removeClass('active').eq(id).addClass('active').show();
+        },
+        showNextLevel: function(id) {
+           this.wrapper.find('ol.active').removeClass('active').next('ol').addClass('active').show();
         }
-    },
+            
+    }));
 
-    // -- public methods
-        
-    /* Shows up the first menu level
-     * */
-    activate: function() {
-        console.log('boo');
-    },
+    $.ui.dropslide.defaults = {
+        enabled:  true,
+        tree:    false,
+        mode:    '2d',
+        trigger: 'mouseover',
+        clear:   function() {
+            return $('<span style="clear:both;" />');
+        },
+        width:    500
+    };
 
-    /*  Enable the plugin
-     * */
-    enable: function() {
-        return self.active = true;
-    },
+    function onActivate(e){
+        var dropslide = getDropSlide(this);
+        dropslide.showLevel(0);
+    };
 
-    /* Disable the plugin
-     */
-    disable: function() {
-        return !(self.active = false);
-    }
-});
-$.ui.dropslide.defaults = {
-    active:  true,
-    tree:    false,
-    mode:    '2d',
-    trigger: 'mouseover',
-    clear:   function() {
-        return $('<div style="clear:both;" />');
-    }
-};
-$(function(){
-    $('.ui-dropslide-trigger').dropslide();
-});
+    function onLiMouseover(e){
+        var dropslide = getDropSlide(this);
+        $(this).parent()
+            .find('li').removeClass('hover').end().end()
+            .addClass('hover');
+        dropslide.showNextLevel();
+    };
+
+    function onLiMouseout(e){
+        var dropslide = getDropSlide(this);
+    };
+
+    function getDropSlide(el) {
+        if (!this.cache) {
+            this.cache = $(el).data('dropslide')
+                         || $(el).parents('.ui-dropslide').data('dropslide');
+        }
+        return this.cache;
+    };
+})(jQuery);
+
