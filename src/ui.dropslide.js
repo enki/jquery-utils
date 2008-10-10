@@ -30,7 +30,18 @@
            this.wrapper.find('ol').removeClass('active').eq(id).addClass('active').show();
         },
         showNextLevel: function(id) {
-           this.wrapper.find('ol.active').removeClass('active').next('ol').addClass('active').show();
+            if (this.is2d()) {
+                this.wrapper.find('ol.active').removeClass('active').next('ol').addClass('active').show();
+            }
+            else {
+                this.wrapper.find('ol.active').removeClass('active').find('li.hover > ol').addClass('active').show();
+            }
+        },
+        is2d: function() {
+            return !this.is3d();
+        },
+        is3d: function() {
+            return !!this.wrapper.find('ol > li > ol').get(0);
         }
             
     }));
