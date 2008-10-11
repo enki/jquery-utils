@@ -125,23 +125,29 @@ ul.form li input {
     padding-top:4px;
 }
 
-table.list {}
 table.list thead {}
 table.list thead th {
-    background:#eee;
+    background:#dadee1;
     color:#666;
     font-size:.6em;
     text-align:left;
     font-size:normal!important;
     padding:4px 8px;
+    border:1px solid #eee;
 }
 table.list tbody th {
     font-size:normal!important;
     padding:4px 8px;
     color:#666;
     text-align:left;
-    border-right:1px solid #eee;
     font-size:.8em;
+}
+table.list tbody th.separator {
+    color:#def;
+    font-size:.6em;
+    background:#dadee1;
+    color:#666;
+    border-right:1px solid #eee;
 }
 table.list tbody td {
     padding:4px 8px;

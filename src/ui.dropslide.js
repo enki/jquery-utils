@@ -56,15 +56,15 @@
     }));
 
     $.ui.dropslide.defaults = {
-        enabled:  true,
+        enabled: true,
         tree:    false,
         mode:    '2d',
         trigger: 'mouseover',
         top:     6,
-        left:    8,
+        left:    0,
         click: function(e, dropslide) {
             dropslide.hide();
-        }
+        },
     };
 
     function onActivate(e){
