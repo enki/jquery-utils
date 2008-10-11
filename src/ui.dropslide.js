@@ -21,7 +21,7 @@
                 this.wrapper
                     .data('dropslide', this)
                     .css({width:this.options.width})
-                    .find('li').bind('mouseover.dropslide', onLiMouseover)
+                    .find('li, li ol li').bind('mouseover.dropslide', onLiMouseover)
                                .bind('click.dropslide',     onLiClick).end()
                     .find('ol').bind('mousemove.dropslide', onOlMousemove).hide();
             }
@@ -43,7 +43,6 @@
         is3d: function() {
             return !!this.wrapper.find('ol > li > ol').get(0);
         }
-            
     }));
 
     $.ui.dropslide.defaults = {
@@ -51,9 +50,6 @@
         tree:    false,
         mode:    '2d',
         trigger: 'mouseover',
-        clear:   function() {
-            return $('<span style="clear:both;" />');
-        },
         top: 6,
     };
 
@@ -64,9 +60,10 @@
 
     function onLiMouseover(e){
         var dropslide = getDropSlide(this);
-        $(this).parent()
-            .find('li').removeClass('hover').end().end()
-            .addClass('hover');
+        $(this).siblings()
+            .find('ol').hide().end()
+            .find('span').andSelf().removeClass('hover');
+        $(this).find('ol').show().end().children(0).andSelf().addClass('hover');
         dropslide.showNextLevel();
     };
 
