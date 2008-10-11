@@ -1,5 +1,5 @@
 /*
-  jQuery ui.dropslide - 0.1
+  jQuery ui.dropslide - 0.2
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -26,9 +26,11 @@
                     .find('ol').bind('mousemove.dropslide', onOlMousemove).hide();
             }
         },
+        // show specified level, id is the DOM position
         showLevel: function(id) {
            this.wrapper.find('ol').removeClass('active').eq(id).addClass('active').show();
         },
+        // guess what it does
         showNextLevel: function(id) {
             if (this.is2d()) {
                 this.wrapper.find('ol.active').removeClass('active').next('ol').addClass('active').show();
@@ -36,6 +38,14 @@
             else {
                 this.wrapper.find('ol.active').removeClass('active').find('li.hover > ol').addClass('active').show();
             }
+        },
+        // show level 0 (shortcut)
+        show: function() {
+              this.showLevel(0);
+        },
+        // hide all levels
+        hide: function() {
+            this.wrapper.find('ol').hide();
         },
         is2d: function() {
             return !this.is3d();
@@ -50,12 +60,16 @@
         tree:    false,
         mode:    '2d',
         trigger: 'mouseover',
-        top: 6,
+        top:     6,
+        left:    8,
+        click: function(e, dropslide) {
+            dropslide.hide();
+        }
     };
 
     function onActivate(e){
         var dropslide = getDropSlide(this);
-        dropslide.showLevel(0);
+        dropslide.show();
     };
 
     function onLiMouseover(e){
@@ -69,7 +83,7 @@
 
     function onLiClick(e){
         var dropslide = getDropSlide(this);
-        dropslide.wrapper.find('ol').hide();
+        $(dropslide.element).triggerHandler('dropslideclick', [e, dropslide], dropslide.options.click); 
     };
 
     function onOlMousemove(e) {
@@ -78,17 +92,24 @@
         var prevOL = false;
         var nextOL = false;
         var pos    = false;
-        var offset = dropslide.element.position().left;
-        dropslide.wrapper.find('ol').each(function(){
+        var offset = dropslide.element.position().left + dropslide.options.left;
+        // reposition each ol
+        dropslide.wrapper.find('ol').each(function(i){
             prevOL = $(this).prevAll('ol:visible:first');
             if (prevOL.get(0)) {
                 prevLI = prevOL.find('li.hover, li:first').eq(0);
-                $(this).css({top: prevOL.position().top + prevLI.height() + dropslide.options.top, left: prevLI.position().left + offset});
-                offset = offset + prevLI.position().left;
+                $(this).css({
+                    top:  prevOL.position().top + prevLI.height() + dropslide.options.top, 
+                    left: prevLI.position().left + offset
+                });
+                offset = offset + prevLI.position().left + dropslide.options.left;
+            }
+            else if (i > 0 && dropslide.is3d()) {
+                $(this).css('margin-left', dropslide.options.left);
             }
         });
     }
-
+    
     function getDropSlide(el) {
         return $(el).data('dropslide')
                 || $(el).parents('.ui-dropslide').data('dropslide');
