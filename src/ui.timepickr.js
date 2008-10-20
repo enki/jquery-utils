@@ -113,7 +113,7 @@ $.widget('ui.timepickr', {
         },
         mousemove: function(e, timepickr) {
             var type = $(this).attr('class').match(/ui-timepickr-(hour|minute|second|amPm)/)[1];
-            var idx  = timepickr.types.indexOf(type);
+            var idx  = $.inArray(type, timepickr.types); // thanks to Mandx for the fix!
             if (timepickr.types[idx+1]) {
                 timepickr.reposition.apply(timepickr, [timepickr.types[idx+1]]);
             }
@@ -121,7 +121,7 @@ $.widget('ui.timepickr', {
         mouseover: function(e, timepickr) {
             if (!timepickr.locked) {
                 var type = $(this).parent().attr('class').match(/ui-timepickr-(hour|minute|second|amPm)/)[1];
-                var idx  = timepickr.types.indexOf(type);
+                var idx  = $.inArray(type, timepickr.types);
                 $(this).parent().find('li').removeClass('hover');
                 $(this).addClass('hover');
                 timepickr.hover(type, $(this).text());
