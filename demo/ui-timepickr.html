@@ -1,77 +1,25 @@
 <html>
     <head>
         <link rel="Stylesheet" media="screen" href="data/styles.css" />
+        <link rel="Stylesheet" media="screen" href="data/ui.dropslide.css" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
         <script type="text/javascript" src="data/ui.js"></script>
         <script type="text/javascript" src="../src/jquery.utils.js"></script>
         <script type="text/javascript" src="../src/jquery.strings.js"></script>
+        <script type="text/javascript" src="../src/ui.dropslide.js"></script>
         <script type="text/javascript" src="../src/ui.timepickr.js"></script>
 
         <script type="text/javascript">
             $(function(){
-                $('#test-1').timepickr({trigger: '#trigger-test'});
+                //$('#test-1').timepickr({trigger: '#trigger-test'});
+              $('#test-1').timepickr();
             });
         </script>
-        <style type="text/css">
-        .niy * { color:#999!important; }
-        label { font-size:.8em; color:#666; }
-        .ui-timepickr {
-            position:absolute;
-            width:440px;
-            *margin-top:24px; /* IE positioning fix */
-        }
-        .ui-timepickr-field {
-            width:75px;
-        }
-        .ui-timepickr ol.active {
-        }
-        .ui-timepickr-hour {}
-        .ui-timepickr-hour,
-        .ui-timepickr-minute,
-        .ui-timepickr-amPm {
-            margin:0;padding:0;
-            height:26px;
-            clear:both;
-        }
-        .ui-timepickr-hour,
-        .ui-timepickr-minute,
-        .ui-timepickr-second,
-        .ui-timepickr-amPm {
-            position:absolute;
-        }
-        .ui-timepickr-minute { margin-top:26px; }
-        .ui-timepickr-second { margin-top:26px; }
-        .ui-timepickr-amPm{ margin-top:52px; }
-        .ui-timepickr-hour li,
-        .ui-timepickr-amPm li,
-        .ui-timepickr-minute li {
-            list-style:none;
-            float:left;
-            display:block;
-            width:22px;
-            font-size:.7em;
-            padding:4px 0 4px 0;
-            margin:2px 2px 2px 0;
-            border:1px solid ButtonShadow;
-            background:ButtonFace;
-            color:ButtonText;
-            text-align:center;
-            cursor:pointer;
-            -moz-border-radius:3px;
-        }
-        .ui-timepickr-hour li.hover,
-        .ui-timepickr-amPm li.hover,
-        .ui-timepickr-minute li.hover {
-            background:Highlight;
-            color:HighlightText;
-        }
-        </style>
     </head>
     <body id="body">
         <h2>jquery.timepickr.js</h2>
         <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
         <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
-        <a class="related-links experimental">Experimental code !</a>
         <p>
             This is my humble attempt to enhence web time picking.
         </p>
@@ -92,12 +40,8 @@
         </ul>
         <h3>Demo</h3>
         <p>
-            <b>Note:</b> Sorry as it is only a experimental plugin for the moment, it's only tested Firefox 3 so far. It seems
-            to work under Google Chrome and Safari but I have not extensively tested it.
-        </p>
-        <p>
             <label>Start time:</label> 
-            <input id="test-1" type="text" value="12:00">
+            <input id="test-1" type="text" value="12:00" style="width:80px">
             <img src="data/clock.png" alt="Time" border="0" style="position:absolute;margin:4px 0 0 6px;" id="trigger-test" />
         </p>
         <h3>Basic usage</h3>
@@ -115,79 +59,49 @@
             </thead>
             <tbody>
                 <tr>
-                    <th>hour</th>
-                    <td>[1,2,3,4,5,6,7,8,9,10,11,12]</td>
-                    <td>available hours to pick</td>
+                    <th>hours</th>
+                    <td>true</td>
+                    <td>display hours</td>
                 </tr>
                 <tr>
-                    <th>minute</th>
-                    <td>[0, 15, 30, 45]</td>
+                    <th>minutes</th>
+                    <td>true</td>
+                    <td>display minutes</td>
+                </tr>
+                <tr>
+                    <th>seconds</th>
+                    <td>false</td>
+                    <td>display seconds</td>
+                </tr>
+                <tr>
+                    <th>range24</th>
+                    <td>$.range(0, 24)</td>
+                    <td>available hours to pick in 24 format (0, 23)</td>
+                </tr>
+                <tr>
+                    <th>range12</th>
+                    <td>$.range(0, 12)</td>
+                    <td>available hours to pick in 12 format (1, 12)</td>
+                </tr>
+                <tr>
+                    <th>rangeMin</th>
+                    <td>['00', '15', '30', '45']</td>
                     <td>available minutes to pick</td>
                 </tr>
                 <tr>
-                    <th>second</th>
-                    <td>[0, 15, 30, 45]</td>
-                    <td>available seconds to pick</td>
+                    <th>rangeSec</th>
+                    <td>['00', '15', '30', '45']</td>
+                    <td>available minutes to pick</td>
                 </tr>
                 <tr>
-                    <th>amPm</th>
+                    <th>apm</th>
                     <td>['am', 'pm']</td>
                     <td>AM/PM labels</td>
                 </tr>
                 <tr>
-                    <th>showHour</th>
-                    <td>true</td>
-                    <td>Show the hour picker</td>
-                </tr>
-                <tr>
-                    <th>showMinute</th>
-                    <td>true</td>
-                    <td>Show the minute picker</td>
-                </tr>
-                <tr class="niy">
-                    <th>showSecond</th>
-                    <td>false</td>
-                    <td>Show the second picker</td>
-                </tr>
-                <tr>
-                    <th>showAmPm</th>
-                    <td>true</td>
-                    <td>Show the AM/PM picker</td>
-                </tr>
-                <tr>
-                    <th>showDelay</th>
-                    <td>0</td>
-                    <td>delay before showing (seconds)</td>
-                </tr>
-                <tr>
-                    <th>hideDelay</th>
-                    <td>0</td>
-                    <td>delay before hiding (seconds)</td>
-                </tr>
-                <tr>
-                    <th>timeout</th>
-                    <td>0</td>
-                    <td>time before automatically hiding (seconds, 0 == never)</td>
-                </tr>
-                <tr>
-                    <th>speed</th>
-                    <td>0</td>
-                    <td>animations speed</td>
-                </tr>
-                <tr><th>onClose</th> <td>false</td><td>callback before closing</td></tr>
-                <tr><th>onClosed</th><td>false</td><td>callback after closing</td></tr>
-                <tr><th>onOpen</th>  <td>false</td><td>callback before opening</td></tr>
-                <tr><th>onOpened</th><td>false</td><td>callback after opening</td></tr>
-                <tr class="niy"><th>onHide</th>  <td>false</td><td>callback when closed by user</td></tr>
-                <tr>
-                    <th>repSpeed</th>
-                    <td>50</td>
-                    <td>Repositioning speed</td>
-                </tr>
-                <tr>
-                    <th>repDelay</th>
-                    <td>10</td>
-                    <td>Repositioning delay</td>
+                    <th>convention</th>
+                    <td>12</td>
+                    <td>hour convention (12 or 24)</td>
                 </tr>
                 <tr>
                     <th>val</th>
@@ -195,40 +109,12 @@
                     <td>Initial value</td>
                 </tr>
                 <tr>
-                    <th>formats</th>
-                    <td>{}</td>
-                    <td>Display formats (object)</td>
-                </tr>
-                <tr>
-                    <th>formats.field</th>
-                    <td>{hour:02d}:{min:02d} {amPm:s}</td>
-                    <td>Time format of the input field</td>
-                </tr>
-                <tr>
-                    <th>formats.hour</th>
-                    <td>{0:02d}</td>
-                    <td>Time format of hours</td>
-                </tr>
-                <tr>
-                    <th>formats.minute</th>
-                    <td>{0:02d}</td>
-                    <td>Time format of minutes</td>
-                </tr>
-                <tr>
-                    <th>formats.second</th>
-                    <td>{0:02d}</td>
-                    <td>Time format of seconds</td>
-                </tr>
-                <tr>
-                    <th>formats.amPm</th>
-                    <td>{0}</td>
-                    <td>AM/PM format</td>
+                    <th>dropslide</th>
+                    <td>object</td>
+                    <td>dropslide options</td>
                 </tr>
             </tbody>
         </table>
-        <p>
-            <b>Note:</b> some of these options might not work correctly yet.
-        </p>
 
         <h3>Tested browsers</h3>
         <ul>
@@ -237,6 +123,8 @@
             <li>Mozilla Firefox 3.0.3 (Windows)</li>
             <li>Epiphany Web Browser 2.22.2 (Linux)</li>
             <li>Safari 3.1.2 (Windows)</li>
+            <li>Microsoft Internet Explorer 6</li>
+            <li>Microsoft Internet Explorer 7</li>
         </ul>
         <h3>Todo</h3>
         <ul>

@@ -1,6 +1,7 @@
 <html>
     <head>
         <link rel="Stylesheet" media="screen" href="data/styles.css" />
+        <link rel="Stylesheet" media="screen" href="data/ui.dropslide.css" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
         <script type="text/javascript" src="data/ui.js"></script>
         <script type="text/javascript" src="../src/jquery.utils.js"></script>
@@ -19,69 +20,19 @@
                          $(this).val(dropslide.getSelection().join(', '));
                          e.stopPropagation();
                     });
-                $('#ui-timepickr-demo').timepickr({trigger: 'focus'});
             });
         </script>
-        <style type="text/css">
-        .niy * { color:#999!important; }
-
-        /* dropslide */
-
-        .ui-dropslide {
-            background:#ccc;
-        }
-        .ui-dropslide ol {
-            width:500px;
-            padding:0;
-            margin:2px 0 0 0;
-            clear:both;
-            position:absolute;
-        }
-        .ui-dropslide ol ol {
-            margin-top:0;
-        }
-        .ui-dropslide ol ol li {
-            margin-top:7px;
-        }
-        .ui-dropslide li {
-            float:left;
-            list-style:none;
-            margin:0;
-
-        }
-        .ui-dropslide span {
-            font-size:.7em;
-            padding:4px 6px 4px 6px;
-            margin:2px 2px 2px 0;
-            border:1px solid ButtonShadow;
-            background:ButtonFace;
-            color:ButtonText;
-            text-align:center;
-            cursor:pointer;
-            -moz-border-radius:3px;
-        }
-        .ui-dropslide span:hover,
-        .ui-dropslide span.hover {
-            background:Highlight!important;
-            color:HighlightText!important;
-        }
-        </style>
     </head>
     <body id="body">
         <h2>ui.dropslide.js</h2>
         <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
         <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
-        <a class="related-links experimental">Experimental code !</a>
         <p>
             Multi-level dropdown menu
         </p>
         <h3>Demo</h3>
 
-        <h4>Time picker</h4>
-        <p>
-            <input type="text" id="ui-timepickr-demo" style="width:80px;" />
-        </p>
-        <h4>Time picker</h4>
+        <h4>Time picker (2d mode)</h4>
         <p>
             <input type="text" id="ui-dropslide-trigger1" style="width:80px;" />
             <span class="ui-dropslide">
@@ -118,7 +69,7 @@
      $(this).val(dropslide.getSelection().join(':'));
      e.stopPropagation();
 });</pre>
-        <h4>Location picker</h4>
+        <h4>Location picker (3d mode)</h4>
         <p>
             <input type="text" id="ui-dropslide-trigger2" />
             <span class="ui-dropslide">
@@ -235,10 +186,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th>left</th>
-                    <td>0</td>
-                    <td>margin-left (ol)</td>
+                <tr class="niy">
+                    <th>tree</th>
+                    <td>false</td>
+                    <td>create tree from a JSON object</td>
                 </tr>
                 <tr>
                     <th>mode</th>
@@ -246,27 +197,29 @@
                     <td>2d or 3d mode</td>
                 </tr>
                 <tr>
-                    <th>top</th>
-                    <td>6</td>
-                    <td>margin-top (li)</td>
-                </tr>
-                <tr class="niy">
-                    <th>tree</th>
-                    <td>false</td>
-                    <td>create tree from a JSON object</td>
-                </tr>
-                <tr>
                     <th>trigger</th>
                     <td>'mouseover'</td>
                     <td>triggering event</td>
                 </tr>
                 <tr>
-                    <th colspan="3" class="separator">Events</th>
+                    <th>top</th>
+                    <td>6</td>
+                    <td>margin-top (li)</td>
                 </tr>
                 <tr>
-                    <th>click</th>
-                    <td>function</td>
-                    <td>callback function called when a li is clicked</td>
+                    <th>left</th>
+                    <td>0</td>
+                    <td>margin-left (ol)</td>
+                </tr>
+                <tr>
+                    <th>showDelay</th>
+                    <td>0</td>
+                    <td>delay before showing</td>
+                </tr>
+                <tr>
+                    <th>hideDelay</th>
+                    <td>0</td>
+                    <td>delay before hiding</td>
                 </tr>
             </tbody>
         </table>

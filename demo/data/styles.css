@@ -29,6 +29,8 @@ table.nav td ul li {
 table.nav td.border {
     border-left:1px solid #ccc;
 }
+
+.niy * { color:#999!important; }
 /* top frame */
 body#top {
     background:#333 url(bg_home_tile_sml.jpg) repeat-x 0 0;
@@ -130,6 +132,7 @@ ul.form li input {
     color:#666;
     padding-top:4px;
 }
+label { font-size:.8em; color:#666; }
 
 table.list thead {}
 table.list thead th {
