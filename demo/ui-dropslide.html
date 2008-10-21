@@ -9,7 +9,17 @@
 
         <script type="text/javascript">
             $(function(){
-                $('.ui-dropslide-trigger').dropslide();
+                $('#ui-dropslide-trigger1').dropslide({trigger: 'focus'})
+                    .bind('select', function(e, dropslide){
+                         $(this).val(dropslide.getSelection().join(':'));
+                         e.stopPropagation();
+                    });
+                $('#ui-dropslide-trigger2').dropslide({trigger: 'focus'})
+                    .bind('select', function(e, dropslide){
+                         $(this).val(dropslide.getSelection().join(', '));
+                         e.stopPropagation();
+                    });
+                $('#ui-timepickr-demo').timepickr({trigger: 'focus'});
             });
         </script>
         <style type="text/css">
@@ -23,14 +33,20 @@
         .ui-dropslide ol {
             width:500px;
             padding:0;
-            margin:0;
+            margin:2px 0 0 0;
             clear:both;
             position:absolute;
+        }
+        .ui-dropslide ol ol {
+            margin-top:0;
+        }
+        .ui-dropslide ol ol li {
+            margin-top:7px;
         }
         .ui-dropslide li {
             float:left;
             list-style:none;
-            margin:7px 0 0 0;
+            margin:0;
 
         }
         .ui-dropslide span {
@@ -44,7 +60,8 @@
             cursor:pointer;
             -moz-border-radius:3px;
         }
-        span.hover {
+        .ui-dropslide span:hover,
+        .ui-dropslide span.hover {
             background:Highlight!important;
             color:HighlightText!important;
         }
@@ -59,8 +76,14 @@
             Multi-level dropdown menu
         </p>
         <h3>Demo</h3>
+
+        <h4>Time picker</h4>
         <p>
-            <img src="data/clock.png" alt="Time" border="0" class="ui-dropslide-trigger" />
+            <input type="text" id="ui-timepickr-demo" style="width:80px;" />
+        </p>
+        <h4>Time picker</h4>
+        <p>
+            <input type="text" id="ui-dropslide-trigger1" style="width:80px;" />
             <span class="ui-dropslide">
                 <ol>
                     <li><span>1</span></li>
@@ -90,8 +113,14 @@
                 </ol>
             </span>
         </p>
+        <pre>$('#ui-dropslide-trigger1').dropslide({trigger: 'focus'})
+.bind('select', function(e, dropslide){
+     $(this).val(dropslide.getSelection().join(':'));
+     e.stopPropagation();
+});</pre>
+        <h4>Location picker</h4>
         <p>
-            <img src="data/exclamation.png" alt="Time" border="0" class="ui-dropslide-trigger" />
+            <input type="text" id="ui-dropslide-trigger2" />
             <span class="ui-dropslide">
                 <ol>
                     <li>
@@ -169,10 +198,33 @@
                 </ol>
             </span>
         </p>
-        <h3>Basic usage</h3>
-        <pre>$(function(){
-    $('#test-1').dropslide();
+        <pre>$('#ui-dropslide-trigger2').dropslide({trigger: 'focus'})
+.bind('select', function(e, dropslide){
+     $(this).val(dropslide.getSelection().join(', '));
+     e.stopPropagation();
 });</pre>
+        <h3>Events</h3>
+        <table class="list" cellpadding="0" cellspacing="0" summary="">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>click</th>
+                    <td>function(e, dropslide) { dropslide.hide(); }</td>
+                    <td>called when a li is clicked (before select)</td>
+                </tr>
+                <tr>
+                    <th>select</th>
+                    <td>false</td>
+                    <td>function called on selection</td>
+                </tr>
+            </tbody>
+        </table>
         <h3>Options</h3>
         <table class="list" cellpadding="0" cellspacing="0" summary="">
             <thead>
@@ -183,15 +235,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="niy">
-                    <th>enabled</th>
-                    <td>true</td>
-                    <td>autoload elements with <em>ui-dropslide</em> class</td>
-                </tr>
-                <tr class="niy">
-                    <th>tree</th>
-                    <td>false</td>
-                    <td>create tree from a JSON object</td>
+                <tr>
+                    <th>left</th>
+                    <td>0</td>
+                    <td>margin-left (ol)</td>
                 </tr>
                 <tr>
                     <th>mode</th>
@@ -199,19 +246,19 @@
                     <td>2d or 3d mode</td>
                 </tr>
                 <tr>
-                    <th>trigger</th>
-                    <td>'mouseover'</td>
-                    <td>triggering event</td>
-                </tr>
-                <tr>
                     <th>top</th>
                     <td>6</td>
                     <td>margin-top (li)</td>
                 </tr>
+                <tr class="niy">
+                    <th>tree</th>
+                    <td>false</td>
+                    <td>create tree from a JSON object</td>
+                </tr>
                 <tr>
-                    <th>left</th>
-                    <td>0</td>
-                    <td>margin-left (ol)</td>
+                    <th>trigger</th>
+                    <td>'mouseover'</td>
+                    <td>triggering event</td>
                 </tr>
                 <tr>
                     <th colspan="3" class="separator">Events</th>
@@ -220,6 +267,38 @@
                     <th>click</th>
                     <td>function</td>
                     <td>callback function called when a li is clicked</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>Methods</h3>
+        <table class="list" cellpadding="0" cellspacing="0" summary="">
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Arguments</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>showLevel</th>
+                    <td>id</td>
+                    <td>Show specified navigation level (id is the DOM position)</td>
+                </tr>
+                <tr>
+                    <th>showNextLevel</th>
+                    <td>&nbsp;</td>
+                    <td>Show the next level if present</td>
+                </tr>
+                <tr>
+                    <th>show</th>
+                    <td>&nbsp;</td>
+                    <td>Simple shorthand for showLevel(0)</td>
+                </tr>
+                <tr>
+                    <th>hide</th>
+                    <td>&nbsp;</td>
+                    <td>Hide all level</td>
                 </tr>
             </tbody>
         </table>

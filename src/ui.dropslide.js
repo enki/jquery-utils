@@ -31,13 +31,17 @@
            this.wrapper.find('ol').removeClass('active').eq(id).addClass('active').show();
         },
         // guess what it does
-        showNextLevel: function(id) {
+        showNextLevel: function() {
             if (this.is2d()) {
                 this.wrapper.find('ol.active').removeClass('active').next('ol').addClass('active').show();
             }
             else {
                 this.wrapper.find('ol.active').removeClass('active').find('li.hover > ol').addClass('active').show();
             }
+        },
+        getSelection: function() {
+            return $.makeArray(this.wrapper.find('span.hover')
+                .map(function(){ return $(this).text(); }));
         },
         // show level 0 (shortcut)
         show: function() {
@@ -47,6 +51,7 @@
         hide: function() {
             this.wrapper.find('ol').hide();
         },
+        // determine dropdown type
         is2d: function() {
             return !this.is3d();
         },
@@ -56,15 +61,17 @@
     }));
 
     $.ui.dropslide.defaults = {
-        enabled: true,
+        // options
         tree:    false,
         mode:    '2d',
         trigger: 'mouseover',
         top:     6,
         left:    0,
-        click: function(e, dropslide) {
+        // events
+        select:  function() {},
+        click:   function(e, dropslide) {
             dropslide.hide();
-        },
+        }
     };
 
     function onActivate(e){
@@ -76,14 +83,15 @@
         var dropslide = getDropSlide(this);
         $(this).siblings()
             .find('ol').hide().end()
-            .find('span').andSelf().removeClass('hover');
+            .find('span.hover').andSelf().removeClass('hover');
         $(this).find('ol').show().end().children(0).andSelf().addClass('hover');
         dropslide.showNextLevel();
     };
 
     function onLiClick(e){
         var dropslide = getDropSlide(this);
-        $(dropslide.element).triggerHandler('dropslideclick', [e, dropslide], dropslide.options.click); 
+        $(dropslide.element).triggerHandler('dropslideclick',  [e, dropslide], dropslide.options.click); 
+        $(dropslide.element).triggerHandler('select',          [e, dropslide], dropslide.options.select); 
     };
 
     function onOlMousemove(e) {
@@ -116,3 +124,76 @@
     };
 })(jQuery);
 
+(function($){
+
+    var ui = {
+        button: function(label) {
+            var lbl = $('<span />').text(label);
+            return $('<li />').append(lbl);
+        },
+        level: function() {
+            return $('<ol />');
+        }
+    };
+
+    var getTimeRanges = function(options) {
+        var o = [];
+        if (options.hours) {
+            var h = (options.convention == 24) 
+                    && options.range24h
+                    || options.range12h;
+            o.push(h);
+        }
+        if (options.minutes) {
+            o.push(options.rangeMin);
+        }
+        if (options.seconds) {
+            o.push(options.rangeSec);
+        }
+        if (options.convention ==12 && options.apm) {
+            o.push(options.apm)
+        }
+        return o;
+    };
+
+    var buildMenu = function(i, root) {
+        function createButton(i) {
+            return $('<li />').append($('<span />').text(i));
+        }
+        function createRow(obj) {
+            var row = $('<ol />')
+            for (var x in obj) {
+                row.append(createButton(obj[x]));
+            }
+            return row;
+        }
+        var menu = $('<span class="ui-dropslide">');
+        for (var x in i) {
+            menu.append(createRow(i[x]));
+        }
+        return menu;
+    };
+
+    $.widget('ui.timepickr', {
+        init: function() {
+            var ranges = getTimeRanges(this.options);
+            var menu   = buildMenu(ranges);
+            menu.insertAfter(this.element);
+            //var menu = $('<span class="ui-dropslide">');
+            this.element.dropslide({
+                trigger: 'focus'
+            });
+        }
+    });
+    $.ui.timepickr.defaults = {
+        hours:   true,
+        minutes: true,
+        seconds: false,
+        range24h: $.range(0, 24),
+        range12h: $.range(1, 13),
+        rangeMin: ['00', '15', '30', '45'],
+        rangeSec: ['00', '15', '30', '45'],
+        apm:      ['am', 'pm'],
+        convention: 24, // 24, 12
+    };
+ })(jQuery);

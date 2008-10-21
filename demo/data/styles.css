@@ -86,6 +86,12 @@ body#nav h2 {
     color:#666;
     font-weight:normal;
 }
+#body h4 {
+    margin:10px 40px 0 40px;
+    color:#999;
+    font-weight:bold;
+    font-size:80%;
+}
 #body hr {
     margin:10px 40px;
     color:#999;
@@ -98,7 +104,7 @@ body#nav h2 {
 
 #body .demo,
 #body p {
-    margin:20px 40px
+    margin:10px 40px 20px 40px;
 }
 
 /* credits */
