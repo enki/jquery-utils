@@ -53,21 +53,28 @@
 
     $.widget('ui.timepickr', {
         init: function() {
-            var ranges = getTimeRanges(this.options);
-            var menu   = buildMenu(ranges);
+            var ranges  = getTimeRanges(this.options);
+            var menu    = buildMenu(ranges);
+            var element = this.element;
             menu.insertAfter(this.element);
-            this.element
+            element
                 .addClass('ui-timepickr')
                 .dropslide(this.options.dropslide)
                 .bind('select', this.options.select);
             if (this.options.val) {
-                this.element.val(this.options.val)
+                element.val(this.options.val)
+            }
+            if (this.options.handle) {
+                $(this.options.handle).click(function(){
+                    $(element).dropslide('show');
+                });
             }
         }
     });
 
     $.ui.timepickr.defaults = {
         val:     false,
+        handle:  false,
         hours:   true,
         minutes: true,
         seconds: false,

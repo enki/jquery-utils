@@ -72,7 +72,6 @@
     $.ui.dropslide.defaults = {
         // options
         tree:    false,
-        mode:    '2d',
         trigger: 'mouseover',
         top:     6,
         left:    0,

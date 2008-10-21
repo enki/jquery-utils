@@ -12,7 +12,7 @@
         <script type="text/javascript">
             $(function(){
                 //$('#test-1').timepickr({trigger: '#trigger-test'});
-              $('#test-1').timepickr();
+              $('#test-1').timepickr({handle: '#trigger-test'});
             });
         </script>
     </head>
@@ -46,7 +46,7 @@
         </p>
         <h3>Basic usage</h3>
         <pre>$(function(){
-    $('#test-1').timepickr();
+    $('#test-1').timepickr({handle: '#trigger-test'});
 });</pre>
         <h3>Options</h3>
         <table class="list" cellpadding="0" cellspacing="0" summary="">
@@ -58,6 +58,11 @@
                 </tr>
             </thead>
             <tbody>
+                <tr>
+                    <th>handle</th>
+                    <td>false</td>
+                    <td>handle is a dom element which will open the menu upon click</td>
+                </tr>
                 <tr>
                     <th>hours</th>
                     <td>true</td>
