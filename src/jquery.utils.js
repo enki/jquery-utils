@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.4
+  jQuery utils - @VERSION
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 

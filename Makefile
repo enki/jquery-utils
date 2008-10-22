@@ -1,11 +1,7 @@
-SRC_DIR = src
+SRC_DIR   = src
 BUILD_DIR = build
-
-PREFIX = .
-DOCS_DIR = ${PREFIX}/docs
-TEST_DIR = ${PREFIX}/test
-DIST_DIR = ${PREFIX}/dist
-SPEED_DIR = ${PREFIX}/speed
+PREFIX    = .
+DIST_DIR  = ${PREFIX}/dist
 
 BASE_FILES = ${SRC_DIR}/jquery.utils.js\
     ${SRC_DIR}/jquery.anchorHandler.js\
@@ -21,138 +17,75 @@ BASE_FILES = ${SRC_DIR}/jquery.utils.js\
     ${SRC_DIR}/jquery.timeago.js\
     ${SRC_DIR}/jquery.valid.js\
     ${SRC_DIR}/jquery.youtubeLinksToEmbed.js\
-    ${SRC_DIR}/ui.toaster.js\
- 	${SRC_DIR}/ui.masked.js\
-#   ${SRC_DIR}/api.youtube.js\
-#	${SRC_DIR}/ui.datetime.js\
-#	${SRC_DIR}/ui.keynav.js\
 #   ${SRC_DIR}/jquery.forms.js\
 #   ${SRC_DIR}/jquery.jpath.js\
+#   ${SRC_DIR}/api.youtube.js\
+
+UI_FILES = ${SRC_DIR}/jquery.ui.all.js\
+ 	${SRC_DIR}/ui.toaster.js\
+ 	${SRC_DIR}/ui.masked.js\
+#	${SRC_DIR}/ui.datetime.js\
+#	${SRC_DIR}/ui.keynav.js\
 #	${SRC_DIR}/ui.awesomebar.js\
 #	${SRC_DIR}/ui.imgSelection.js\
 #	${SRC_DIR}/ui.imgTools.js\
 #	${SRC_DIR}/ui.window.js\
 
-MODULES = ${BASE_FILES}
+MODULES  = ${BASE_FILES}
+MODULES2 = ${BASE_FILES}${UI_FILES}
 
-JQ = ${DIST_DIR}/jquery.utils.js
-#JQ_LITE = ${DIST_DIR}/jquery-utils.lite.js
-JQ_MIN = ${DIST_DIR}/jquery.utils.min.js
-#JQ_PACK = ${DIST_DIR}/jquery.utils.pack.js
+JQ_UTILS        = ${DIST_DIR}/jquery.utils.js
+JQ_UTILS_MIN    = ${DIST_DIR}/jquery.utils.min.js
+JQ_UTILS_UI     = ${DIST_DIR}/jquery.utils.ui.js
+JQ_UTILS_UI_MIN = ${DIST_DIR}/jquery.utils.ui.min.js
 
 JQ_VER = `cat version.txt`
 VER = sed s/@VERSION/${JQ_VER}/
 
 JAR = java -jar ${BUILD_DIR}/js.jar
 
-all: jquery lite min #pack #speed
-	@@echo "jQuery build complete."
+all: utils utilsmin utilsui utilsuimin
+	@@echo " - Build complete!"
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
-jquery: ${DIST_DIR} ${JQ}
+## Jquery.utils.js ##
 
-${JQ}: ${MODULES}
-	@@echo "Building" ${JQ}
+utils: ${DIST_DIR} ${JQ_UTILS}
 
+${JQ_UTILS}: ${MODULES}
 	@@mkdir -p ${DIST_DIR}
-	@@cat ${MODULES} | ${VER} > ${JQ};
+	@@cat ${MODULES} | ${VER} > ${JQ_UTILS};
+	@@echo " -" ${JQ_UTILS} ".. OK"
 
-	@@echo ${JQ} "Built"
-	@@echo
+## jquery.utils.min.js ##
 
-lite: ${JQ_LITE}
+utilsmin: ${JQ_UTILS_MIN}
 
-${JQ_LITE}: ${JQ}
-	@@echo "Building" ${JQ_LITE}
+${JQ_UTILS_MIN}: ${JQ_UTILS}
+	@@${JAR} ${BUILD_DIR}/build/min.js ${JQ_UTILS} ${JQ_UTILS_MIN}
+	@@echo " -" ${JQ_UTILS_MIN} ".. OK"
 
-	@@echo " - Removing ScriptDoc from" ${JQ}
-	@@${JAR} ${BUILD_DIR}/build/lite.js ${JQ} ${JQ_LITE}
+## Jquery.utils.ui.js ##
 
-	@@echo ${JQ_LITE} "Built"
-	@@echo
+utilsui: ${DIST_DIR} ${JQ_UTILS_UI}
 
-#pack: ${JQ_PACK}
-#
-#${JQ_PACK}: ${JQ}
-#	@@echo "Building" ${JQ_PACK}
-#
-#	@@echo " - Compressing using Packer"
-#	@@${JAR} ${BUILD_DIR}/build/pack.js ${JQ} ${JQ_PACK}
-#
-#	@@echo ${JQ_PACK} "Built"
-#	@@echo
+${JQ_UTILS_UI}: ${MODULES2}
+	@@mkdir -p ${DIST_DIR}
+	@@cat ${MODULES2} | ${VER} > ${JQ_UTILS_UI};
+	@@echo " -" ${JQ_UTILS_UI} ".. OK"
 
-min: ${JQ_MIN}
+## Jquery.utils.ui.js ##
 
-${JQ_MIN}: ${JQ}
-	@@echo "Building" ${JQ_MIN}
+utilsuimin: ${DIST_DIR} ${JQ_UTILS_UI_MIN}
 
-	@@echo " - Compressing using Minifier"
-	@@${JAR} ${BUILD_DIR}/build/min.js ${JQ} ${JQ_MIN}
+${JQ_UTILS_UI_MIN}: ${MODULES2}
+	@@${JAR} ${BUILD_DIR}/build/min.js ${JQ_UTILS_UI} ${JQ_UTILS_UI_MIN}
+	@@echo " -" ${JQ_UTILS_UI_MIN} ".. OK"
 
-	@@echo ${JQ_MIN} "Built"
-	@@echo
-
-test: ${JQ}
-	@@echo "Building Test Suite"
-	@@echo "Test Suite Built"
-	@@echo
-
-runtest: ${JQ} test
-	@@echo "Running Automated Test Suite"
-	@@${JAR} ${BUILD_DIR}/runtest/test.js
-
-	@@echo "Test Suite Finished"
-	@@echo
-
-#docs: ${JQ}
-#	@@echo "Building Documentation"
-#
-#	@@echo " - Making Documentation Directory:" ${DOCS_DIR}
-#	@@mkdir -p ${DOCS_DIR}
-#	@@mkdir -p ${DOCS_DIR}/data
-#
-#	@@echo " - Copying over htaccess file."
-#	@@cp -fR ${BUILD_DIR}/docs/.htaccess ${DOCS_DIR}
-#
-#	@@echo " - Copying over script files."
-#	@@cp -fR ${BUILD_DIR}/docs/js ${DOCS_DIR}/js
-#
-#	@@echo " - Copying over style files."
-#	@@cp -fR ${BUILD_DIR}/docs/style ${DOCS_DIR}/style
-#
-#	@@echo " - Extracting ScriptDoc from" ${JQ}
-#	@@${JAR} ${BUILD_DIR}/docs/docs.js ${JQ} ${DOCS_DIR}
-#
-#	@@echo "Documentation Built"
-#	@@echo
-
-#speed: ${JQ}
-#	@@echo "Building Speed Test Suite"
-#
-#	@@echo " - Making Speed Test Suite Directory:" ${SPEED_DIR}
-#	@@mkdir -p ${SPEED_DIR}
-#
-#	@@echo " - Copying over script files."
-#	@@cp -f ${BUILD_DIR}/speed/index.html ${SPEED_DIR}
-#	@@cp -f ${BUILD_DIR}/speed/benchmarker.css ${SPEED_DIR}
-#	@@cp -f ${BUILD_DIR}/speed/benchmarker.js ${SPEED_DIR}
-#	@@cp -f ${BUILD_DIR}/speed/jquery-1.1.2.js ${SPEED_DIR}
-
-#	@@echo "Speed Test Suite Built"
-#	@@echo
+## clean up shits ##
 
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
 	@@rm -rf ${DIST_DIR}
-
-	@@echo "Removing Test Suite directory:" ${TEST_DIR}
-	@@rm -rf ${TEST_DIR}
-
-	@@echo "Removing Documentation directory:" ${DOCS_DIR}
-	@@rm -rf ${DOCS_DIR}
-
-	@@echo "Removing Speed Test Suite directory:" ${SPEED_DIR}
-	@@rm -rf ${SPEED_DIR}
