@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <link rel="Stylesheet" media="screen" href="data/styles.css" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
+        <script type="text/javascript" src="../src/jquery.extendCSS.js"></script>
+        <script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>
+
+        <script type="text/javascript">
+        </script>
+        <style type="text/css">
+
+        #fixes li:first-child {
+            background:#c30;
+        }
+        </style>
+    </head>
+    <body id="body">
+        <h2>jquery.extendCSS.js</h2>
+        <div class="copyright">Copyright (c) 2007-2008 <a href="http://haineault.com/" target="_blank">Maxime Haineault</a> (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
+        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <h3>Fixes</h3>
+        <h4>:hover on any element</h4>
+
+        <p>
+            I'm a paragraph ! (hover me)
+        </p>
+        <h4>:first-child</h4>
+        <ul id="fixes">
+            <!-- this comment would normally break IE's :first-child support -->
+            <li>:first-child</li>
+            <li>:hover</li>
+        </ul>
+    </body>
+</html>
+
