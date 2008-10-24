@@ -1,10 +1,81 @@
 var css = false;
+$(function($){
+    css = (new function(){
+        try {
+          this.httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+        } 
+        catch (e) {
+            this.httpRequest = new XMLHttpRequest(); // Mozilla
+        } // ActiveX disabled
+
+        this.cache = {};
+
+        // Thanks Dean Edwards :D
+        this.loadFiles = function() {
+            for (var i = 0; i < document.styleSheets.length; i++) {
+                var ss = document.styleSheets[i];
+                // cache only remote stylesheet
+                if (ss.href != '' && !this.cache[ss.href]) {
+                    try {
+                        // easy to load a file huh?
+                        this.httpRequest.open('GET', ss.href, false);
+                        this.httpRequest.send(null);
+                        if (this.httpRequest.status == 0 || this.httpRequest.status == 200) {
+                            console.log(this.httpRequest.responseText);
+                          this.cache[ss.href] = this.httpRequest.responseText;
+                        }
+                    }
+                    catch (e) {} // ignore errors 
+                }
+            }
+        };
+
+        this.getCssText = function(ss) {
+            // inline styles
+            if (ss.href == '' && ss.owningElement.nodeName.toLowerCase() == 'style') { 
+                return ss.owningElement.innerHTML;
+            }
+            else if (this.cache[ss.href]) {
+                return this.cache[ss.href];
+            }
+        };
+
+        // Cache stylesheets (because IE's cssText property is unusable)
+        this.loadFiles();
+    });
+});
+/*
+var css = false;
 $(function(){
     // http://www.javascriptkit.com/dhtmltutors/externalcss2.shtml
     css = (new function() {
-        this.stylesheets  = document.styleSheets;
-        this.cssTextCache = [];
+        this.stylesheets = document.styleSheets;
+        this.cache = {}
 
+        // Thanks Dean Edwards
+        this.loadCSS = function(href, path) {
+            var RELATIVE = /^[\w\.]+[^:]*$/;
+            function makePath(href, path) {
+              if (RELATIVE.test(href)) href = (path || "") + href;
+              return href;
+            };
+
+            try {
+              href = makePath(href, path);
+              if (!this.cache[href]) {
+                // easy to load a file huh?
+                httpRequest.open("GET", href, false);
+                httpRequest.send();
+                if (httpRequest.status == 0 || httpRequest.status == 200) {
+                  this.cache[href] = httpRequest.responseText;
+                }
+              }
+            } catch (e) {
+              // ignore errors
+            } finally {
+              return this.cache[href] || "";
+            };
+        };
 
         // find all rules matching a givin selector
         this.findRules = function(selector) {
@@ -121,7 +192,10 @@ $(function(){
                 o[tmp[0]] = tmp[1];
             });
             return o;
-        }
+        };
+
+
+
     });
 
     var rules = [];
@@ -141,10 +215,7 @@ $(function(){
         }
     });
 
-    this.getCssText();
-    $.extendCSS();
-});
-if ($.browser.msie) {
+//if ($.browser.msie) {
     $.extendCSS({
         ':hover': function(rule) {
             var selector = rule.selectorText.replace(':hover', '');
@@ -155,7 +226,7 @@ if ($.browser.msie) {
             }, function(){
                 $(this).css(styles1); // restore original styles
             });
-        },
+            },
         ':first-child': function(rule) {
             console.log('first-child: ', rule);
             var selector = rule.selectorText.replace(':first-child', '');
@@ -163,7 +234,10 @@ if ($.browser.msie) {
             $(selector).filter(':first').css(styles);
         }
     });
-}
+//}
+    $.extendCSS();
+});
+*/
 /*
  * Original Firefox prototype
 
