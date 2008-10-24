@@ -1,24 +1,23 @@
 var css = false;
-;(function(){
+$(function(){
     // http://www.javascriptkit.com/dhtmltutors/externalcss2.shtml
     css = (new function() {
-        this.stylesheets = document.styleSheets;
+        this.stylesheets  = document.styleSheets;
+        this.cssTextCache = [];
+
 
         // find all rules matching a givin selector
         this.findRules = function(selector) {
             var matches = [];
             for (var i = 0; i < this.stylesheets.length; i++) {
-                console.log(i);
-                //console.log(i, this.stylesheets[i]);
                 var ss = this.stylesheets[i];
-                if (ss.rules) {
-                console.log('ARGH', ss.rules);
-                    for (var x = 0; x< ss.rules.length; i++) {
-                        var r = ss.rules[i];
-                        //if (typeof(r) == 'object' && r.selectorText.match(selector)) {
-                        //    console.log('CCC', r);
-                        //    matches.push(r);
-                        //}
+                if (ss.rules && ss.rules.length > 0) {
+                    console.log(ss);
+                    for (var x = 0; x< ss.rules.length; x++) {
+                        var r = ss.rules[x];
+                        if (typeof(r) == 'object' && r.selectorText.match(selector)) {
+                            matches.push(r);
+                        }
                     }
                     //callback.apply(ss, [i, ss]);
                    // for (i in ss.rules) {
@@ -39,19 +38,77 @@ var css = false;
             }
             return o;
         };
+        this.getCssText = function(ss) {
+            console.log('test')
+            // IE 6
+            //
+            // I really hesitated to use Ajax to achieve this, 
+            // I did not want to, but I had no other alternatives.
+            //
+            // In my first attempt I used IE's native cssText property.
+            // Unfortunately, a zealot fucktard at Microsoft had the 
+            // brillant idea to replace unsuported pseudo-selectors 
+            // like :first-child by .. ":unknown". Thus rendering 
+            // impossible any attempt to patch their mess, 
+            // thanks asshole(s).
+            //
+            // My conclusion was: Yes, a minority of users will 
+            // suffer from a slight performance decrease because
+            // I use Ajax. But on the other hand, the price of
+            // using an old outdated browser is shifted toward 
+            // the user instead of the developer, and that my 
+            // friends it's priceless.
+            //
+            // ~ h
+
+            for (var i = 0; i < this.stylesheets.length ; i++) {
+                var ss = this.stylesheets[i];
+                console.log(ss);
+                // inline style
+                if (ss.href == '' && ss.owningElement.nodeName == 'STYLE') { 
+                    var cssText = ss.owningElement.innerHTML;
+                }
+                // remote style
+                else {
+                    console.log('test');
+                    $.get(ss.href, function(responseText, success) {
+                        var cssText  = responseText.toLowerCase();
+                        var pos      = cssText.indexOf(rule.selectorText.toLowerCase());
+                        console.log('test', responseText);
+                    });
+                }
+            }
+        },
         // get style (as object) associated with a rule
         this.getStyles = function(rule) {
             var s = false;
             for (var i = 0; i < this.stylesheets.length ; i++) {
                 var ss = this.stylesheets[i];
+                this.getCssText(ss);
                 if (typeof(ss) == 'object') { // TODO: not foolproof
                     try {
+                        
                         // IE
-                        var pos = ss.cssText.indexOf(rule.selectorText);
-                        if (pos > -1) {
-                            var part1 = ss.cssText.slice(pos, -1);
-                            var part2 = part1.slice(rule.selectorText.length, part1.indexOf('}'));
-                            s = part2.replace(/\{|\s+|\n/gi, '');
+                        if (ss.href == '') {
+                            var cssText = ss.cssTex;
+                            var pos = cssText.indexOf(rule.selectorText);
+                            if (pos > -1) {
+                                var part1 = cssText.slice(pos, -1);
+                                var part2 = part1.slice(rule.selectorText.length, part1.indexOf('}'));
+                                s = part2.replace(/\{|\s+|\n/gi, '');
+                            }
+                        }
+                        else {
+                            $.get(ss.href, function(responseText, success) {
+                                var cssText  = responseText.toLowerCase();
+                                var pos      = cssText.indexOf(rule.selectorText.toLowerCase());
+                                console.log(pos, rule.selectorText);
+                                if (pos > -1) {
+                                    var part1 = cssText.slice(pos, -1);
+                                    var part2 = part1.slice(rule.selectorText.length, part1.indexOf('}'));
+                                    s = part2.replace(/\{|\s+|\n/gi, '');
+                                }
+                            });
                         }
                     }
                     catch(e) {}; // painful
@@ -70,20 +127,23 @@ var css = false;
     var rules = [];
     var applyRules = function() {
         $.each(rules, function(i, rule){
-            for (k in rule) {
-                //console.log(k, css.findRules(k));
-                $.each(css.findRules(k), function(){
-                    rule[k].apply(css, [this]);
+            for (selector in this) {
+                $.each(css.findRules(selector), function(){
+                    console.log('~~ ',rule, selector);
+                    rule[selector].apply(css, [this, rule]);
                 });
             }
-        });
+        }); // my head spins
     };
     $.extend({
         'extendCSS': function(i) {
             return i && rules.push(i) || applyRules(); 
         }
     });
-})(jQuery);
+
+    this.getCssText();
+    $.extendCSS();
+});
 if ($.browser.msie) {
     $.extendCSS({
         ':hover': function(rule) {
@@ -97,15 +157,16 @@ if ($.browser.msie) {
             });
         },
         ':first-child': function(rule) {
-            //console.log(rule);
+            console.log('first-child: ', rule);
             var selector = rule.selectorText.replace(':first-child', '');
             var styles   = this.getStyles(rule);
             $(selector).filter(':first').css(styles);
         }
     });
 }
-$(function(){$.extendCSS();});
 /*
+ * Original Firefox prototype
+
 $(function(){
     var fixes = {
         ':hover': function() {
@@ -177,34 +238,4 @@ $(function(){
     //   });
     //}); 
 });
-
-
-
-var MAX_DUMP_DEPTH = 10;  
-function dumpObj(obj, name, indent, depth) {
-    if (depth > MAX_DUMP_DEPTH) {
-           return indent + name + ": <Maximum Depth Reached>\n";
-    }
-    if (typeof obj == "object") {
-           var child = null;
-           var output = indent + name + "\n";
-           indent += "\t";
-           for (var item in obj)
-           {
-                 try {
-                        child = obj[item];
-                 } catch (e) {
-                        child = "<Unable to Evaluate>";
-                 }
-                 if (typeof child == "object") {
-                        output += dumpObj(child, item, indent, depth + 1);
-                 } else {
-                        output += indent + item + ": " + child + "\n";
-                 }
-           }
-           return output;
-    } else {
-           return obj;
-    }
-}
 */
