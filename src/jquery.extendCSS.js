@@ -1,243 +1,211 @@
 var css = false;
 $(function($){
-    css = (new function(){
-        try {
-          this.httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-        } 
-        catch (e) {
-            this.httpRequest = new XMLHttpRequest(); // Mozilla
-        } // ActiveX disabled
 
-        this.cache = {};
+    $.cssExt = {
+        'pseudo-class': {}
+        //'selector': {},
+        //'property': {},
+        //'style': {},
+    };
+
+    try { // IE
+        httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+    } 
+    catch (e) { // Mozilla
+        httpRequest = new XMLHttpRequest();
+    } 
+
+    css = (new function(){
+        this.cache = { style: '' };
 
         // Thanks Dean Edwards :D
-        this.loadFiles = function() {
+        this.load = function() {
+            if ($('#extCssBuff').get(0)) {
+                $('#extCssBuff').text('');
+            }
+            else {
+                $('<span id="extCssBuff" style="display:none;position:absolute;top:-100px;left:-100px;height:0;width:0;" />')
+                    .appendTo('body');
+            }
             for (var i = 0; i < document.styleSheets.length; i++) {
-                var ss = document.styleSheets[i];
+                var ss    = document.styleSheets[i];
+                var key   = false;
+                var href  = false;
+                var clean = false;
+                var out   = false;
                 // cache only remote stylesheet
-                if (ss.href != '' && !this.cache[ss.href]) {
+                if (ss.href && ss.href != '') {
+                    if (!ss.href.match('http://') || ss.href.match(document.location.host)) {
+                        key  = ss.href;
+                        href = ss.href;
+                    }
+                }
+                else if (ss.href == '' || (ss.owningElement 
+                         && ss.owningElement.nodeName.toLowerCase())) {
+                    key  = 'style';
+                    href = document.location.href;
+                }
+                if (key && !this.cache[key])  {
                     try {
                         // easy to load a file huh?
-                        this.httpRequest.open('GET', ss.href, false);
-                        this.httpRequest.send(null);
-                        if (this.httpRequest.status == 0 || this.httpRequest.status == 200) {
-                            console.log(this.httpRequest.responseText);
-                          this.cache[ss.href] = this.httpRequest.responseText;
+                        httpRequest.open('GET', href, false);
+                        httpRequest.send(null);
+                        if (httpRequest.status == 0 || httpRequest.status == 200) {
+                            if (key == 'style') {
+                                var tmp   = $('#extCssBuff').text(httpRequest.responseText)
+                                var fixed = tmp.text().replace(/\n|\r|\t/g, '');
+                                var match = fixed.match(/<style(?:\s+\w+="[a-z\/]+")?>(.*)<\/style>/i);
+                                
+                                if (match && match[1]) {
+                                    out = $.trim(match[1]);
+                                }
+                            }
+                            else {
+                                out = httpRequest.responseText
+                                // Remove the comments to simplify the parser
+                                .replace(/(\/\/.*$)|(\/\*.*\*\/)/igm, '');
+                            }
                         }
                     }
                     catch (e) {} // ignore errors 
+                    // Remove the comments to simplify the parser
+                    this.cache[key] = out.replace(/\n|\t|(\/\/.*$)|(\/\*.*\*\/)/ig, '');
                 }
             }
         };
 
-        this.getCssText = function(ss) {
-            // inline styles
-            if (ss.href == '' && ss.owningElement.nodeName.toLowerCase() == 'style') { 
-                return ss.owningElement.innerHTML;
-            }
-            else if (this.cache[ss.href]) {
-                return this.cache[ss.href];
-            }
-        };
-
-        // Cache stylesheets (because IE's cssText property is unusable)
-        this.loadFiles();
-    });
-});
-/*
-var css = false;
-$(function(){
-    // http://www.javascriptkit.com/dhtmltutors/externalcss2.shtml
-    css = (new function() {
-        this.stylesheets = document.styleSheets;
-        this.cache = {}
-
-        // Thanks Dean Edwards
-        this.loadCSS = function(href, path) {
-            var RELATIVE = /^[\w\.]+[^:]*$/;
-            function makePath(href, path) {
-              if (RELATIVE.test(href)) href = (path || "") + href;
-              return href;
-            };
-
-            try {
-              href = makePath(href, path);
-              if (!this.cache[href]) {
-                // easy to load a file huh?
-                httpRequest.open("GET", href, false);
-                httpRequest.send();
-                if (httpRequest.status == 0 || httpRequest.status == 200) {
-                  this.cache[href] = httpRequest.responseText;
+        // this method is not reliable yet for complex stylesheets..
+        this.getText = function(ss, selector, index) {
+            var ssk  = (ss.href && ss.href != '') ? ss.href : 'style';
+            var idx  = typeof(index) != 'undefined' && index || 0;
+            var text = this.cache[ssk] || '';
+            var pos1 = text.indexOf(selector, idx);
+            if (pos1 > -1) {
+                var pos2 = text.indexOf('{', pos1);
+                var pos3 = text.indexOf('}', pos2);
+                var out  = text.slice(pos2+1, pos3).replace(/\n|\s|\t/gi, '');
+                // recurse for duplicates
+                if (text.indexOf(selector, pos3) > -1) {
+                    return  out + this.getText(ss, selector, pos3);
                 }
-              }
-            } catch (e) {
-              // ignore errors
-            } finally {
-              return this.cache[href] || "";
-            };
-        };
-
-        // find all rules matching a givin selector
-        this.findRules = function(selector) {
-            var matches = [];
-            for (var i = 0; i < this.stylesheets.length; i++) {
-                var ss = this.stylesheets[i];
-                if (ss.rules && ss.rules.length > 0) {
-                    console.log(ss);
-                    for (var x = 0; x< ss.rules.length; x++) {
-                        var r = ss.rules[x];
-                        if (typeof(r) == 'object' && r.selectorText.match(selector)) {
-                            matches.push(r);
-                        }
-                    }
-                    //callback.apply(ss, [i, ss]);
-                   // for (i in ss.rules) {
-                   //     var r = ss.rules[i];
-                   //     if (typeof(r) == 'object' && r.selectorText.match(selector)) {
-                   //         console.log('CCC', r);
-                   //         matches.push(r);
-                   //     }
-                   // }
+                else {
+                    return out;
                 }
             }
-            return matches;
+            return false;
         };
-        this.getOriginalStyles = function(selector, styles) {
+
+        this.text2object = function(cssText) {
+            var o   = {};
+            var txt = cssText.toLowerCase().split(';');
+            $.each(txt, function(idx, obj){
+                var tmp = obj.split(':');
+                if (tmp[0]) {
+                    o[tmp[0]] = tmp[1] || '';
+                }
+            });
+            return o;
+        };
+
+        this.getInitialStyles = function(selector, styles) {
             o = {};
             for (property in styles) {
                 o[property] = $(selector).css(property) || '';
             }
             return o;
         };
-        this.getCssText = function(ss) {
-            console.log('test')
-            // IE 6
-            //
-            // I really hesitated to use Ajax to achieve this, 
-            // I did not want to, but I had no other alternatives.
-            //
-            // In my first attempt I used IE's native cssText property.
-            // Unfortunately, a zealot fucktard at Microsoft had the 
-            // brillant idea to replace unsuported pseudo-selectors 
-            // like :first-child by .. ":unknown". Thus rendering 
-            // impossible any attempt to patch their mess, 
-            // thanks asshole(s).
-            //
-            // My conclusion was: Yes, a minority of users will 
-            // suffer from a slight performance decrease because
-            // I use Ajax. But on the other hand, the price of
-            // using an old outdated browser is shifted toward 
-            // the user instead of the developer, and that my 
-            // friends it's priceless.
-            //
-            // ~ h
 
-            for (var i = 0; i < this.stylesheets.length ; i++) {
-                var ss = this.stylesheets[i];
-                console.log(ss);
-                // inline style
-                if (ss.href == '' && ss.owningElement.nodeName == 'STYLE') { 
-                    var cssText = ss.owningElement.innerHTML;
+        this.getStyles = function(selector) {
+            var o = [];
+            this.eachStyleSheets(function(ss) {
+                var txt = this.getText(ss, selector);
+                if (txt && txt != '') {
+                    o.push(txt);
                 }
-                // remote style
-                else {
-                    console.log('test');
-                    $.get(ss.href, function(responseText, success) {
-                        var cssText  = responseText.toLowerCase();
-                        var pos      = cssText.indexOf(rule.selectorText.toLowerCase());
-                        console.log('test', responseText);
+            });
+            return this.text2object(o.join(';'));
+        };
+
+        this.eachStyleSheets = function(callback, args) {
+            for (var i = 0; i < document.styleSheets.length; i++) {
+                var ss = document.styleSheets[i];
+                callback.apply(this, [ss]);
+            }
+            
+        };
+
+        this.grep = function(regx, ss) {
+            var text = this.cache[ss.href || 'style'];
+            if (text) {
+                var match = text.match(regx);
+
+                if (match) {
+                    var o = {};
+                    $.each(match, function(i, obj) {
+                        o[obj] = regx; // get rid of duplicates
                     });
+                    return o;
                 }
             }
-        },
-        // get style (as object) associated with a rule
-        this.getStyles = function(rule) {
-            var s = false;
-            for (var i = 0; i < this.stylesheets.length ; i++) {
-                var ss = this.stylesheets[i];
-                this.getCssText(ss);
-                if (typeof(ss) == 'object') { // TODO: not foolproof
-                    try {
-                        
-                        // IE
-                        if (ss.href == '') {
-                            var cssText = ss.cssTex;
-                            var pos = cssText.indexOf(rule.selectorText);
-                            if (pos > -1) {
-                                var part1 = cssText.slice(pos, -1);
-                                var part2 = part1.slice(rule.selectorText.length, part1.indexOf('}'));
-                                s = part2.replace(/\{|\s+|\n/gi, '');
-                            }
-                        }
-                        else {
-                            $.get(ss.href, function(responseText, success) {
-                                var cssText  = responseText.toLowerCase();
-                                var pos      = cssText.indexOf(rule.selectorText.toLowerCase());
-                                console.log(pos, rule.selectorText);
-                                if (pos > -1) {
-                                    var part1 = cssText.slice(pos, -1);
-                                    var part2 = part1.slice(rule.selectorText.length, part1.indexOf('}'));
-                                    s = part2.replace(/\{|\s+|\n/gi, '');
-                                }
+            return false;
+        };
+
+        this.attach = {
+            'pseudo-class': function(objs) {
+                this.eachStyleSheets(function(ss){
+                    for (var i in objs) {
+                        var r = new RegExp('([a-z0-9.\\-_#~>+=\\[\\]"]|\\s)+:'+i, 'gi');
+                        var match = this.grep(r, ss);
+                        var callback = objs[i];
+                        if (match) {
+                            $.each(match, function(selector, regx){
+                                callback.apply(css, [selector, regx])
                             });
                         }
                     }
-                    catch(e) {}; // painful
-                }
-            }
-            o = {};
-            s = s.toLowerCase().split(';');
-            $.each(s, function(i, obj){
-                var tmp = obj.split(':');
-                o[tmp[0]] = tmp[1];
-            });
-            return o;
-        };
-
-
-
-    });
-
-    var rules = [];
-    var applyRules = function() {
-        $.each(rules, function(i, rule){
-            for (selector in this) {
-                $.each(css.findRules(selector), function(){
-                    console.log('~~ ',rule, selector);
-                    rule[selector].apply(css, [this, rule]);
                 });
             }
-        }); // my head spins
-    };
-    $.extend({
-        'extendCSS': function(i) {
-            return i && rules.push(i) || applyRules(); 
-        }
+        };
+
+        // Cache stylesheets (because IE's cssText property is unusable)
+        this.load();
     });
 
-//if ($.browser.msie) {
-    $.extendCSS({
-        ':hover': function(rule) {
-            var selector = rule.selectorText.replace(':hover', '');
-            var styles2  = this.getStyles(rule); // new styles
-            var styles1  = this.getOriginalStyles(selector, styles2); // original styles
-            $(selector).hover(function(){
+    $.extend({
+        extendCSS: function(type, obj) {
+            if (!type) {
+                $.each($.cssExt, function(type, obj){
+                    css.attach[type].apply(css, [obj]);
+                });
+            }
+            else {
+                $.extend($.cssExt[type], obj);
+                $.extendCSS();
+            }
+        }
+    });
+});
+$(function(){
+    if ($.browser.msie && parseInt($.browser.version, 10) < 7) {
+    $.extendCSS('pseudo-class', {
+        'hover': function(selector) {
+            var selector2 = selector.replace(':hover', '');
+            var styles2 = this.getStyles(selector); // new styles
+            var styles1 = this.getInitialStyles(selector2, styles2); // original styles
+            $(selector2).hover(function(){
                 $(this).css(styles2); // apply :hover styles
             }, function(){
                 $(this).css(styles1); // restore original styles
             });
-            },
-        ':first-child': function(rule) {
-            console.log('first-child: ', rule);
-            var selector = rule.selectorText.replace(':first-child', '');
-            var styles   = this.getStyles(rule);
-            $(selector).filter(':first').css(styles);
+        },
+        'first-child': function(selector) {
+            var selector2 = selector.replace(':first-child', '');
+            $(selector2).filter(':first').css(this.getStyles(selector2));
         }
     });
-//}
-    $.extendCSS();
+    }
 });
-*/
+
 /*
  * Original Firefox prototype
 
