@@ -94,7 +94,7 @@ $(function($){
             }
             return false;
         };
-
+        // "color:#c30;" -> {color: '#c30'}
         this.text2object = function(cssText) {
             var o   = {};
             var txt = cssText.toLowerCase().split(';');
@@ -166,7 +166,6 @@ $(function($){
                 });
             }
         };
-
         // Cache stylesheets (because IE's cssText property is unusable)
         this.load();
     });
@@ -182,28 +181,50 @@ $(function($){
                 $.extend($.cssExt[type], obj);
                 $.extendCSS();
             }
+        },
+        extendCSSif: function(condition, type, obj) {
+            if (condition) {
+                return $.extendCSS.apply(this, [type, obj]);
+            }
         }
     });
 });
 $(function(){
-    if ($.browser.msie && parseInt($.browser.version, 10) < 7) {
-    $.extendCSS('pseudo-class', {
-        'hover': function(selector) {
-            var selector2 = selector.replace(':hover', '');
-            var styles2 = this.getStyles(selector); // new styles
-            var styles1 = this.getInitialStyles(selector2, styles2); // original styles
-            $(selector2).hover(function(){
-                $(this).css(styles2); // apply :hover styles
-            }, function(){
-                $(this).css(styles1); // restore original styles
-            });
-        },
-        'first-child': function(selector) {
-            var selector2 = selector.replace(':first-child', '');
-            $(selector2).filter(':first').css(this.getStyles(selector2));
-        }
+    /*
+     * Implementing -moz-border-radius in non-mozilla browsers
+     * with jQuery.corner:
+     *
+    $extendCSSif(($.fn.corner && !$.browser.mozilla), 'property', {
+        '-moz-border-radius': 
+          function(selector, value) { $(selector).corner(value); },
+        '-moz-border-radius-topLeft': 
+          function(selector, value) { $(selector).corner('tl '+ value); },
+        '-moz-border-radius-bottomLeft': 
+          function(selector, value) { $(selector).corner('bl '+ value); },
+        '-moz-border-radius-topRight': 
+          function(selector, value) { $(selector).corner('tr '+value); },
+        '-moz-border-radius-topRight': 
+          function(selector, value) { $(selector).corner('br '+value); }
     });
-    }
+    */
+    $.extendCSSif(($.browser.msie 
+        && parseInt($.browser.version, 10) < 7),
+        'pseudo-class', {
+            'hover': function(selector) {
+                var selector2 = selector.replace(':hover', '');
+                var styles2 = this.getStyles(selector); // new styles
+                var styles1 = this.getInitialStyles(selector2, styles2); // original styles
+                $(selector2).hover(function(){
+                    $(this).css(styles2); // apply :hover styles
+                }, function(){
+                    $(this).css(styles1); // restore original styles
+                });
+            },
+            'first-child': function(selector) {
+                var selector2 = selector.replace(':first-child', '');
+                $(selector2).filter(':first').css(this.getStyles(selector2));
+            }
+    });
 });
 
 /*
