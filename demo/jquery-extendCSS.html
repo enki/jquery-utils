@@ -10,7 +10,12 @@
         <style type="text/css">
 
         #fixes li:first-child {
-            background:#c30;
+            background:#ffc;
+            padding:8px;
+            border:2px solid #ccc;
+        }
+        p:hover {
+            background:#ccc;
         }
         </style>
     </head>
@@ -18,18 +23,48 @@
         <h2>jquery.extendCSS.js</h2>
         <div class="copyright">Copyright (c) 2007-2008 <a href="http://haineault.com/" target="_blank">Maxime Haineault</a> (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
         <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
-        <h3>Fixes</h3>
-        <h4>:hover on any element</h4>
-
+        <a class="related-links experimental">Experimental code !</a>
+        <h3>Extending pseudo-classes</h3>
+        <h4>:hover</h4>
         <p>
-            I'm a paragraph ! (hover me)
+            Inernet Explorer 6 does not support :hover on non-link elements. 
         </p>
+        <p>
+            Now it does.
+        </p>
+        <pre>$(function(){
+$.extendCSSif(($.browser.msie && parseInt($.browser.version, 10) < 7),
+    'pseudo-class', {
+        'hover': function(selector) {
+            var selector2 = selector.replace(':hover', '');
+            var styles2 = this.getStyles(selector); // new styles
+            var styles1 = this.getInitialStyles(selector2, styles2); // original styles
+            $(selector2).hover(function(){
+                $(this).css(styles2); // apply :hover styles
+            }, function(){
+                $(this).css(styles1); // restore original styles
+            });
+        }
+    });
+});
+</pre>
+
         <h4>:first-child</h4>
         <ul id="fixes">
             <!-- this comment would normally break IE's :first-child support -->
-            <li>:first-child</li>
-            <li>:hover</li>
+            <li><b>:first-child</b> is working in IE6 and 7 even if there is a HTML comment before it.</li>
+            <li>second child</li>
         </ul>
+        <pre>$(function(){
+$.extendCSSif(($.browser.msie && parseInt($.browser.version, 10) <= 7),
+    'pseudo-class', {
+        'first-child': function(selector) {
+            var selector2 = selector.replace(':first-child', '');
+            $(selector2).filter(':first').css(this.getStyles(selector2));
+        }
+    });
+});
+</pre>
     </body>
 </html>
 

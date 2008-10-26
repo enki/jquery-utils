@@ -12,18 +12,8 @@ a {
 a:hover {
     color:#4185AF;
 }
-body#nav ul li a:hover {
-    color:#def;
-}
-input:focus {
-    background:#c30;
-}
 body#nav ul li a:hover, #body a:hover {
     text-decoration:none;
-    background-color:#269;
-}
-p:hover {
-    background:#ccc;
 }
 table {
     margin:10px 40px;

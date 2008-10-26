@@ -18,7 +18,7 @@ $(function($){
     css = (new function(){
         this.cache = { style: '' };
 
-        // Thanks Dean Edwards :D
+        // Thanks Dean Edwards
         this.load = function() {
             if ($('#extCssBuff').get(0)) {
                 $('#extCssBuff').text('');
@@ -76,23 +76,35 @@ $(function($){
 
         // this method is not reliable yet for complex stylesheets..
         this.getText = function(ss, selector, index) {
-            var ssk  = (ss.href && ss.href != '') ? ss.href : 'style';
-            var idx  = typeof(index) != 'undefined' && index || 0;
-            var text = this.cache[ssk] || '';
-            var pos1 = text.indexOf(selector, idx);
-            if (pos1 > -1) {
-                var pos2 = text.indexOf('{', pos1);
-                var pos3 = text.indexOf('}', pos2);
-                var out  = text.slice(pos2+1, pos3).replace(/\n|\s|\t/gi, '');
-                // recurse for duplicates
-                if (text.indexOf(selector, pos3) > -1) {
-                    return  out + this.getText(ss, selector, pos3);
-                }
-                else {
-                    return out;
-                }
+            if (typeof(ss.cssRules) != 'undefined') {
+                var o = [];
+                $.each(ss.cssRules, function() { 
+                    var rule = this;
+                    if (rule.selectorText.match(selector)) { 
+                        o.push(rule.cssText.match(/\{(.*)\}/)[1].replace(/\s+/g, ''));
+                    } 
+                });
+                return (o.length > 0)? o.join(''): false;
             }
-            return false;
+            else {
+                var ssk  = (ss.href && ss.href != '') ? ss.href : 'style';
+                var idx  = typeof(index) != 'undefined' && index || 0;
+                var text = this.cache[ssk] || '';
+                var pos1 = text.indexOf(selector, idx);
+                if (pos1 > -1) {
+                    var pos2 = text.indexOf('{', pos1);
+                    var pos3 = text.indexOf('}', pos2);
+                    var out  = text.slice(pos2+1, pos3).replace(/\n|\s|\t/gi, '');
+                    // recurse for duplicates
+                    if (text.indexOf(selector, pos3) > -1) {
+                        return  out + this.getText(ss, selector, pos3);
+                    }
+                    else {
+                        return out;
+                    }
+                }
+                return false;
+            }
         };
         // "color:#c30;" -> {color: '#c30'}
         this.text2object = function(cssText) {
@@ -135,10 +147,14 @@ $(function($){
         };
 
         this.grep = function(regx, ss) {
-            var text = this.cache[ss.href || 'style'];
+            if (typeof(ss.cssRules) != 'undefined') {
+                var text = $.map(ss.cssRules, function(a){ return a.cssText || ''; }).join('');
+            }
+            else {
+                var text = this.cache[ss.href || 'style'];
+            }
             if (text) {
                 var match = text.match(regx);
-
                 if (match) {
                     var o = {};
                     $.each(match, function(i, obj) {
@@ -156,8 +172,8 @@ $(function($){
                     for (var i in objs) {
                         var r = new RegExp('([a-z0-9.\\-_#~>+=\\[\\]"]|\\s)+:'+i, 'gi');
                         var match = this.grep(r, ss);
-                        var callback = objs[i];
                         if (match) {
+                            var callback = objs[i];
                             $.each(match, function(selector, regx){
                                 callback.apply(css, [selector, regx])
                             });
@@ -166,8 +182,10 @@ $(function($){
                 });
             }
         };
-        // Cache stylesheets (because IE's cssText property is unusable)
-        this.load();
+        // Cache stylesheets (because IE6's cssText property is unusable)
+        if ($.browser.msie && parseInt($.browser.version, 10) < 7) {
+            this.load();
+        }
     });
 
     $.extend({
@@ -221,84 +239,8 @@ $(function(){
                 });
             },
             'first-child': function(selector) {
-                var selector2 = selector.replace(':first-child', '');
-                $(selector2).filter(':first').css(this.getStyles(selector2));
+                var sel = selector.replace(':first-child', '');
+                $(sel).filter(':first').css(this.getStyles(sel));
             }
     });
 });
-
-/*
- * Original Firefox prototype
-
-$(function(){
-    var fixes = {
-        ':hover': function() {
-            var selector = this.selectorText.replace(/:hover/g, '');
-            var styles   = getStyles(this);
-            $(selector).hover(function(){
-                $(this).css(styles[1]);
-            }, function(){
-                $(this).css(styles[0]);
-            });
-        },
-        ':focus': function() {
-            //console.log('fixing :focus - ', this);
-        }
-    };
-    var getStyles = function(rule) {
-        var n = {}; // new styles
-        var o = {}; // original styles
-        return ['a','b'];
-        var styles = rule.cssText.replace(rule.selectorText, '').replace(/{|}|\s/gi, '').split(';')
-        var selector = rule.selectorText.replace(/:hover/g, '');
-        $.each(styles, function(i, style){
-            var s = style.split(':')
-            if (s[0] && s[1]) {
-                o[s[0]] = $(selector).css(s[0]);
-                n[s[0]] = s[1];
-            }
-        });
-        o['border'] = '';
-        n['border'] = '1px solid #c30';
-        return [o, n]; 
-    };
-    var fix = function(rule) {
-        $.each(fixes, function(k, callback) {
-            if (rule.selectorText.match(k)) {
-                callback.apply(rule, []);
-            }
-        });
-    };
-    
-    var re = [];
-    $.each(fixes, function(k){ re.push(k); });
-    re = new RegExp(re.join('|'), 'i'); 
-   
-    for (var i in document.styleSheets) { 
-        var ss = document.styleSheets[i];
-        if (typeof(ss) == 'object') { 
-            for (var i in ss.rules) {
-                var rule = ss.rules[i];
-                // could be done more efficiently
-                // http://msdn.microsoft.com/en-us/library/ms531199(VS.85).aspx#
-                if (typeof(rule) == 'object') { 
-                    if (re.test(rule.selectorText)) { 
-                        document.write(dumpObj(rule.style));
-                        //fix(rule);
-                    } 
-                }
-            }
-        }
-    }
-
-    //$.each(document.styleSheets, function() { 
-    //   var ss = this;
-    //   $.each(ss.cssRules, function() { 
-    //       var rule = this;
-    //       if (re.test(rule.selectorText)) { 
-    //           fix(rule);
-    //       } 
-    //   });
-    //}); 
-});
-*/
