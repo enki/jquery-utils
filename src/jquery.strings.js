@@ -217,7 +217,7 @@
         var match  = false;
         var buffer = [];
         var token  = '';
-        var tmp    = str.split('');
+        var tmp    = (str||'').split('');
         for(start=0; start < tmp.length; start++) {
             if (tmp[start] == '{' && tmp[start+1] !='{') {
                 end   = str.indexOf('}', start);

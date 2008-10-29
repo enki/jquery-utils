@@ -36,6 +36,7 @@
                 ols.removeClass('active').eq(id).addClass('active').show();
             }, this.options.showDelay);
         },
+
         // guess what it does
         showNextLevel: function() {
             if (this.is2d()) {
@@ -45,14 +46,27 @@
                 this.wrapper.find('ol.active').removeClass('active').find('li.hover > ol').addClass('active').show();
             }
         },
-        getSelection: function() {
-            return $.makeArray(this.wrapper.find('span.hover')
-                .map(function(){ return $(this).text(); }));
+
+        getSelection: function(level) {
+            if (level) {
+                return this.wrapper.find('ol').eq(level).find('li span.hover');
+            }
+            else {
+                return $.makeArray(this.wrapper.find('span.hover')
+                    .map(function(){ return $(this).text(); }));
+            }
         },
+
+        // essentially reposition each ol
+        redraw: function() {
+            redraw(this);
+        },
+
         // show level 0 (shortcut)
         show: function() {
               this.showLevel(0);
         },
+
         // hide all levels
         hide: function() {
             self = this;
@@ -60,10 +74,12 @@
                 self.wrapper.find('ol').hide();
             }, self.options.hideDelay);
         },
+
         // determine dropdown type
         is2d: function() {
             return !this.is3d();
         },
+
         is3d: function() {
             return !!this.wrapper.find('ol > li > ol').get(0);
         }
@@ -82,12 +98,12 @@
         click:   function(e, dropslide) {
             dropslide.hide();
         }
-    };
+    }
 
     function onActivate(e){
         var dropslide = getDropSlide(this);
         dropslide.show();
-    };
+    }
 
     function onLiMouseover(e){
         var dropslide = getDropSlide(this);
@@ -96,38 +112,47 @@
             .find('span.hover').andSelf().removeClass('hover');
         $(this).find('ol').show().end().children(0).andSelf().addClass('hover');
         dropslide.showNextLevel();
-    };
+    }
 
     function onLiClick(e){
         var dropslide = getDropSlide(this);
         $(dropslide.element).triggerHandler('dropslideclick',  [e, dropslide], dropslide.options.click); 
         $(dropslide.element).triggerHandler('select',          [e, dropslide], dropslide.options.select); 
-    };
-
-    function onOlMousemove(e) {
-        var dropslide = getDropSlide(this);
+    }
+    
+    function redraw(dropslide) {
         var prevLI = false;
         var prevOL = false;
         var nextOL = false;
         var pos    = false;
         var offset = dropslide.element.position().left + dropslide.options.left;
         var ols    = dropslide.wrapper.find('ol');
-
+        
         // reposition each ol
         ols.each(function(i){
             prevOL = $(this).prevAll('ol:visible:first');
-            if (prevOL.get(0)) {
-                prevLI = prevOL.find('li.hover, li:first').eq(0);
-                $(this).css({
-                    top:  prevOL.position().top + prevLI.height() + dropslide.options.top, 
-                    left: prevLI.position().left + offset
-                });
-                offset = offset + prevLI.position().left + dropslide.options.left;
-            }
-            else if (i > 0 && dropslide.is3d()) {
-                $(this).css('margin-left', dropslide.options.left);
-            }
+            // without the try/catch I get a 
+            // Error: "Could not convert JavaScript argument arg 0 ..."
+            try {
+                if (prevOL.get(0)) {
+                    prevLI = prevOL.find('li.hover, li:first').eq(0);
+                    $(this).css({
+                        top:  prevOL.position().top + prevLI.height() + dropslide.options.top, 
+                        left: prevLI.position().left + offset
+                    });
+                    offset = offset + prevLI.position().left + dropslide.options.left;
+                }
+                else if (i > 0 && dropslide.is3d()) {
+                    $(this).css('margin-left', dropslide.options.left);
+                }
+            } catch(e) {};
         });
+    
+    }
+
+    function onOlMousemove(e) {
+        var dropslide = getDropSlide(this);
+        return redraw(dropslide);
     }
     
     function getDropSlide(el) {

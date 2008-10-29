@@ -167,6 +167,22 @@ $(function($){
         };
 
         this.attach = {
+            'property': function() {
+                this.eachStyleSheets(function(ss){
+                    for (var i in objs) {
+                        var r = new RegExp('([a-z0-9.\\-_#~>+=\\[\\]"]|\\s)+:'+i, 'gi');
+                        var match = this.grep(r, ss);
+                        /*
+                        if (match) {
+                            var callback = objs[i];
+                            $.each(match, function(selector, regx){
+                                callback.apply(css, [selector, regx])
+                            });
+                        }
+                        */
+                    }
+                });
+            },
             'pseudo-class': function(objs) {
                 this.eachStyleSheets(function(ss){
                     for (var i in objs) {
