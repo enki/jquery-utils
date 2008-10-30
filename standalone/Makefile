@@ -1,5 +1,5 @@
-SRC_DIR   = src
-BUILD_DIR = build
+SRC_DIR   = ../src
+BUILD_DIR = ../build
 PREFIX    = .
 DIST_DIR  = ${PREFIX}/dist
 

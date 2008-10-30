@@ -1,0 +1,11 @@
+title: jquery.timepickr
+version: 0.1
+dest: dist/
+modules:
+  - file: ../../src/ui.timepickr.js
+    destfile: jquery.timepickr.js
+    depends:
+      - from: ../../src/jquery.utils.js
+      - from: ../../src/jquery.strings.js
+      - from: ../../src/jquery.i18n.js
+      - from: ../../src/ui.dropslide.js
