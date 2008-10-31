@@ -1,5 +1,6 @@
 title: jquery.utils
 version: 0.5
+svnrev: true
 dest: dist/
 modules:
   - file: src/jquery.utils.js

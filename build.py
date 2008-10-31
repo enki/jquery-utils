@@ -8,28 +8,39 @@
 import os, yaml
 from optparse import OptionParser
 
-#BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-#sys.path.append(BASE_PATH)
-
 BUILD_DIR = 'build/'
 LOG = True
 JAR = "java -jar %s" % os.path.join(BUILD_DIR, 'js.jar')
+SVNREV = ''
 
 def log(i, type=False):
     global LOG
     if LOG or type in ['error', 'debug']:
         if type == 0:
             print i
-        elif type == 'title':
-            print ' %s' % i
+        elif type == 'build':
+            print '\n[\x1b\xb01;31mB\x1b\x5b0;0m] %s\n' % i
         elif type == 'list':
             print ' - %s' % i
         elif type == 'dependency':
-            print ' - \x1b\x5b01;34mdependency\n\x1b\x5b0;0m: %s' % i
+            print ' - [\x1b\x5b01;34mD\x1b\x5b0;0m] %s' % i
+        elif type == 'minify':
+            print ' - [\x1b\x5b01;33mM\x1b\x5b0;0m] %s' % i
         elif type == 'error':
             print 'Error: %s' % i
-        elif type == 'debug':
-            print '\x1b\x5b01;32m%s\n\x1b\x5b0;0m' % i
+        else:
+            print i
+
+def get_svn_rev(path=''):
+    """
+    Probably not the most reliable way to get
+    the SVN revision of the cwd, but it works..
+    """
+    global SVNREV
+    if not SVNREV:
+        rs = os.popen('svn info %s' % path)
+        o  = rs.readlines()
+    return o[4][10:-1]
 
 def get_builds():
     out    = []
@@ -40,7 +51,6 @@ def get_builds():
     for build in builds:
         f  = build[2:].replace("\n", '')
         rs = file(f, 'r')
-
         try:
             buff = yaml.load(rs)
         except yaml.YAMLError, exc:
@@ -53,7 +63,7 @@ def get_builds():
 def minify(src, dest):
     global JAR
     global BUILD_DIR
-    log('minifying: %s' % src, 'list')
+    log('%s -> %s' % (src, dest), 'minify')
     rs = os.popen('%s %s %s %s' % (JAR, 
         os.path.join(BUILD_DIR, 'build/min.js'),
         src, dest))
@@ -112,6 +122,11 @@ def make(build, options):
     if options.quiet:
         LOG = False
 
+    if build.has_key('svnrev'):
+        version = 'v%s (r%s)' % (build['version'], get_svn_rev())
+    else:
+        version = 'v%s' % build['version']
+
     for module in build['modules']:
         destPath    = os.path.join(base, build['dest'], get_dest_filename(module))
 
@@ -120,7 +135,7 @@ def make(build, options):
         else:
             title = build['title']
 
-        log("\nBuilding: %s v.%s (%s)\n" % (title, build['version'], destPath), 'title')
+        log("%s %s -> %s" % (title, version, destPath), 'build')
 
         o.append(get_dependencies(module['depends'], base))
         o.append(glob(os.path.join(base, module['file'])))
@@ -157,3 +172,5 @@ if __name__ == '__main__':
 
     for build in builds:
         make(build, options)
+
+    print '\n Done.\n'

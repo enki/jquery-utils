@@ -1,5 +1,6 @@
 title: jquery.timepickr
 version: 0.1
+svnrev: true
 dest: dist/
 modules:
   - file: ../../src/ui.timepickr.js
