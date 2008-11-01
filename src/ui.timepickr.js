@@ -1,5 +1,5 @@
 /*
-  jQuery ui.timepickr - 0.4
+  jQuery ui.timepickr - 0.5
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -8,6 +8,10 @@
   MIT License (http://www.opensource.org/licenses/mit-license.php
 
   Note: if you want the original experimental plugin checkout the rev 224 
+
+  Dependencies
+  ------------
+  - ui.dropslide.js
 
   To fix/do
   ---------
@@ -25,36 +29,37 @@
     var getTimeRanges = function(options) {
         var o = [];
         if (options.convention == 24) {
-            o.push(createRow(['day', 'night']));
+            o.push(createRow(['day', 'night'], false, 'prefix'));
         }
         if (options.hours) {
             var h = (options.convention == 24) 
                     && $.range(0, 24)
                     || $.range(1, 13);
 
-            o.push(createRow(h, '{0:0.2d}'));
+            o.push(createRow(h, '{0:0.2d}', 'hour'));
         }
         if (options.minutes) {
-            o.push(createRow(options.rangeMin, '{0:0.2d}'));
+            o.push(createRow(options.rangeMin, '{0:0.2d}', 'minute'));
         }
         if (options.seconds) {
-            o.push(createRow(options.rangeSec, '{0:0.2d}'));
+            o.push(createRow(options.rangeSec, '{0:0.2d}', 'second'));
         }
         if (options.apm && options.convention == 12) {
-            o.push(createRow(options.apm));
+            o.push(createRow(options.apm, false, 'suffix'));
         }
         return o;
     };
 
-    var createButton = function(i, format) {
-        var o = format && $.format(format, i) || i;
-        return $('<li />').data('id', i).append($('<span />').text(o));
+    var createButton = function(i, format, className) {
+        var o  = format && $.format(format, i) || i;
+        var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
+        return $('<li />').addClass(cn).data('id', i).append($('<span />').text(o));
     }
 
-    var createRow = function(obj, format) {
+    var createRow = function(obj, format, className) {
         var row = $('<ol />')
         for (var x in obj) {
-            row.append(createButton(obj[x], format || false));
+            row.append(createButton(obj[x], format || false, className || false));
         }
         return row;
     }
@@ -62,6 +67,7 @@
     var buildMenu = function(options) {
         var ranges = getTimeRanges(options);
         var menu   = $('<span class="ui-dropslide">');
+        //if () {options.convention}
         for (var x in ranges) {
             menu.append(ranges[x]);
         }
@@ -76,7 +82,7 @@
             element
                 .addClass('ui-timepickr')
                 .dropslide(this.options.dropslide)
-                .bind('select', this.options.select);
+                .bind('select', this.select);
             if (this.options.val) {
                 element.val(this.options.val)
             }
@@ -90,7 +96,7 @@
             var hrs   = menu.find('ol:eq(1)');
             hrs.filter('li:first, li:first span').addClass('hover');
 
-            if (this.options.convention = 24) {
+            if (this.options.convention == 24) {
                 var day   = hrs.find('li').slice(0, 12);
                 var night = hrs.find('li').slice(12, 24);
                 // TODO: refactor
@@ -119,6 +125,40 @@
             else {
                 element.dropslide('redraw');
             }
+            element.data('timepickr', this)
+        },
+
+        select: function(e, dropslide){
+            var timepickr = $(dropslide.element).data('timepickr');
+            var frmt = timepickr.options.convention == 24 
+                        && 'format24' || 'format12';
+            var val = {
+                h: timepickr.getValue('hour'),
+                m: timepickr.getValue('minute'),
+                s: timepickr.getValue('second'),
+                prefix: timepickr.getValue('prefix'),
+                suffix: timepickr.getValue('suffix')
+            };
+            var o = $.format(timepickr.options[frmt], val);
+
+            $(this).val(o);
+            e.stopPropagation();
+        },
+
+        getHour: function(selection) {
+            return this.getValue('hour');
+        },
+
+        getMinute: function(selection) {
+            return this.getValue('minute');
+        },
+
+        getSecond: function(selection) {
+            return this.getValue('second');
+        },
+
+        getValue: function(type) {
+            return $('.ui-timepickr.'+ type +'.hover', this.element.next()).text();
         }
     });
 
@@ -129,23 +169,15 @@
         minutes:    true,
         seconds:    false,
         format12:   '{h:02.d}:{m:02.d} {apm:s}',
-        format24:   '{h:02.d}:{m:02.d}h',
+        format24:   '{h:02.d}:{m:02.d} h',
+        defaultHr:  '12',
+        defaultMin: '00',
+        defaultSec: '00',
+        defaultApm: 'am',
         rangeMin:   ['00', '15', '30', '45'],
         rangeSec:   ['00', '15', '30', '45'],
         apm:        ['am', 'pm'],
         convention: 24, // 24, 12
-        select: function(e, dropslide){
-            var sel  = dropslide.getSelection();
-            var frmt = dropslide.options.convention == 24 
-                        && 'format24' || 'format12';
-            var val  = {
-                    h: sel[1], 
-                    m: sel[2] || 0, 
-                    s: sel[3] || 0 };
-
-            $(this).val($.format(dropslide.options[frmt], val));
-            e.stopPropagation();
-        },
         dropslide: {
             trigger: 'focus',
         }
