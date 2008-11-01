@@ -21,6 +21,13 @@
                 $('#jQueryVersion span').text($.fn.jquery);
             });
         </script>
+        <style>
+        .fixtures {
+            position:absolute;
+            top:-1000px;
+            left:-1000px;
+        }
+        </style>
     </head>
     <body id="body">
         <h2 id="banner">Unit tests: <span class="pass">passed</span><span class="fail">failed</span></h2>
@@ -28,7 +35,7 @@
         <h5 id="jQueryVersion">jQuery version <span></span></h5> 
         <div id="main"></div>
         <ol id="tests"></ol>
-        <div id="fixtures"></div>
-        <div id="fixtures2"></div>
+        <div id="fixtures" class="fixtures"></div>
+        <div id="fixtures2" class="fixtures"></div>
     </body>
 </html>
