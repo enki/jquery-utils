@@ -5,36 +5,42 @@ dest: dist/
 modules:
   - file: src/jquery.utils.js
     depends:
-      - from: src/jquery.utils.js
-      - from: src/jquery.anchorHandler.js
-      - from: src/jquery.cookie.js
-      - from: src/jquery.countdown.js
-      - from: src/jquery.cycle.js
-      - from: src/jquery.delayedObserver.js
-      - from: src/jquery.flash.js
-      - from: src/jquery.i18n.js
-      - from: src/jquery.ifixpng.js
-      - from: src/jquery.mousewheel.js
-      - from: src/jquery.strings.js
-      - from: src/jquery.timeago.js
-      - from: src/jquery.youtubeLinksToEmbed.js
+      - src: src/jquery.utils.js
+      - src: src/jquery.anchorHandler.js
+      - src: src/jquery.cookie.js
+      - src: src/jquery.countdown.js
+      - src: src/jquery.cycle.js
+      - src: src/jquery.delayedObserver.js
+      - src: src/jquery.flash.js
+      - src: src/jquery.i18n.js
+      - src: src/jquery.ifixpng.js
+      - src: src/jquery.mousewheel.js
+      - src: src/jquery.strings.js
+      - src: src/jquery.timeago.js
+      - src: src/jquery.youtubeLinksToEmbed.js
 
   - file: src/jquery.utils.js
     title: jquery.utils.min
     destfile: jquery.utils.ui.js
     depends:
-      - from: src/jquery.utils.js
-      - from: src/jquery.anchorHandler.js
-      - from: src/jquery.cookie.js
-      - from: src/jquery.countdown.js
-      - from: src/jquery.cycle.js
-      - from: src/jquery.delayedObserver.js
-      - from: src/jquery.flash.js
-      - from: src/jquery.i18n.js
-      - from: src/jquery.ifixpng.js
-      - from: src/jquery.mousewheel.js
-      - from: src/jquery.strings.js
-      - from: src/jquery.timeago.js
-      - from: src/jquery.youtubeLinksToEmbed.js
-      - from: src/ui.toaster.js
-      - from: src/ui.masked.js
+      - src: src/jquery.utils.js
+      - src: src/jquery.anchorHandler.js
+      - src: src/jquery.cookie.js
+      - src: src/jquery.countdown.js
+      - src: src/jquery.cycle.js
+      - src: src/jquery.delayedObserver.js
+      - src: src/jquery.flash.js
+      - src: src/jquery.i18n.js
+      - src: src/jquery.ifixpng.js
+      - src: src/jquery.mousewheel.js
+      - src: src/jquery.strings.js
+      - src: src/jquery.timeago.js
+      - src: src/jquery.youtubeLinksToEmbed.js
+      - src: src/ui.toaster.js
+      - src: src/ui.masked.js
+merge:
+  - dest: dist/jquery.utils.css
+    files:
+      - src: src/css/ui.dropslide.css
+      - src: src/css/ui.timepickr.css
+      - src: src/css/ui.toaster.css

@@ -19,13 +19,15 @@ def log(i, type=False):
         if type == 0:
             print i
         elif type == 'build':
-            print '\n[\x1b\xb01;31mB\x1b\x5b0;0m] %s\n' % i
+            print '\n [\x1b\x5b1;31mB\x1b\x5b0;0m] %s' % i
         elif type == 'list':
             print ' - %s' % i
         elif type == 'dependency':
-            print ' - [\x1b\x5b01;34mD\x1b\x5b0;0m] %s' % i
+            print '  - [\x1b\x5b01;34mD\x1b\x5b0;0m] %s' % i
         elif type == 'minify':
-            print ' - [\x1b\x5b01;33mM\x1b\x5b0;0m] %s' % i
+            print '  - [\x1b\x5b01;33mM\x1b\x5b0;0m] %s' % i
+        elif type == 'merge':
+            print '\n [\x1b\x5b1;36mM\x1b\x5b0;0m] %s' % i
         elif type == 'error':
             print 'Error: %s' % i
         else:
@@ -91,8 +93,8 @@ def get_dependencies(obj, path=''):
     """
     o = []
     for dependency in obj:
-        p = os.path.join(path, dependency['from'])
-        log(p.replace('../', ''), 'dependency')
+        p = os.path.join(path, dependency['src'])
+        log(p, 'dependency')
         o.append(glob(p))
     return ''.join(o)
 
@@ -127,30 +129,42 @@ def make(build, options):
     else:
         version = 'v%s' % build['version']
 
-    for module in build['modules']:
-        destPath    = os.path.join(base, build['dest'], get_dest_filename(module))
+    if build.has_key('merge'):
+        for merge in build['merge']:
+            dest = os.path.join(base, merge['dest'])
+            log(dest, 'merge')
 
-        if module.has_key('title'):
-            title = module['title']
-        else:
-            title = build['title']
+            f = open(dest, 'w+')
+            o = get_dependencies(merge['files'], base)
+            f.write(o)
+            f.close()
 
-        log("%s %s -> %s" % (title, version, destPath), 'build')
 
-        o.append(get_dependencies(module['depends'], base))
-        o.append(glob(os.path.join(base, module['file'])))
+    if build['modules']:
+        o = []
+        for module in build['modules']:
+            destPath    = os.path.join(base, build['dest'], get_dest_filename(module))
 
-        f = open(destPath, 'w+')
-        buff = ''.join(o)
+            if module.has_key('title'):
+                title = module['title']
+            else:
+                title = build['title']
 
-        if build.has_key('version'):
-            buff = buff.replace('@VERSION', '%s' % build['version'])
+            log("%s %s -> %s" % (title, version, destPath), 'build')
+            o.append(get_dependencies(module['depends'], base))
+            o.append(glob(os.path.join(base, module['file'])))
 
-        f.write(buff)
-        f.close()
+            f = open(destPath, 'w+')
+            buff = ''.join(o)
 
-        if options.minify:
-            minify(destPath, destPath.replace('.js', '.min.js'))
+            if build.has_key('version'):
+                buff = buff.replace('@VERSION', '%s' % build['version'])
+
+            f.write(buff)
+            f.close()
+
+            if options.minify:
+                minify(destPath, destPath.replace('.js', '.min.js'))
 
 if __name__ == '__main__':
     usage = "usage: %prog [options] <module>"

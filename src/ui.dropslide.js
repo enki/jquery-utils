@@ -1,5 +1,5 @@
 /*
-  jQuery ui.dropslide - 0.2
+  jQuery ui.dropslide - 0.3
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -127,23 +127,21 @@
         var pos    = false;
         var offset = dropslide.element.position().left + dropslide.options.left;
         var ols    = dropslide.wrapper.find('ol');
+
+        dropslide.wrapper.css({
+            top: dropslide.element.position().top + dropslide.element.height() + 2,
+            left: dropslide.element.position().left
+        });
         
         // reposition each ol
         ols.each(function(i){
             prevOL = $(this).prevAll('ol:visible:first');
-            // without the try/catch I get a 
+            // without the try/catch I often get a 
             // Error: "Could not convert JavaScript argument arg 0 ..."
             try {
                 if (prevOL.get(0)) {
                     prevLI = prevOL.find('li.hover, li:first').eq(0);
-                    $(this).css({
-                        top:  prevOL.position().top + prevLI.height() + dropslide.options.top, 
-                        left: prevLI.position().left + offset
-                    });
-                    offset = offset + prevLI.position().left + dropslide.options.left;
-                }
-                else if (i > 0 && dropslide.is3d()) {
-                    $(this).css('margin-left', dropslide.options.left);
+                    $(this).css('margin-left', prevLI.position().left);
                 }
             } catch(e) {};
         });

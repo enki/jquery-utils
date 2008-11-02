@@ -6,7 +6,14 @@ modules:
   - file: ../../src/ui.timepickr.js
     destfile: jquery.timepickr.js
     depends:
-      - from: ../../src/jquery.utils.js
-      - from: ../../src/jquery.strings.js
-      - from: ../../src/jquery.i18n.js
-      - from: ../../src/ui.dropslide.js
+      - src: ../../src/jquery.utils.js
+      - src: ../../src/jquery.ui.all.js
+      - src: ../../src/jquery.strings.js
+      - src: ../../src/jquery.i18n.js
+      - src: ../../src/ui.dropslide.js
+merge:
+  - dest: dist/ui.timepikr.css
+    files:
+      - src: ../../src/css/ui.dropslide.css
+      - src: ../../src/css/ui.timepickr.css
+
