@@ -23,11 +23,11 @@ def log(i, type=False):
         elif type == 'list':
             print ' - %s' % i
         elif type == 'dependency':
-            print '  - [\x1b\x5b01;34mD\x1b\x5b0;0m] %s' % i
+            print ' [\x1b\x5b01;34mD\x1b\x5b0;0m]  - %s' % i
         elif type == 'minify':
-            print '  - [\x1b\x5b01;33mM\x1b\x5b0;0m] %s' % i
+            print ' [\x1b\x5b01;33mM\x1b\x5b0;0m]  - %s' % i
         elif type == 'merge':
-            print '\n [\x1b\x5b1;36mM\x1b\x5b0;0m] %s' % i
+            print '\n [\x1b\x5b1;36mG\x1b\x5b0;0m] %s' % i
         elif type == 'error':
             print 'Error: %s' % i
         else:
