@@ -13,7 +13,7 @@
         <script type="text/javascript">
             $(function(){
                 //$('#test-1').timepickr({trigger: '#trigger-test'});
-              $('#test-1').timepickr({handle: '#trigger-test'});
+              $('#test-1').timepickr({handle: '#trigger-test', convention: 12});
             });
         </script>
     </head>
@@ -21,16 +21,10 @@
         <h2>jquery.timepickr.js</h2>
         <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
         <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
-        <a class="related-links experimental">Experimental code !</a>
+        <a class="related-links documentation" href="http://code.google.com/p/jquery-utils/wiki/UiTimepickr">Documentation</a>
         <p>
-            This is my humble attempt to enhence web time picking.
-        </p>
-        <p>
-            For the moment I'd call it a toy project, it might stay in experimental state evitam eternam.. I just wanted to see if I could create a better time picker.
-            I've seen lots of time pickers styles and approaches, but none seems to focus on user experience accross many platforms and beautiful degradation.
-        </p>
-        <p>
-            So I've determined a set of goals to achieve a better time picker.
+            <em>jquery.timepickr</em> was created in a attempt to make the process of inputing time in a form as
+            easy an natural as posssible.
         </p>
         <h3>Goals</h3>
         <ul>
@@ -50,107 +44,6 @@
         <pre>$(function(){
     $('#test-1').timepickr({handle: '#trigger-test'});
 });</pre>
-        <h3>Options</h3>
-        <table class="list" cellpadding="0" cellspacing="0" summary="">
-            <thead>
-                <tr>
-                    <th>Options</th>
-                    <th>Default</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>handle</th>
-                    <td>false</td>
-                    <td>handle is a dom element which will open the menu upon click</td>
-                </tr>
-                <tr>
-                    <th>hours</th>
-                    <td>true</td>
-                    <td>display hours</td>
-                </tr>
-                <tr>
-                    <th>minutes</th>
-                    <td>true</td>
-                    <td>display minutes</td>
-                </tr>
-                <tr>
-                    <th>seconds</th>
-                    <td>false</td>
-                    <td>display seconds</td>
-                </tr>
-                <tr>
-                    <th>range24</th>
-                    <td>$.range(0, 24)</td>
-                    <td>available hours to pick in 24 format (0, 23)</td>
-                </tr>
-                <tr>
-                    <th>range12</th>
-                    <td>$.range(0, 12)</td>
-                    <td>available hours to pick in 12 format (1, 12)</td>
-                </tr>
-                <tr>
-                    <th>rangeMin</th>
-                    <td>['00', '15', '30', '45']</td>
-                    <td>available minutes to pick</td>
-                </tr>
-                <tr>
-                    <th>rangeSec</th>
-                    <td>['00', '15', '30', '45']</td>
-                    <td>available minutes to pick</td>
-                </tr>
-                <tr>
-                    <th>apm</th>
-                    <td>['am', 'pm']</td>
-                    <td>AM/PM labels</td>
-                </tr>
-                <tr>
-                    <th>convention</th>
-                    <td>12</td>
-                    <td>hour convention (12 or 24)</td>
-                </tr>
-                <tr>
-                    <th>val</th>
-                    <td>false</td>
-                    <td>Initial value</td>
-                </tr>
-                <tr>
-                    <th>dropslide</th>
-                    <td>object</td>
-                    <td>dropslide options</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h3>Tested browsers</h3>
-        <ul>
-            <li>Mozilla Firefox 2 (Windows)</li>
-            <li>Mozilla Firefox 3.0.3 (Linux)</li>
-            <li>Mozilla Firefox 3.0.3 (Windows)</li>
-            <li>Epiphany Web Browser 2.22.2 (Linux)</li>
-            <li>Safari 3.1.2 (Windows)</li>
-            <li>Microsoft Internet Explorer 6</li>
-            <li>Microsoft Internet Explorer 7</li>
-        </ul>
-        <h3>Todo</h3>
-        <ul>
-            <li>Internationalization (different time formats, <b>ex 24h</b>)</li>
-            <li>Custom positioning (left, center, right)</li>
-            <li>am/pm mouse follow should be optional</li>
-            <li>Fix remaining behavior bugs</li>
-            <li>Test browser compatibility</li>
-            <li>Make animation more smooth</li>
-            <li>Make all options work</li>
-            <li>Support for seconds</li>
-            <li>Allow custom handler (click clock icon = open picker)</li>
-            <li>keynav: <em>esc</em> = leave & reset</li>
-            <li>keynav: <em>enter, space</em> = commit</li>
-            <li>keynav: <em>arrows</em> = navigate</li>
-            <li>Labels for hour, min, sec</li>
-            <li>Allow custom positioning/orientation of am/pm picker</li>
-            <li>try to make a vertical version of it</li>
-        </ul>
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script><script type="text/javascript">if(window.location.href.match(/http\:\/\/haineault.com/)) {_uacct="UA-409568-21";urchinTracker();}</script>
 
     </body>

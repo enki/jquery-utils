@@ -25,6 +25,7 @@
                 <li><a href="#intro">Introduction</a></li>
                 <li><a href="#documentation">Documentation</a></li>
                 <li><a href="#downloads">Downloads</a></li>
+                <li><a href="#dev">Dev</a></li>
             </ul>
         </div>
         <h2 id="title"><img src="logo.png" alt="jquery.timepickr"></h2>
@@ -32,130 +33,71 @@
             <div id="demo">
                 <h2>Demo</h2>
                 <label for="demo-1">Time</label> 
-                <input id="demo-1" type="text" value="12:00" style="width:80px">
+                <input id="demo-1" type="text" value="02:30">
             </div>
         </div>
         <div id="bd">
-            <p>
-                <em>jquery.timepickr</em> was created in a attempt to make the process of inputing time in a form as
-                easy an natural as posssible.
-            </p>
-            <h3>Goals</h3>
-            <ul>
-                <li>Be unobtrusive</li>
-                <li>Degrade gracefully</li>
-                <li>Use maximum 2 clicks</li>
-                <li>Intuitive keyboard navigation</li>
-                <li>Be touch friendly (think iphone, tablet pc, etc..)</li>
-            </ul>
-        </div>
-        <!--
-        <h3>Basic usage</h3>
-        <pre>$(function(){
-    $('#test-1').timepickr({handle: '#trigger-test'});
+            <div id="intro">
+                <h2><a name="intro">Indtroduction</a></h2>
+                <p>
+                    <em>jquery.timepickr</em> was created in a attempt to make the process of inputing time in a form as
+                    easy an natural as posssible.
+                </p>
+                <h3>Goals</h3>
+                <ul>
+                    <li>Be unobtrusive</li>
+                    <li>Degrade gracefully</li>
+                    <li>Use maximum 2 clicks</li>
+                    <li>Intuitive keyboard navigation</li>
+                    <li>Be touch friendly (think iphone, tablet pc, etc..)</li>
+                </ul>
+            </div>
+            <div id="documentation">
+                <h2><a name="documentation">Documentation</a></h2>
+                <h3>Basic usage</h3>
+                <pre>$(function(){
+    $('#test-1').timepickr({
+        handle: '#trigger-test'
+        convention: 12 });
 });</pre>
-        <h3>Options</h3>
-        <table class="list" cellpadding="0" cellspacing="0" summary="">
-            <thead>
-                <tr>
-                    <th>Options</th>
-                    <th>Default</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>handle</th>
-                    <td>false</td>
-                    <td>handle is a dom element which will open the menu upon click</td>
-                </tr>
-                <tr>
-                    <th>hours</th>
-                    <td>true</td>
-                    <td>display hours</td>
-                </tr>
-                <tr>
-                    <th>minutes</th>
-                    <td>true</td>
-                    <td>display minutes</td>
-                </tr>
-                <tr>
-                    <th>seconds</th>
-                    <td>false</td>
-                    <td>display seconds</td>
-                </tr>
-                <tr>
-                    <th>range24</th>
-                    <td>$.range(0, 24)</td>
-                    <td>available hours to pick in 24 format (0, 23)</td>
-                </tr>
-                <tr>
-                    <th>range12</th>
-                    <td>$.range(0, 12)</td>
-                    <td>available hours to pick in 12 format (1, 12)</td>
-                </tr>
-                <tr>
-                    <th>rangeMin</th>
-                    <td>['00', '15', '30', '45']</td>
-                    <td>available minutes to pick</td>
-                </tr>
-                <tr>
-                    <th>rangeSec</th>
-                    <td>['00', '15', '30', '45']</td>
-                    <td>available minutes to pick</td>
-                </tr>
-                <tr>
-                    <th>apm</th>
-                    <td>['am', 'pm']</td>
-                    <td>AM/PM labels</td>
-                </tr>
-                <tr>
-                    <th>convention</th>
-                    <td>12</td>
-                    <td>hour convention (12 or 24)</td>
-                </tr>
-                <tr>
-                    <th>val</th>
-                    <td>false</td>
-                    <td>Initial value</td>
-                </tr>
-                <tr>
-                    <th>dropslide</th>
-                    <td>object</td>
-                    <td>dropslide options</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h3>Tested browsers</h3>
-        <ul>
-            <li>Mozilla Firefox 2 (Windows)</li>
-            <li>Mozilla Firefox 3.0.3 (Linux)</li>
-            <li>Mozilla Firefox 3.0.3 (Windows)</li>
-            <li>Epiphany Web Browser 2.22.2 (Linux)</li>
-            <li>Safari 3.1.2 (Windows)</li>
-            <li>Microsoft Internet Explorer 6</li>
-            <li>Microsoft Internet Explorer 7</li>
-        </ul>
-        <h3>Todo</h3>
-        <ul>
-            <li>Internationalization (different time formats, <b>ex 24h</b>)</li>
-            <li>Custom positioning (left, center, right)</li>
-            <li>am/pm mouse follow should be optional</li>
-            <li>Fix remaining behavior bugs</li>
-            <li>Test browser compatibility</li>
-            <li>Make animation more smooth</li>
-            <li>Make all options work</li>
-            <li>Support for seconds</li>
-            <li>Allow custom handler (click clock icon = open picker)</li>
-            <li>keynav: <em>esc</em> = leave & reset</li>
-            <li>keynav: <em>enter, space</em> = commit</li>
-            <li>keynav: <em>arrows</em> = navigate</li>
-            <li>Labels for hour, min, sec</li>
-            <li>Allow custom positioning/orientation of am/pm picker</li>
-            <li>try to make a vertical version of it</li>
-        </ul>
-        -->
+                <h3>Complete reference</h3>
+                <p>
+                    Documentation and the complete list of options is available
+                    on the <a href="#">project's wiki page</a> on Google code.
+                </p>
+            </div>
+            <div id="downloads">
+                <h2><a name="downloads">Downloads</a></h2>
+                <h3>Google Code</h3>
+                <ul>
+                    <li><a href="#">Download packages</a></li>
+                    <li><a href="http://code.google.com/p/jquery-utils/source/browse/#svn/trunk/standalone/ui-timepickr/dist">Source code</a></li>
+                </ul>
+            </div>
+            <div id="dev">
+                <h2><a name="dev">Dev</a></h2>
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="http://code.google.com/p/jquery-utils/issues/list">Bug tracker</a></li>
+                    <li><a href="http://code.google.com/p/jquery-utils/wiki/UiTimepickr">Wiki</a></li>
+                </ul>
+                <h3>About</h3>
+                <p>
+                My name is <a href="http://haineault.com">Maxime Haineault</a>, I work as project manager at <a href="http://centdessin.com/">Centdessin Design</a> where I manage a small web developement department.
+                </p>
+                <p>
+                    I'm mostly developping this plugin in my spare times, so don't expect bugs to be fixed over night. If you want to help me improve
+                    this plugin, any kind of help would be greatly appreciated (bug fixing, documentation, new features, etc). 
+                </p>
+                <p>
+                    For that matter, if you really want a bug to be fixed quickly you can speed up the process by sending me your patches, I'll be 
+                    glad to merge them into trunk if the code looks decent and doesn't break the unit tests.
+                </p>
+                <p>
+                   <a href="mailto:haineault@gmail.com?subject=jquery.ui.timepickr" title="Contact me">Contact me</a>
+                </p>
+            </div>
+        </div>
         <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
         <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script><script type="text/javascript">if(window.location.href.match(/http\:\/\/haineault.com/)) {_uacct="UA-409568-21";urchinTracker();}</script>

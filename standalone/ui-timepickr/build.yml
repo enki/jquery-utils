@@ -9,7 +9,7 @@ modules:
       - src: ../../src/jquery.utils.js
       - src: ../../src/jquery.ui.all.js
       - src: ../../src/jquery.strings.js
-      - src: ../../src/jquery.i18n.js
+      # src: ../../src/jquery.i18n.js
       - src: ../../src/ui.dropslide.js
 merge:
   - dest: dist/ui.timepikr.css

@@ -1,5 +1,5 @@
 html, body {
-    background:#111;
+    background:#111 url(body-bg.png) repeat-x;
     color:#ccc;
     font-family:"Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
     margin:0;
@@ -27,12 +27,16 @@ li {
 label {
     font-size:80%;
     color:#666;
+    margin-right:6px;
 }
 pre {
     background:#222;
     border-top:1px solid #333;
     border-bottom:1px solid #333;
-    padding:20px 0 20px 80px
+    padding:20px;
+}
+h2 {
+    font-weight:normal;
 }
 h3 {
     font-weight:normal;
@@ -45,6 +49,10 @@ h3 {
 #bd {
     margin-left:80px;
     width:700px;
+}
+#bd h2 {
+    padding-bottom:8px;
+    border-bottom:1px solid #333;
 }
 #nv {
     list-style:none;
@@ -75,10 +83,9 @@ h3 {
     color:#3679AE;
 }
 #splash {
-    background:#222;
     height:190px;
     border-top:1px solid #333;
-    border-bottom:1px solid #333;
+    border-bottom:1px solid #666;
 }
 
 #splash #demo {
@@ -98,11 +105,28 @@ h3 {
 
 }
 #demo-1 {
-    border:1px solid #eee;
+    border:1px solid #999;
+    background:#ccc;
     -moz-border-radius:3px;
+    font-size:100%;
+    width:58px;
+    text-align:center;
+    color:#666;
+}
+input#demo-1:focus {
+    border-color:#fff;
+    color:#333;
+}
+li.ui-timepickr span {
+    height:13px;
+    padding:4px 7px 4px 5px;
+    background:#333 url('btn.png') repeat-x!important;
+    font-family:monospace;
+    font-size:100%;
 }
 li.ui-timepickr.hover span {
-    background:#3679AE;
+    background:#3679AE url('btn-hover.png') repeat-x!important;
+    color:#fff!important;
 }
 
 .license,
@@ -110,4 +134,7 @@ li.ui-timepickr.hover span {
     font-size:70%;
     color:#666;
     padding-left:80px;
+}
+.license {
+    margin-bottom:20px;
 }
