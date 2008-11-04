@@ -7,14 +7,8 @@ $(function(){
     test('Basic tests', function() {
         expect(3);
         stop();
-        // simple image swap
-        $('#cycle-test').cycle({fx:'fade', speed: 1, timeout: 1, autostop: true });
-        setTimeout(function(){
-            equals($('#cycle-test > img:visible').attr('id'), 'B', 'Base image transition');
-        }, 300);
-        
-        // on click binding
-        stop();
+       
+        // next / prev buttons 
         $('#cycle-test2').cycle({fx:'fade', speed: 1, timeout: 1, autostop: true, next: '#cycle-next', prev: '#cycle-prev', prevNextClick: function(a, b, c){
             if ($(c).attr('id') == 'D' && !this.D) {
                 this.D = true;
@@ -27,10 +21,13 @@ $(function(){
         }});
         $('#cycle-next').click();
         $('#cycle-prev').click();
-        // OK .. that's fairly ugly.
-        setTimeout(function(){ start(); }, 500);
-
     });
+
+    // simple image swap
+    $('#cycle-test').cycle({fx:'fade', speed: 1, timeout: 1, autostop: true });
+    setTimeout(function(){
+        equals($('#cycle-test > img:visible').attr('id'), 'B', 'Base image transition');
+        start();
+    }, 300);
     //$('#fixtures').html('');
-    $('#fixtures2').show();
 });
