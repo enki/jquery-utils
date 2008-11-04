@@ -1,10 +1,25 @@
 $(function(){
     $('#fixtures').show();
-    $('<input id="timepickr-test-12" type="text">').appendTo('#fixtures').timepickr({seconds: true, format: 12});
-    $('<input id="timepickr-test-24" type="text">').appendTo('#fixtures').timepickr({seconds: true});
+    $('<input id="timepickr-test" type="text">').appendTo('#fixtures');
     $('<img src="data/clock.png" alt="Time" border="0" style="position:absolute;margin:4px 0 0 6px;" id="timetriggr-test-1" />').appendTo('#fixtures');
 
+    var tp = $('#timepickr-test');
     module('ui.timepickr.js');
+
+    test('Focus test (activation)', function(){
+        expect(1);
+        stop();
+        tp.timepickr({format: 12});
+        tp.one('focus', function(e, ui){
+            setTimeout(function(){
+                ok(tp.next().find('ol:first').is(':visible'), '12h mode: apm/pm shows up upon focus');
+                start();
+            }, 100);
+        }).timepickr('activate');
+         
+    });
+
+    /*
 
     test('Basic behavioural tests (12h mode)', function() {
         expect(6);
@@ -21,6 +36,7 @@ $(function(){
 
         tp.focus();
         setTimeout(function(){
+            console.log(ds.find('ol:eq(0)').get(0));
             ok(ds.find('ol:eq(0)').is(':visible'), 'Hour appear on focus');
             ds.find('ol:eq(0) li').mouseover();
             setTimeout(function(){
@@ -31,7 +47,6 @@ $(function(){
                     ds.find('ol:eq(2) li').mouseover();
                     setTimeout(function(){
                         ok(ds.find('ol:eq(3)').is(':visible'), 'suffix pickr appear on seconds mouseover');
-                        tp.blur();
                         setTimeout(function(){
                             ok(ds.find('ol').not(':visible'), 'Pickrs are hidden on blur');
                             start();
@@ -39,8 +54,9 @@ $(function(){
                     }, 100);
                 }, 100);
             }, 100);
-        }, 100);
+        }, 500);
     });
+    /*
 
     test('Basic behavioural tests (24h mode)', function() {
         expect(6);
@@ -77,5 +93,6 @@ $(function(){
             }, 100);
         }, 100);
     });
+    */
 
 });

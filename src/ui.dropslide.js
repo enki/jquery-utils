@@ -82,8 +82,20 @@
 
         is3d: function() {
             return !!this.wrapper.find('ol > li > ol').get(0);
+        },
+
+        activate: function(e){
+            this.element.focus();
+            this.show();
+        },
+                  
+        destroy: function(e){
+            this.wrapper.remove();
+            return 'test';
         }
     }));
+
+    //$.ui.dropslide.getter = '';
 
     $.ui.dropslide.defaults = {
         // options

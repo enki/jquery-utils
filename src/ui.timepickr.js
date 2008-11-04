@@ -164,8 +164,19 @@
 
         getValue: function(type) {
             return $('.ui-timepickr.'+ type +'.hover', this.element.next()).text();
+        },
+        
+        activate: function() {
+            this.element.dropslide('activate');
+        },
+
+        destroy: function() {
+            this.element.dropslide('destroy');
         }
+        
     });
+
+    //$.ui.timepickr.getter = '';
 
     $.ui.timepickr.defaults = {
         convention: 24, // 24, 12
@@ -175,11 +186,11 @@
         handle:     false,
         hours:      true,
         minutes:    true,
+        seconds:    false,
         prefix:     ['am', 'pm'],
+        suffix:     ['am', 'pm'],
         rangeMin:   ['00', '15', '30', '45'],
         rangeSec:   ['00', '15', '30', '45'],
-        seconds:    false,
-        suffix:     ['am', 'pm'],
         updateLive: true,
         val:        false,
     };
