@@ -4,40 +4,67 @@
         <link rel="Stylesheet" media="screen" href="styles.css" />
         <link rel="Stylesheet" media="screen" href="../dist/ui.timepikr.css" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
-        <script type="text/javascript" src="data/ui.js"></script>
+        <script type="text/javascript" src="jquery.utils.ui.min.js"></script>
         <script type="text/javascript" src="../dist/jquery.timepickr.js"></script>
 
         <script type="text/javascript">
             $(function(){
                 //$('#test-1').timepickr({trigger: '#trigger-test'});
-              $('#demo-1').timepickr({handle: '#trigger-test'}).focus();
+              $('#demo-1').timepickr().focus();
+              $('#demo-2').timepickr({convention:12});
+              $('#demo-4').timepickr({convention:12});
               $('#demo-1').next().find('ol').show().find('li:eq(2)').mouseover();
               // temporary fix..
               $('.ui-dropslide ol:eq(0) li:first').mouseover();
               // apply theme
-              $('.ui-dropslide').addClass('dark');
+              $('#demo-1').next().addClass('dark');
+              $('#demo-2').next().addClass('dark');
             });
         </script>
     </head>
     <body id="body">
         <div id="hd">
             <ul id="nv">
-                <li><a href="#intro">Introduction</a></li>
-                <li><a href="#documentation">Documentation</a></li>
-                <li><a href="#downloads">Downloads</a></li>
-                <li><a href="#dev">Dev</a></li>
+                <li><a href="#s-intro">Introduction</a></li>
+                <li><a href="#s-documentation">Documentation</a></li>
+                <li><a href="#s-downloads">Downloads</a></li>
+                <li><a href="#s-dev">Dev</a></li>
             </ul>
         </div>
         <h2 id="title"><img src="logo.png" alt="jquery.timepickr"></h2>
         <div id="splash">
             <div id="demo">
                 <h2>Demo</h2>
-                <label for="demo-1">Time</label> 
-                <input id="demo-1" type="text" value="02:30">
+                <div id="d-demo-wrapper-1" class="demo-wrapper">
+                    <h4>24h time format / dark theme</h4>
+                    <label for="demo-1">Time</label> 
+                    <input id="demo-1" type="text" value="02:30" class="demo">
+                </div>
+                <div id="d-demo-wrapper-2" class="demo-wrapper">
+                    <h4>12h time format / dark theme</h4>
+                    <label for="demo-2">Time</label> 
+                    <input id="demo-2" type="text" value="02:30" class="demo">
+                </div>
+                <!--div id="d-demo-wrapper-3" class="demo-wrapper">
+                    <h4>24h time format / basic theme</h4>
+                    <label for="demo-3">Time</label> 
+                    <input id="demo-3" type="text" value="02:30" class="demo">
+                </div-->
+                <div id="d-demo-wrapper-4" class="demo-wrapper">
+                    <h4>12h time format / basic theme</h4>
+                    <label for="demo-4">Time</label> 
+                    <input id="demo-4" type="text" value="02:30" class="demo">
+                </div>
             </div>
+            <ul id="demo-nav">
+                <li><a href="#d-demo-wrapper-1">24h format / dark</a></li>
+                <li><a href="#d-demo-wrapper-2">12h format / dark</a></li>
+                <!--li><a href="#d-demo-wrapper-3">24h format / basic</a></li-->
+                <li><a href="#d-demo-wrapper-4">12h format / basic</a></li>
+            </ul>
         </div>
         <div id="bd">
-            <div id="intro">
+            <div id="s-intro" class="subsection">
                 <h2><a name="intro">Indtroduction</a></h2>
                 <p>
                     <em>jquery.timepickr</em> was created in a attempt to make the process of inputing time in a form as
@@ -52,7 +79,7 @@
                     <li>Be touch friendly (think iphone, tablet pc, etc..)</li>
                 </ul>
             </div>
-            <div id="documentation">
+            <div id="s-documentation" class="subsection">
                 <h2><a name="documentation">Documentation</a></h2>
                 <h3>Basic usage</h3>
                 <pre>$(function(){
@@ -66,7 +93,7 @@
                     on the <a href="#">project's wiki page</a> on Google code.
                 </p>
             </div>
-            <div id="downloads">
+            <div id="s-downloads" class="subsection">
                 <h2><a name="downloads">Downloads</a></h2>
                 <h3>Google Code</h3>
                 <ul>
@@ -74,7 +101,7 @@
                     <li><a href="http://code.google.com/p/jquery-utils/source/browse/#svn/trunk/standalone/ui-timepickr/dist">Source code</a></li>
                 </ul>
             </div>
-            <div id="dev">
+            <div id="s-dev" class="subsection">
                 <h2><a name="dev">Dev</a></h2>
                 <h3>Resources</h3>
                 <ul>
@@ -100,6 +127,43 @@
         </div>
         <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
         <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <script type="text/javascript">
+        $(function(){
+            // demos
+            $('div.demo-wrapper:not(:eq(0))').hide();
+            $.anchorHandler
+                .add(/#d\-.*/, function(){
+                    var node = $(this.hash);
+                    $('div.demo-wrapper').queue(function(){
+                        $(this).filter(':visible').fadeOut();
+                        $(this).dequeue();
+                    });
+                    setTimeout(function(){
+                        $(node).fadeIn();
+                        var match = node.attr('id').match(/\d+/);
+                        if (match) {
+                            $('#demo-'+ match[0]).focus().next().find('ol').show().find('li:eq(2)').mouseover();
+                        }
+                    }, 1000);
+                    window.scrollTo(0,0);
+                    return false; }, true);
+            // nav
+            $('div.subsection:not(:eq(0))').hide();
+            $.anchorHandler
+                .add(/#s\-.*/, function(){
+                    var node = $(this.hash);
+                    $('div.subsection').queue(function(){
+                        $(this).filter(':visible').fadeOut();
+                        $(this).dequeue();
+                    });
+                    setTimeout(function(){
+                        $(node).fadeIn();
+                    }, 1000);
+                    window.scrollTo(0,0);
+                    return false; }, true);
+            
+        });
+        </script>        
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script><script type="text/javascript">if(window.location.href.match(/http\:\/\/haineault.com/)) {_uacct="UA-409568-21";urchinTracker();}</script>
     </body>
 </html>

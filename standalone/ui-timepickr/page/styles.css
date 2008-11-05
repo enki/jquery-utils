@@ -4,6 +4,9 @@ html, body {
     font-family:"Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
     margin:0;
 }
+body {
+    padding-bottom:20px;
+}
 a {
     color:#3679AE;
     text-decoration: none;
@@ -17,7 +20,7 @@ em {
 ul,
 ol,
 p {
-    padding:10px 20px 10px 0;
+    padding:10px 20px 5px 0;
 }
 li {
     list-style-type:square;
@@ -49,10 +52,16 @@ h3 {
 #bd {
     margin-left:80px;
     width:700px;
+    height:500px;
+    padding-top:20px;
 }
 #bd h2 {
     padding-bottom:8px;
     border-bottom:1px solid #333;
+    margin-top:0;
+}
+#bd h3 {
+    margin-bottom:10px;
 }
 #nv {
     list-style:none;
@@ -97,14 +106,30 @@ h3 {
     font-weight:normal;
     font-size:120%;
     letter-spacing:2px;
-    padding:0 0 20px 0;
+    padding:0 0 10px 0;
     color:#666;
     margin:0;
+}
+
+#splash #demo h4 {
+    font-size:.8em;
+    margin:0 0 8px 0;
+    color:#444;
+    font-weight:normal;
 }
 #splash #demo .ui-dropslide {
 
 }
-#demo-1 {
+.demo-wrapper {
+    position:absolute;
+    width:500px;
+}
+#splash #demo-nav {
+    position:absolute;
+    margin:55px 0 0 540px;
+    font-size:80%;
+}
+input.demo {
     border:1px solid #999;
     background:#ccc;
     -moz-border-radius:3px;
@@ -112,19 +137,22 @@ h3 {
     width:58px;
     text-align:center;
     color:#666;
+    font-weight:bold;
 }
-input#demo-1:focus {
+input.demo:focus {
     border-color:#fff;
     color:#333;
 }
-li.ui-timepickr span {
+.dark li.ui-timepickr span {
     height:13px;
     padding:4px 7px 4px 5px;
     background:#333 url('btn.png') repeat-x!important;
     font-family:monospace;
     font-size:100%;
+    font-weight:bold;
+    color:#ccc!important;
 }
-li.ui-timepickr.hover span {
+.dark li.ui-timepickr.hover span {
     background:#3679AE url('btn-hover.png') repeat-x!important;
     color:#fff!important;
 }
@@ -134,7 +162,4 @@ li.ui-timepickr.hover span {
     font-size:70%;
     color:#666;
     padding-left:80px;
-}
-.license {
-    margin-bottom:20px;
 }
