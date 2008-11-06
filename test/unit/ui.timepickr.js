@@ -5,18 +5,110 @@ $(function(){
 
     var tp = $('#timepickr-test');
     module('ui.timepickr.js');
+    
+    var sequentialTests = function() {
+        var suite     = this;
+        suite.timeout = 150;
+        suite.locked  = false;
+        suite.tests   = [];
+
+        suite.test = function() { // [testFunction]
+            if (arguments[0]) {
+                suite.tests.push({callback: arguments[0], expect: arguments[1] || 0})
+            }
+            return suite;
+        };
+
+        suite.pass = function(message) {
+            if (message) {
+                console.info('Test passed: %s', message);
+            }
+            suite.locked = false;
+        };
+        
+        suite.fail = function(message) {
+            if (message) {
+                console.error('Test failed: %s', message);
+            }
+            suite.locked = false;
+        };
+
+        suite.run = function() {
+            /*
+            test('', function() {
+                stop();
+                expect(suite.expect);
+            });
+            */
+            // just to be sure that start is
+            // executed at the very end.
+            suite.tests.push({expect:0, callback: function(){ 
+                start();
+                this.pass(); }});
+
+            var execute = function(idx, t) {
+                if (!suite.locked) {
+                    suite.locked = true;
+                    t.callback.apply(suite);
+                }
+                else {
+                    setTimeout(function(){
+                        execute.apply(this, [idx, t]);
+                    }, suite.timeout);
+                }
+            };
+
+            $.each(tests, execute);
+            return suite;
+        };
+        
+        return suite;
+    };
+
+    sequentialTests('Focus test (activaion)')
+        .test(function(){
+            var suite = this;
+            /*
+            tp.timepickr({format: 12})
+              .one('focus', function(e, ui){
+                setTimeout(function(){
+                    ok(tp.next().find('ol:first').is(':visible'), '12h mode: apm/pm shows up upon focus');
+                    tp.timepickr('destroy');
+                }, 100);
+            }).timepickr('activate');
+            */
+            setTimeout(function(){
+            suite.pass('test1');
+                }, 5000);
+        })
+        .test(function(){
+            this.pass('test2');
+        })
+        .run();
 
     test('Focus test (activation)', function(){
-        expect(1);
         stop();
-        tp.timepickr({format: 12});
-        tp.one('focus', function(e, ui){
+        expect(2);
+        // 12h
+        tp.timepickr({format: 12})
+          .one('focus', function(e, ui){
             setTimeout(function(){
                 ok(tp.next().find('ol:first').is(':visible'), '12h mode: apm/pm shows up upon focus');
-                start();
+                tp.timepickr('destroy');
             }, 100);
         }).timepickr('activate');
-         
+
+        // 24h
+        setTimeout(function(){
+            tp.timepickr({format: 24})
+              .one('focus', function(e, ui){
+                setTimeout(function(){
+                    ok(tp.next().find('ol:first').is(':visible'), '24h mode: apm/pm shows up upon focus');
+                    tp.timepickr('destroy');
+                    start();
+                }, 100);
+            }).timepickr('activate');
+        }, 150);
     });
 
     /*

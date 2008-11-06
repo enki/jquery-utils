@@ -40,7 +40,9 @@
         // guess what it does
         showNextLevel: function() {
             if (this.is2d()) {
-                this.wrapper.find('ol.active').removeClass('active').next('ol').addClass('active').show();
+                this.wrapper.find('ol.active')
+                    .removeClass('active')
+                    .next('ol').addClass('active').show();
             }
             else {
                 this.wrapper.find('ol.active').removeClass('active').find('li.hover > ol').addClass('active').show();
@@ -91,7 +93,6 @@
                   
         destroy: function(e){
             this.wrapper.remove();
-            return 'test';
         }
     }));
 
