@@ -29,12 +29,13 @@
         // show specified level, id is the DOM position
         showLevel: function(id) {
             var ols = this.wrapper.find('ol');
+            var ds  = this;
             if (id == 0) {            
                 ols.eq(0).css('left', this.element.position().left);
             }
             setTimeout(function(){
-                ols.removeClass('active').eq(id).addClass('active').show();
-            }, this.options.showDelay);
+                ols.removeClass('active').eq(id).addClass('active').show(ds.options.animSpeed);
+            }, ds.options.showDelay);
         },
 
         // guess what it does
@@ -42,10 +43,10 @@
             if (this.is2d()) {
                 this.wrapper.find('ol.active')
                     .removeClass('active')
-                    .next('ol').addClass('active').show();
+                    .next('ol').addClass('active').show(this.options.animSpeed);
             }
             else {
-                this.wrapper.find('ol.active').removeClass('active').find('li.hover > ol').addClass('active').show();
+                this.wrapper.find('ol.active').removeClass('active').find('li.hover > ol').addClass('active').show(this.options.animSpeed);
             }
         },
 
@@ -88,7 +89,7 @@
 
         activate: function(e){
             this.element.focus();
-            this.show();
+            this.show(this.options.animSpeed);
         },
                   
         destroy: function(e){
@@ -106,6 +107,7 @@
         left:    0,
         showDelay: 0,
         hideDelay: 0,
+        animSpeed: 0,
         // events
         select:  function() {},
         click:   function(e, dropslide) {

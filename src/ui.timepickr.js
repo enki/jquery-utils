@@ -112,7 +112,7 @@
 
                 day.mouseover(function(){
                     nightHours.hide();
-                    dayHours.show();
+                    dayHours.show(0);
                     index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
                     selectHr(index > 11 && index - 12 || index);
                     element.dropslide('redraw');
@@ -120,7 +120,7 @@
 
                 night.mouseover(function(){
                     dayHours.hide();
-                    nightHours.show();
+                    nightHours.show(0);
                     index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
                     selectHr(index < 12 && index + 12 || index);
                     element.dropslide('redraw');
@@ -192,6 +192,6 @@
         rangeMin:   ['00', '15', '30', '45'],
         rangeSec:   ['00', '15', '30', '45'],
         updateLive: true,
-        val:        false,
+        val:        false
     };
  })(jQuery);
