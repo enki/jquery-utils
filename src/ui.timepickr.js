@@ -134,9 +134,9 @@
             var frmt = this.options.convention == 24 
                         && 'format24' || 'format12';
             var val = {
-                h: this.getValue('hour'),
-                m: this.getValue('minute'),
-                s: this.getValue('second'),
+                h: this.getValue('hour') || 00,
+                m: this.getValue('minute') || 00,
+                s: this.getValue('second') || 00,
                 prefix: this.getValue('prefix'),
                 suffix: this.getValue('suffix')
             };
