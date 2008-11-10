@@ -1,5 +1,5 @@
 /*
-  jQuery ui.timepickr - 0.5
+  jQuery ui.timepickr - @VERSION
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -11,20 +11,34 @@
 
   Dependencies
   ------------
+  - jquery.utils.js
+  - jquery.strings.js
   - ui.dropslide.js
 
 */
 
-(function($){
-    var getTimeRanges = function(options) {
+(function($) {
+    function createButton(i, format, className) {
+        var o  = format && $.format(format, i) || i;
+        var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
+        return $('<li />').addClass(cn).data('id', i).append($('<span />').text(o));
+    }
+
+    function createRow(obj, format, className) {
+        var row = $('<ol />');
+        for (var x in obj) {
+            row.append(createButton(obj[x], format || false, className || false));
+        }
+        return row;
+    }
+    
+    function getTimeRanges(options) {
         var o = [];
-        if (options.prefix && options.convention == 24) {
+        if (options.prefix && options.convention === 24) {
             o.push(createRow(options.prefix, false, 'prefix'));
         }
         if (options.hours) {
-            var h = (options.convention == 24) 
-                    && $.range(0, 24)
-                    || $.range(1, 13);
+            var h = (options.convention === 24) && $.range(0, 24) || $.range(1, 13);
 
             o.push(createRow(h, '{0:0.2d}', 'hour'));
         }
@@ -34,27 +48,13 @@
         if (options.seconds) {
             o.push(createRow(options.rangeSec, '{0:0.2d}', 'second'));
         }
-        if (options.suffix && options.convention == 12) {
+        if (options.suffix && options.convention === 12) {
             o.push(createRow(options.suffix, false, 'suffix'));
         }
         return o;
-    };
-
-    var createButton = function(i, format, className) {
-        var o  = format && $.format(format, i) || i;
-        var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
-        return $('<li />').addClass(cn).data('id', i).append($('<span />').text(o));
     }
 
-    var createRow = function(obj, format, className) {
-        var row = $('<ol />')
-        for (var x in obj) {
-            row.append(createButton(obj[x], format || false, className || false));
-        }
-        return row;
-    }
-
-    var buildMenu = function(options) {
+    function buildMenu (options) {
         var ranges = getTimeRanges(options);
         var menu   = $('<span class="ui-dropslide">');
         //if () {options.convention}
@@ -62,7 +62,7 @@
             menu.append(ranges[x]);
         }
         return menu;
-    };
+    }
 
     $.widget('ui.timepickr', {
         init: function() {
@@ -74,22 +74,22 @@
                 .dropslide(this.options.dropslide)
                 .bind('select', this.select);
 
-            this.element.blur(function(){
+            this.element.blur(function() {
                 $(this).dropslide('hide');
             });
 
             if (this.options.val) {
-                element.val(this.options.val)
+                element.val(this.options.val);
             }
 
             if (this.options.handle) {
-                $(this.options.handle).click(function(){
+                $(this.options.handle).click(function() {
                     $(element).dropslide('show');
                 });
             } 
 
             if (this.options.updateLive) {
-                menu.find('li').mouseover(function(){
+                menu.find('li').mouseover(function() {
                     $(element).timepickr('update');
                 });
             }
@@ -99,7 +99,7 @@
             var min = menu.find('ol:eq(2)').find('li:first, li:first span').addClass('hover').end();
             var sec = menu.find('ol:eq(3)').find('li:first, li:first span').addClass('hover').end();
 
-            if (this.options.convention == 24) {
+            if (this.options.convention === 24) {
                 var day        = menu.find('ol:eq(0) li:eq(0)');
                 var night      = menu.find('ol:eq(0) li:eq(1)');
                 var dayHours   = hrs.find('li').slice(0, 12);
@@ -110,7 +110,7 @@
                         .filter('li').eq(id).find('span').andSelf().addClass('hover');
                 };
 
-                day.mouseover(function(){
+                day.mouseover(function() {
                     nightHours.hide();
                     dayHours.show(0);
                     index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
@@ -118,7 +118,7 @@
                     element.dropslide('redraw');
                 });
 
-                night.mouseover(function(){
+                night.mouseover(function() {
                     dayHours.hide();
                     nightHours.show(0);
                     index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
@@ -127,16 +127,15 @@
                 });
             }
             element.dropslide('redraw');
-            element.data('timepickr', this)
+            element.data('timepickr', this);
         },
 
         update: function() {
-            var frmt = this.options.convention == 24 
-                        && 'format24' || 'format12';
+            var frmt = this.options.convention === 24 && 'format24' || 'format12';
             var val = {
-                h: this.getValue('hour') || 00,
-                m: this.getValue('minute') || 00,
-                s: this.getValue('second') || 00,
+                h: this.getValue('hour'),
+                m: this.getValue('minute'),
+                s: this.getValue('second'),
                 prefix: this.getValue('prefix'),
                 suffix: this.getValue('suffix')
             };
@@ -145,7 +144,7 @@
             $(this.element).val(o);
         },
 
-        select: function(e, dropslide){
+        select: function(e, dropslide) {
             $(dropslide.element).timepickr('update');
             e.stopPropagation();
         },

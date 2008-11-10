@@ -9,10 +9,10 @@
 
 */
 
-(function($){
+(function($) {
     $.widget('ui.dropslide', $.extend({}, $.ui.mouse, {
         getter: 'showLevel showNextLevel',
-        init: function(){
+        init: function() {
             var next     = this.element.next();
             this.wrapper = next.hasClass('ui-dropslide') && next || this.options.tree || false;
 
@@ -33,7 +33,7 @@
             if (id == 0) {            
                 ols.eq(0).css('left', this.element.position().left);
             }
-            setTimeout(function(){
+            setTimeout(function() {
                 ols.removeClass('active').eq(id).addClass('active').show(ds.options.animSpeed);
             }, ds.options.showDelay);
         },
@@ -56,7 +56,9 @@
             }
             else {
                 return $.makeArray(this.wrapper.find('span.hover')
-                    .map(function(){ return $(this).text(); }));
+                    .map(function() { 
+                         return $(this).text(); 
+                    }));
             }
         },
 
@@ -73,7 +75,7 @@
         // hide all levels
         hide: function() {
             self = this;
-            setTimeout(function(){
+            setTimeout(function() {
                 self.wrapper.find('ol').hide();
             }, self.options.hideDelay);
         },
@@ -87,12 +89,12 @@
             return !!this.wrapper.find('ol > li > ol').get(0);
         },
 
-        activate: function(e){
+        activate: function(e) {
             this.element.focus();
             this.show(this.options.animSpeed);
         },
                   
-        destroy: function(e){
+        destroy: function(e) {
             this.wrapper.remove();
         }
     }));
@@ -115,12 +117,12 @@
         }
     }
 
-    function onActivate(e){
+    function onActivate(e) {
         var dropslide = getDropSlide(this);
         dropslide.show();
     }
 
-    function onLiMouseover(e){
+    function onLiMouseover(e) {
         var dropslide = getDropSlide(this);
         $(this).siblings()
             .find('ol').hide().end()
@@ -129,7 +131,7 @@
         dropslide.showNextLevel();
     }
 
-    function onLiClick(e){
+    function onLiClick(e) {
         var dropslide = getDropSlide(this);
         $(dropslide.element).triggerHandler('dropslideclick',  [e, dropslide], dropslide.options.click); 
         $(dropslide.element).triggerHandler('select',          [e, dropslide], dropslide.options.select); 
@@ -141,15 +143,16 @@
         var nextOL = false;
         var pos    = false;
         var offset = dropslide.element.position().left + dropslide.options.left;
-        var ols    = dropslide.wrapper.find('ol');
 
-        dropslide.wrapper.css({
+        var ols    = $(dropslide.wrapper).find('ol');
+
+        $(dropslide.wrapper).css({
             top: dropslide.element.position().top + dropslide.element.height() + 2,
             left: dropslide.element.position().left
         });
         
         // reposition each ol
-        ols.each(function(i){
+        ols.each(function(i) {
             prevOL = $(this).prevAll('ol:visible:first');
             // without the try/catch I often get a 
             // Error: "Could not convert JavaScript argument arg 0 ..."

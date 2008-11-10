@@ -25,9 +25,13 @@ def log(i, type=False):
         elif type == 'dependency':
             print ' [\x1b\x5b01;34mD\x1b\x5b0;0m]  - %s' % i
         elif type == 'minify':
-            print ' [\x1b\x5b01;33mM\x1b\x5b0;0m]  - %s' % i
+            print '\n [\x1b\x5b01;33mM\x1b\x5b0;0m] %s' % i
+        elif type == 'zip':
+            print '\n [\x1b\x5b01;32mZ\x1b\x5b0;0m] %s' % i
+        elif type == 'gzip':
+            print '\n [\x1b\x5b01;32mG\x1b\x5b0;0m] %s' % i
         elif type == 'merge':
-            print '\n [\x1b\x5b1;36mG\x1b\x5b0;0m] %s' % i
+            print '\n [\x1b\x5b1;36mM\x1b\x5b0;0m] %s' % i
         elif type == 'error':
             print 'Error: %s' % i
         else:
@@ -77,6 +81,25 @@ def minify(src, dest):
     else:
         return True
 
+def create_gzip(src, dest, exclude):
+    log('%s -> %s' % (src, dest), 'gzip')
+    cmd = ["tar -czf %s %s" % (dest, src)]
+
+    for ex in exclude:
+        cmd.append("--exclude='%s'" % ex) 
+
+    rs = os.popen(' '.join(cmd))
+    rs.close()
+
+def create_zip(src, dest, exclude):
+    log('%s -> %s' % (src, dest), 'zip')
+    cmd = ["zip -rq %s %s" % (dest, src)]
+
+    for ex in exclude:
+        cmd.append("-x *%s*" % ex) 
+
+    rs = os.popen(' '.join(cmd))
+    rs.close()
 
 def glob(f):
     """
@@ -105,8 +128,8 @@ def get_dest_filename(module):
         fn = os.path.basename(module['file'])
     return fn
 
-def get_dest_dir(base, build):
-    dest = os.path.join(base, build['dest'])
+def get_dest_dir(build):
+    dest = build['dest']
     if not os.path.isdir(dest):
         log("creating destination directory: %s" % dest, 'list')
         os.mkdir(dest)
@@ -118,8 +141,7 @@ def make(build, options):
     o     = []
     file  = build[0]
     build = build[1]
-    base  = os.path.dirname(file)
-    dest  = get_dest_dir(base, build)
+    dest  = get_dest_dir(build)
 
     if options.quiet:
         LOG = False
@@ -131,11 +153,11 @@ def make(build, options):
 
     if build.has_key('merge'):
         for merge in build['merge']:
-            dest = os.path.join(base, merge['dest'])
+            dest = merge['dest']
             log(dest, 'merge')
 
             f = open(dest, 'w+')
-            o = get_dependencies(merge['files'], base)
+            o = get_dependencies(merge['files'])
             f.write(o)
             f.close()
 
@@ -143,7 +165,7 @@ def make(build, options):
     if build['modules']:
         o = []
         for module in build['modules']:
-            destPath    = os.path.join(base, build['dest'], get_dest_filename(module))
+            destPath    = os.path.join(build['dest'], get_dest_filename(module))
 
             if module.has_key('title'):
                 title = module['title']
@@ -151,8 +173,8 @@ def make(build, options):
                 title = build['title']
 
             log("%s %s -> %s" % (title, version, destPath), 'build')
-            o.append(get_dependencies(module['depends'], base))
-            o.append(glob(os.path.join(base, module['file'])))
+            o.append(get_dependencies(module['depends']))
+            o.append(glob(module['file']))
 
             f = open(destPath, 'w+')
             buff = ''.join(o)
@@ -165,6 +187,17 @@ def make(build, options):
 
             if options.minify:
                 minify(destPath, destPath.replace('.js', '.min.js'))
+    
+    if build.has_key('zip'):
+        for z in build['zip']:
+            destZip = os.path.join(z['dest'].replace('%v', build['version']))
+            create_zip(z['src'], destZip, z['exclude'])
+
+    if build.has_key('gzip'):
+        for g in build['gzip']:
+            destGzip = os.path.join(g['dest'].replace('%v', build['version']))
+            create_gzip(g['src'], destGzip, g['exclude'])
+    
 
 if __name__ == '__main__':
     usage = "usage: %prog [options] <module>"

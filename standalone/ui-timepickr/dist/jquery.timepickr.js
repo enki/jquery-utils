@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.1
+  jQuery utils - 0.6a
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -85,7 +85,7 @@
 	});
 })(jQuery);
 /*
- * jQuery UI 0.1
+ * jQuery UI 0.6a
  *
  * Copyright (c) 2008 Paul Bakaus (ui.jquery.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -2996,7 +2996,7 @@ $.ui.plugin.add("sortable", "axis", {
 
 })(jQuery);
 /*
- * jQuery UI Effects 0.1
+ * jQuery UI Effects 0.6a
  *
  * Copyright (c) 2008 Aaron Eisenberger (aaronchi@gmail.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -7939,10 +7939,10 @@ $.extend($.ui.tabs.prototype, {
 
 */
 
-(function($){
+(function($) {
     $.widget('ui.dropslide', $.extend({}, $.ui.mouse, {
         getter: 'showLevel showNextLevel',
-        init: function(){
+        init: function() {
             var next     = this.element.next();
             this.wrapper = next.hasClass('ui-dropslide') && next || this.options.tree || false;
 
@@ -7959,21 +7959,24 @@ $.extend($.ui.tabs.prototype, {
         // show specified level, id is the DOM position
         showLevel: function(id) {
             var ols = this.wrapper.find('ol');
+            var ds  = this;
             if (id == 0) {            
                 ols.eq(0).css('left', this.element.position().left);
             }
-            setTimeout(function(){
-                ols.removeClass('active').eq(id).addClass('active').show();
-            }, this.options.showDelay);
+            setTimeout(function() {
+                ols.removeClass('active').eq(id).addClass('active').show(ds.options.animSpeed);
+            }, ds.options.showDelay);
         },
 
         // guess what it does
         showNextLevel: function() {
             if (this.is2d()) {
-                this.wrapper.find('ol.active').removeClass('active').next('ol').addClass('active').show();
+                this.wrapper.find('ol.active')
+                    .removeClass('active')
+                    .next('ol').addClass('active').show(this.options.animSpeed);
             }
             else {
-                this.wrapper.find('ol.active').removeClass('active').find('li.hover > ol').addClass('active').show();
+                this.wrapper.find('ol.active').removeClass('active').find('li.hover > ol').addClass('active').show(this.options.animSpeed);
             }
         },
 
@@ -7983,7 +7986,9 @@ $.extend($.ui.tabs.prototype, {
             }
             else {
                 return $.makeArray(this.wrapper.find('span.hover')
-                    .map(function(){ return $(this).text(); }));
+                    .map(function() { 
+                         return $(this).text(); 
+                    }));
             }
         },
 
@@ -8000,7 +8005,7 @@ $.extend($.ui.tabs.prototype, {
         // hide all levels
         hide: function() {
             self = this;
-            setTimeout(function(){
+            setTimeout(function() {
                 self.wrapper.find('ol').hide();
             }, self.options.hideDelay);
         },
@@ -8012,8 +8017,19 @@ $.extend($.ui.tabs.prototype, {
 
         is3d: function() {
             return !!this.wrapper.find('ol > li > ol').get(0);
+        },
+
+        activate: function(e) {
+            this.element.focus();
+            this.show(this.options.animSpeed);
+        },
+                  
+        destroy: function(e) {
+            this.wrapper.remove();
         }
     }));
+
+    //$.ui.dropslide.getter = '';
 
     $.ui.dropslide.defaults = {
         // options
@@ -8023,6 +8039,7 @@ $.extend($.ui.tabs.prototype, {
         left:    0,
         showDelay: 0,
         hideDelay: 0,
+        animSpeed: 0,
         // events
         select:  function() {},
         click:   function(e, dropslide) {
@@ -8030,12 +8047,12 @@ $.extend($.ui.tabs.prototype, {
         }
     }
 
-    function onActivate(e){
+    function onActivate(e) {
         var dropslide = getDropSlide(this);
         dropslide.show();
     }
 
-    function onLiMouseover(e){
+    function onLiMouseover(e) {
         var dropslide = getDropSlide(this);
         $(this).siblings()
             .find('ol').hide().end()
@@ -8044,7 +8061,7 @@ $.extend($.ui.tabs.prototype, {
         dropslide.showNextLevel();
     }
 
-    function onLiClick(e){
+    function onLiClick(e) {
         var dropslide = getDropSlide(this);
         $(dropslide.element).triggerHandler('dropslideclick',  [e, dropslide], dropslide.options.click); 
         $(dropslide.element).triggerHandler('select',          [e, dropslide], dropslide.options.select); 
@@ -8056,15 +8073,16 @@ $.extend($.ui.tabs.prototype, {
         var nextOL = false;
         var pos    = false;
         var offset = dropslide.element.position().left + dropslide.options.left;
-        var ols    = dropslide.wrapper.find('ol');
 
-        dropslide.wrapper.css({
+        var ols    = $(dropslide.wrapper).find('ol');
+
+        $(dropslide.wrapper).css({
             top: dropslide.element.position().top + dropslide.element.height() + 2,
             left: dropslide.element.position().left
         });
         
         // reposition each ol
-        ols.each(function(i){
+        ols.each(function(i) {
             prevOL = $(this).prevAll('ol:visible:first');
             // without the try/catch I often get a 
             // Error: "Could not convert JavaScript argument arg 0 ..."
@@ -8089,7 +8107,7 @@ $.extend($.ui.tabs.prototype, {
     };
 })(jQuery);
 /*
-  jQuery ui.timepickr - 0.5
+  jQuery ui.timepickr - 0.6a
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -8101,31 +8119,34 @@ $.extend($.ui.tabs.prototype, {
 
   Dependencies
   ------------
+  - jquery.utils.js
+  - jquery.strings.js
   - ui.dropslide.js
-
-  To fix/do
-  ---------
-  - when activated, timepickr should pre-select the right h,m,s
-  - labels
-  - optional keyboard navigation
-  - optional live input update
-  - themes support
-  - unit tests
-  - positioning problem on first activation
-  - when day/night is hovered hour are always swapping
 
 */
 
-(function($){
-    var getTimeRanges = function(options) {
+(function($) {
+    function createButton(i, format, className) {
+        var o  = format && $.format(format, i) || i;
+        var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
+        return $('<li />').addClass(cn).data('id', i).append($('<span />').text(o));
+    }
+
+    function createRow(obj, format, className) {
+        var row = $('<ol />');
+        for (var x in obj) {
+            row.append(createButton(obj[x], format || false, className || false));
+        }
+        return row;
+    }
+    
+    function getTimeRanges(options) {
         var o = [];
-        if (options.prefix && options.convention == 24) {
+        if (options.prefix && options.convention === 24) {
             o.push(createRow(options.prefix, false, 'prefix'));
         }
         if (options.hours) {
-            var h = (options.convention == 24) 
-                    && $.range(0, 24)
-                    || $.range(1, 13);
+            var h = (options.convention === 24) && $.range(0, 24) || $.range(1, 13);
 
             o.push(createRow(h, '{0:0.2d}', 'hour'));
         }
@@ -8135,27 +8156,13 @@ $.extend($.ui.tabs.prototype, {
         if (options.seconds) {
             o.push(createRow(options.rangeSec, '{0:0.2d}', 'second'));
         }
-        if (options.suffix && options.convention == 12) {
+        if (options.suffix && options.convention === 12) {
             o.push(createRow(options.suffix, false, 'suffix'));
         }
         return o;
-    };
-
-    var createButton = function(i, format, className) {
-        var o  = format && $.format(format, i) || i;
-        var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
-        return $('<li />').addClass(cn).data('id', i).append($('<span />').text(o));
     }
 
-    var createRow = function(obj, format, className) {
-        var row = $('<ol />')
-        for (var x in obj) {
-            row.append(createButton(obj[x], format || false, className || false));
-        }
-        return row;
-    }
-
-    var buildMenu = function(options) {
+    function buildMenu (options) {
         var ranges = getTimeRanges(options);
         var menu   = $('<span class="ui-dropslide">');
         //if () {options.convention}
@@ -8163,7 +8170,7 @@ $.extend($.ui.tabs.prototype, {
             menu.append(ranges[x]);
         }
         return menu;
-    };
+    }
 
     $.widget('ui.timepickr', {
         init: function() {
@@ -8175,22 +8182,22 @@ $.extend($.ui.tabs.prototype, {
                 .dropslide(this.options.dropslide)
                 .bind('select', this.select);
 
-            this.element.blur(function(){
+            this.element.blur(function() {
                 $(this).dropslide('hide');
             });
 
             if (this.options.val) {
-                element.val(this.options.val)
+                element.val(this.options.val);
             }
 
             if (this.options.handle) {
-                $(this.options.handle).click(function(){
+                $(this.options.handle).click(function() {
                     $(element).dropslide('show');
                 });
             } 
 
             if (this.options.updateLive) {
-                menu.find('li').mouseover(function(){
+                menu.find('li').mouseover(function() {
                     $(element).timepickr('update');
                 });
             }
@@ -8200,7 +8207,7 @@ $.extend($.ui.tabs.prototype, {
             var min = menu.find('ol:eq(2)').find('li:first, li:first span').addClass('hover').end();
             var sec = menu.find('ol:eq(3)').find('li:first, li:first span').addClass('hover').end();
 
-            if (this.options.convention == 24) {
+            if (this.options.convention === 24) {
                 var day        = menu.find('ol:eq(0) li:eq(0)');
                 var night      = menu.find('ol:eq(0) li:eq(1)');
                 var dayHours   = hrs.find('li').slice(0, 12);
@@ -8211,29 +8218,28 @@ $.extend($.ui.tabs.prototype, {
                         .filter('li').eq(id).find('span').andSelf().addClass('hover');
                 };
 
-                day.mouseover(function(){
+                day.mouseover(function() {
                     nightHours.hide();
-                    dayHours.show();
+                    dayHours.show(0);
                     index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
                     selectHr(index > 11 && index - 12 || index);
                     element.dropslide('redraw');
                 });
 
-                night.mouseover(function(){
+                night.mouseover(function() {
                     dayHours.hide();
-                    nightHours.show();
+                    nightHours.show(0);
                     index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
                     selectHr(index < 12 && index + 12 || index);
                     element.dropslide('redraw');
                 });
             }
             element.dropslide('redraw');
-            element.data('timepickr', this)
+            element.data('timepickr', this);
         },
 
         update: function() {
-            var frmt = this.options.convention == 24 
-                        && 'format24' || 'format12';
+            var frmt = this.options.convention === 24 && 'format24' || 'format12';
             var val = {
                 h: this.getValue('hour'),
                 m: this.getValue('minute'),
@@ -8246,7 +8252,7 @@ $.extend($.ui.tabs.prototype, {
             $(this.element).val(o);
         },
 
-        select: function(e, dropslide){
+        select: function(e, dropslide) {
             $(dropslide.element).timepickr('update');
             e.stopPropagation();
         },
@@ -8265,29 +8271,34 @@ $.extend($.ui.tabs.prototype, {
 
         getValue: function(type) {
             return $('.ui-timepickr.'+ type +'.hover', this.element.next()).text();
+        },
+        
+        activate: function() {
+            this.element.dropslide('activate');
+        },
+
+        destroy: function() {
+            this.element.dropslide('destroy');
         }
+        
     });
 
+    //$.ui.timepickr.getter = '';
+
     $.ui.timepickr.defaults = {
-        val:        false,
+        convention: 24, // 24, 12
+        dropslide: { trigger: 'focus' },
+        format12:   '{h:02.d}:{m:02.d} {suffix:s}',
+        format24:   '{h:02.d}:{m:02.d}',
         handle:     false,
         hours:      true,
         minutes:    true,
         seconds:    false,
-        format12:   '{h:02.d}:{m:02.d} {suffix:s}',
-        format24:   '{h:02.d}:{m:02.d}',
-        defaultHr:  '12',
-        defaultMin: '00',
-        defaultSec: '00',
-        defaultApm: 'am',
-        updateLive: true,
-        rangeMin:   ['00', '15', '30', '45'],
-        rangeSec:   ['00', '15', '30', '45'],
         prefix:     ['am', 'pm'],
         suffix:     ['am', 'pm'],
-        convention: 24, // 24, 12
-        dropslide: {
-            trigger: 'focus',
-        }
+        rangeMin:   ['00', '15', '30', '45'],
+        rangeSec:   ['00', '15', '30', '45'],
+        updateLive: true,
+        val:        false
     };
  })(jQuery);

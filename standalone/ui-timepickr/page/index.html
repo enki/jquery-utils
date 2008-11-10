@@ -1,9 +1,11 @@
 <html>
     <head>
         <title>jQuery.timepickr.js</title>
+        <link rel="Stylesheet" media="screen" href="reset.css" />
         <link rel="Stylesheet" media="screen" href="styles.css" />
         <link rel="Stylesheet" media="screen" href="../dist/ui.timepikr.css" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2/jquery.min.js"></script>
+        <script type="text/javascript" src="http://jquery-utils.googlecode.com/svn/trunk/src/jquery.anchorHandler.js"></script>
         <script type="text/javascript" src="jquery.utils.ui.min.js"></script>
         <script type="text/javascript" src="../dist/jquery.timepickr.js"></script>
 
@@ -24,14 +26,15 @@
     </head>
     <body id="body">
         <div id="hd">
+            <div id="version">version <em>0.6a</em></div>
             <ul id="nv">
                 <li><a href="#s-intro">Introduction</a></li>
                 <li><a href="#s-documentation">Documentation</a></li>
                 <li><a href="#s-downloads">Downloads</a></li>
-                <li><a href="#s-dev">Dev</a></li>
+                <li><a href="#s-about">About</a></li>
             </ul>
         </div>
-        <h2 id="title"><img src="logo.png" alt="jquery.timepickr"></h2>
+        <h2 id="title"><img src="logo.png" alt="jquery.timepickr" border="0"></h2>
         <div id="splash">
             <div id="demo">
                 <h2>Demo</h2>
@@ -76,8 +79,33 @@
                     <li>Degrade gracefully</li>
                     <li>Use maximum 2 clicks</li>
                     <li>Intuitive keyboard navigation</li>
-                    <li>Be touch friendly (think iphone, tablet pc, etc..)</li>
+                    <li>Be touch device friendly</li>
                 </ul>
+            </div>
+            <div id="s-downloads" class="subsection">
+                <h2><a name="downloads">Downloads</a></h2>
+                <h3>Google Code</h3>
+                <ul id="downloads-list">
+                    <li><a class="glass" href="http://code.google.com/p/jquery-utils/downloads/list"><img src="package.png" alt="Package" align="absmiddle">Download packages</a></li>
+                    <li><a class="glass" href="http://code.google.com/p/jquery-utils/source/browse/#svn/trunk/standalone/ui-timepickr/dist"><img src="script_code.png" alt="Package" align="absmiddle">Browse source code</a></li>
+                </ul>
+                <h3>Known issues</h3>
+                <ul>
+                    <li>In 24h mode, <em>12h</em> does not swap to <em>00h</em> as it should when hovering am/pm</li>
+                    <li>Broken in IE6 (might take a while to fix, unless someone contribute a patch)</li>
+                    <li>I am aware that there is no such thing as <em>am</em> and <em>pm</em> in 24h convention</li>
+                    <li>Some people reported that it didn't work so well in the iPhone. Unfortunately I'm not cool, 
+                        I don't own a iPone and I don't plan to buy one in a near future. So unless a
+                        skilled iPhone owner fix it for us, it won't be fixed anytime soon.
+                    </li>
+                </ul>
+                <h3>Report a bug</h3>
+                <p>
+                    Please use <a href="http://code.google.com/p/jquery-utils/issues/list">the project's bug tracker</a> to report bugs, also check if the bug is not already reported.
+                </p>
+                <p>
+                To report a bug, click on <a href="http://code.google.com/p/jquery-utils/issues/list">New issue</a> and fill up the form. Don't forget to specify your OS and Browser (vendor and version). Finally, add <em>ui-timepickr</em> in labels.
+                </p>
             </div>
             <div id="s-documentation" class="subsection">
                 <h2><a name="documentation">Documentation</a></h2>
@@ -93,24 +121,11 @@
                     on the <a href="#">project's wiki page</a> on Google code.
                 </p>
             </div>
-            <div id="s-downloads" class="subsection">
-                <h2><a name="downloads">Downloads</a></h2>
-                <h3>Google Code</h3>
-                <ul>
-                    <li><a href="#">Download packages</a></li>
-                    <li><a href="http://code.google.com/p/jquery-utils/source/browse/#svn/trunk/standalone/ui-timepickr/dist">Source code</a></li>
-                </ul>
-            </div>
-            <div id="s-dev" class="subsection">
-                <h2><a name="dev">Dev</a></h2>
-                <h3>Resources</h3>
-                <ul>
-                    <li><a href="http://code.google.com/p/jquery-utils/issues/list">Bug tracker</a></li>
-                    <li><a href="http://code.google.com/p/jquery-utils/wiki/UiTimepickr">Wiki</a></li>
-                </ul>
-                <h3>About</h3>
+            <div id="s-about" class="subsection">
+                <h2><a name="about">About</a></h2>
+                <h3>Author</h3>
                 <p>
-                My name is <a href="http://haineault.com">Maxime Haineault</a>, I work as project manager at <a href="http://centdessin.com/">Centdessin Design</a> where I manage a small web developement department.
+                My name is <a href="http://haineault.com">Maxime Haineault</a>, I work as project manager at <a href="http://centdessin.com/">Centdessin Design</a> where I manage a small web development department.
                 </p>
                 <p>
                     I'm mostly developping this plugin in my spare times, so don't expect bugs to be fixed over night. If you want to help me improve
@@ -123,10 +138,70 @@
                 <p>
                    <a href="mailto:haineault@gmail.com?subject=jquery.ui.timepickr" title="Contact me">Contact me</a>
                 </p>
+                <h3>Development roadmap</h3>
+                <table cellpadding="0" cellspacing="0" summary="Development milestones" class="milestones">
+                    <thead>
+                        <tr>
+                            <th>Release</th><th>Milestone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>0.6</th>
+                            <td>
+                                <ul>
+                                    <li>First official release</li>
+                                    <li>Partial</li>
+                                    <li>Working 24h mode</li>
+                                    <li>Firefox and WebKit support (Safari &amp; Google Chrome)</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>0.7</th>
+                            <td>
+                                <ul>
+                                    <li>Polish base theme (follow UI styles)</li>
+                                    <li>Support for custom labels</li>
+                                    <li>Opera Support</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>0.8</th>
+                            <td>
+                                <ul>
+                                    <li>Internet Explorer 7+ support</li>
+                                    <li>Keyboard navigation</li>
+                                    <li>Try integration with input masked</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>0.9</th>
+                            <td>
+                                <ul>
+                                    <li>More demo and themes</li>
+                                    <li>Documentation overhault</li>
+                                    <li>Internet Explorer 6 support</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="color:3679AE;">1.0</th>
+                            <td>
+                                <ul>
+                                    <li>First production ready release</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
         <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <div class="google-adsense"></div>
         <script type="text/javascript">
         $(function(){
             // demos
@@ -148,22 +223,22 @@
                     window.scrollTo(0,0);
                     return false; }, true);
             // nav
-            $('div.subsection:not(:eq(0))').hide();
-            $.anchorHandler
-                .add(/#s\-.*/, function(){
-                    var node = $(this.hash);
-                    $('div.subsection').queue(function(){
-                        $(this).filter(':visible').fadeOut();
-                        $(this).dequeue();
-                    });
-                    setTimeout(function(){
-                        $(node).fadeIn();
-                    }, 1000);
-                    window.scrollTo(0,0);
-                    return false; }, true);
+            //$('div.subsection:not(:eq(0))').hide();
+            //$.anchorHandler
+            //    .add(/#s\-.*/, function(){
+            //        var node = $(this.hash);
+            //        $('div.subsection').queue(function(){
+            //            $(this).filter(':visible').fadeOut();
+            //            $(this).dequeue();
+            //        });
+            //        setTimeout(function(){
+            //            $(node).fadeIn();
+            //        }, 1000);
+            //        window.scrollTo(0,0);
+            //        return false; }, true);
             
         });
-        </script>        
+        </script>
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script><script type="text/javascript">if(window.location.href.match(/http\:\/\/haineault.com/)) {_uacct="UA-409568-21";urchinTracker();}</script>
     </body>
 </html>

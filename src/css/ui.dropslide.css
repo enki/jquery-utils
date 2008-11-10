@@ -34,6 +34,7 @@
     text-align:center;
     cursor:pointer;
     -moz-border-radius:3px;
+    -webkit-border-radius:3px;
     display:block;
     text-align:center;
 }
