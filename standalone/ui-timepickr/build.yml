@@ -12,14 +12,14 @@ modules:
       # src: src/jquery.i18n.js
       - src: src/ui.dropslide.js
 merge:
-  - dest: dist/jquery.timepikr.css
+  - dest: dist/jquery.timepickr.css
     files:
       - src: src/css/ui.dropslide.css
       - src: src/css/ui.timepickr.css
 zip:
   - dest: standalone/ui-timepickr/downloads/jquery.timepickr-%v-standalone.zip
     src: standalone/ui-timepickr/
-    exclude: [".svn", "standalone/ui-timepickr/downloads/", "build.yml", "demo"]
+    exclude: [".svn", "downloads", "build.yml", "demo"]
 
 gzip:
   - dest: standalone/ui-timepickr/downloads/jquery.timepickr-%v-standalone.tar.gz
