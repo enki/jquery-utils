@@ -9,7 +9,7 @@ body {
 }
 #version {
     color:#666;
-    position:absolute;
+    position:fixed;
     right:0;
     top:20px;
     font-size:80%;
@@ -94,6 +94,7 @@ h3 {
     margin-top:20px;
     margin-bottom:10px;
     padding-bottom:8px;
+    padding-top:20px;
 }
 #bd h3 {
     margin:20px 0 10px 0;
@@ -103,27 +104,34 @@ h3 {
 }
 #nv {
     list-style:none;
-    position:absolute;
-    left:330px;
-    top:30px;
+    position:fixed;
+    left:405px;
+    top:20px;
     margin:0;
-    padding:0;
+    padding:5px;
     font-size:80%;
+    border:1px solid #333;
+    background:#333 url('btn.png') repeat-x!important;
+    z-index:10000;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
 }
 
 #nv li {
     float:left;
     list-style-type:none;
-    padding:0 14px;
-    margin:0 2px!important;
+    padding:0;
+    margin:0;
     border-left:1px solid #333;
 }
 #nv li a {
-    color:#3679AE;
+    color:#999;
     text-decoration:none;
+    padding:3px 12px;
 }
 #nv li a:hover {
-    color:#def;
+    color:#fff;
+    background:#3679AE url('btn-hover.png') repeat-x!important;
 }
 #title span {
     color:#999;
