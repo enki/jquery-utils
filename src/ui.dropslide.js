@@ -68,8 +68,8 @@
         },
 
         // show level 0 (shortcut)
-        show: function() {
-              this.showLevel(0);
+        show: function(e) {
+            this.showLevel(0);
         },
 
         // hide all levels

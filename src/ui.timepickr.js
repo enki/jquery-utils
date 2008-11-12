@@ -68,14 +68,17 @@
         init: function() {
             var menu    = buildMenu(this.options);
             var element = this.element;
+            element.data('timepickr.initialValue', element.val());
             menu.insertAfter(this.element);
             element
                 .addClass('ui-timepickr')
                 .dropslide(this.options.dropslide)
                 .bind('select', this.select);
-
-            this.element.blur(function() {
-                $(this).dropslide('hide');
+            
+            this.element.blur(function(e) {
+                var timepickr = $(this);
+                timepickr.dropslide('hide')
+                         .val(timepickr.data('timepickr.initialValue'));
             });
 
             if (this.options.val) {
@@ -86,11 +89,17 @@
                 $(this.options.handle).click(function() {
                     $(element).dropslide('show');
                 });
-            } 
+            }
+
+            if (this.options.resetOnBlur) {
+                menu.find('li > span').bind('mousedown.timepickr', function(){
+                    $(element).data('timepickr.initialValue', $(element).val()); 
+                });
+            }
 
             if (this.options.updateLive) {
-                menu.find('li').mouseover(function() {
-                    $(element).timepickr('update');
+                menu.find('li').bind('mouseover.timepickr', function() {
+                    $(element).timepickr('update'); 
                 });
             }
 
@@ -178,19 +187,20 @@
     //$.ui.timepickr.getter = '';
 
     $.ui.timepickr.defaults = {
-        convention: 24, // 24, 12
-        dropslide: { trigger: 'focus' },
-        format12:   '{h:02.d}:{m:02.d} {suffix:s}',
-        format24:   '{h:02.d}:{m:02.d}',
-        handle:     false,
-        hours:      true,
-        minutes:    true,
-        seconds:    false,
-        prefix:     ['am', 'pm'],
-        suffix:     ['am', 'pm'],
-        rangeMin:   ['00', '15', '30', '45'],
-        rangeSec:   ['00', '15', '30', '45'],
-        updateLive: true,
-        val:        false
+        convention:  24, // 24, 12
+        dropslide:   { trigger: 'focus' },
+        format12:    '{h:02.d}:{m:02.d} {suffix:s}',
+        format24:    '{h:02.d}:{m:02.d}',
+        handle:      false,
+        hours:       true,
+        minutes:     true,
+        seconds:     false,
+        prefix:      ['am', 'pm'],
+        suffix:      ['am', 'pm'],
+        rangeMin:    ['00', '15', '30', '45'],
+        rangeSec:    ['00', '15', '30', '45'],
+        updateLive:  true,
+        resetOnBlur: true,
+        val:         false
     };
  })(jQuery);
