@@ -52,10 +52,10 @@
 
         getSelection: function(level) {
             if (level) {
-                return this.wrapper.find('ol').eq(level).find('li span.hover');
+                return this.wrapper.find('ol').eq(level).find('li span.ui-hover-state');
             }
             else {
-                return $.makeArray(this.wrapper.find('span.hover')
+                return $.makeArray(this.wrapper.find('span.ui-hover-state')
                     .map(function() { 
                          return $(this).text(); 
                     }));
@@ -124,10 +124,11 @@
 
     function onLiMouseover(e) {
         var dropslide = getDropSlide(this);
-        $(this).siblings()
+        $(this).siblings().removeClass('hover')
             .find('ol').hide().end()
-            .find('span.hover').andSelf().removeClass('hover');
-        $(this).find('ol').show().end().children(0).andSelf().addClass('hover');
+            .find('span').removeClass('ui-hover-state').end();
+
+        $(this).find('ol').show().end().addClass('hover').children(0).addClass('ui-hover-state');
         dropslide.showNextLevel();
     }
 
@@ -147,7 +148,7 @@
         var ols    = $(dropslide.wrapper).find('ol');
 
         $(dropslide.wrapper).css({
-            top: dropslide.element.position().top + dropslide.element.height() + 2,
+            top: dropslide.element.position().top + dropslide.element.height() + dropslide.options.top,
             left: dropslide.element.position().left
         });
         

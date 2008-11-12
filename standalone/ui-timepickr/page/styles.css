@@ -7,6 +7,12 @@ html, body {
 body {
     padding-bottom:20px;
 }
+.strike {
+    text-decoration:line-through;
+}
+.done {
+    color:#666;
+}
 #version {
     color:#666;
     position:fixed;
@@ -167,9 +173,6 @@ h3 {
     color:#666;
     font-weight:normal;
 }
-#splash #demo .ui-dropslide {
-
-}
 .demo-wrapper {
     position:absolute;
     width:500px;
@@ -214,29 +217,53 @@ h3 {
 
 table.milestones {}
 table.milestones thead th {
-    background:#333;
-    color:#ccc;
+    background:#222;
+    color:#444;
     font-size:80%;
     font-weight:normal;
     padding:4px;
-    border:2px solid #111;
+    border-bottom:1px solid #666;
 }
 table.milestones tbody th {
     background:#222;
-    border:2px solid #111;
+    border-bottom:1px solid #666;
+    border-right:3px solid #666;
     vertical-align:middle;
 }
 table.milestones tbody td {
-    border-bottom:2px solid #222;
+    border-bottom:1px solid #666;
     padding:8px;
 }
 
+tr:hover li.done {
+    text-decoration:none;
+}
+
+tr.major th {
+    font-size:120%!important;
+    background:#444!important;
+    color:#fff;
+}
+tr.major td {
+    background:#333!important;
+}
+
+tr.minor th {
+    font-size:80%!important;
+    background:#222!important;
+    font-weight:normal!important;
+}
+tr.minor td {
+    font-size:80%!important;
+    background:#222!important;
+    color:#999!important;
+}
 
 a.glass {
     height:13px;
     padding:5px 10px 5px 10px;
     background:#333 url('btn.png') repeat-x!important;
-    border:1px solid #444;
+    border:1px solid #666;
     font-family:monospace;
     font-size:100%;
     font-weight:bold;
@@ -269,8 +296,6 @@ input.demo:focus {
     color:#333;
 }
 .dark li.ui-timepickr span {
-    height:13px;
-    padding:4px 7px 4px 5px;
     background:#333 url('btn.png') repeat-x!important;
     font-family:monospace;
     font-size:100%;
@@ -281,4 +306,3 @@ input.demo:focus {
     background:#3679AE url('btn-hover.png') repeat-x!important;
     color:#fff!important;
 }
-

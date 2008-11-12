@@ -21,11 +21,11 @@
     function createButton(i, format, className) {
         var o  = format && $.format(format, i) || i;
         var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
-        return $('<li />').addClass(cn).data('id', i).append($('<span />').text(o));
+        return $('<li class="ui-reset" />').addClass(cn).data('id', i).append($('<span class="ui-default-state" />').text(o));
     }
 
     function createRow(obj, format, className) {
-        var row = $('<ol />');
+        var row = $('<ol class="ui-clearfix ui-reset" />');
         for (var x in obj) {
             row.append(createButton(obj[x], format || false, className || false));
         }
@@ -56,7 +56,7 @@
 
     function buildMenu (options) {
         var ranges = getTimeRanges(options);
-        var menu   = $('<span class="ui-dropslide">');
+        var menu   = $('<span class="ui-reset ui-dropslide ui-component">');
         //if () {options.convention}
         for (var x in ranges) {
             menu.append(ranges[x]);
@@ -104,9 +104,9 @@
             }
 
             // TODO: remember selection
-            var hrs = menu.find('ol:eq(1)').find('li:first, li:first span').addClass('hover').end();
-            var min = menu.find('ol:eq(2)').find('li:first, li:first span').addClass('hover').end();
-            var sec = menu.find('ol:eq(3)').find('li:first, li:first span').addClass('hover').end();
+            var hrs = menu.find('ol:eq(1)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
+            var min = menu.find('ol:eq(2)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
+            var sec = menu.find('ol:eq(3)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
 
             if (this.options.convention === 24) {
                 var day        = menu.find('ol:eq(0) li:eq(0)');
@@ -115,8 +115,9 @@
                 var nightHours = hrs.find('li').slice(12, 24);
                 var index      = 0;
                 var selectHr   = function(id) {
-                    hrs.find('li, span').removeClass('hover')
-                        .filter('li').eq(id).find('span').andSelf().addClass('hover');
+                    hrs.find('li').removeClass('hover');
+                    hrs.find('span').removeClass('ui-hover-state');
+                    hrs.find('li').eq(id).addClass('hover').find('span').addClass('ui-hover-state')
                 };
 
                 day.mouseover(function() {

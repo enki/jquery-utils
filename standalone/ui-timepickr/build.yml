@@ -12,7 +12,7 @@ modules:
       # src: src/jquery.i18n.js
       - src: src/ui.dropslide.js
 merge:
-  - dest: dist/jquery.timepickr.css
+  - dest: standalone/ui-timepickr/dist/jquery.timepickr.css
     files:
       - src: src/css/ui.dropslide.css
       - src: src/css/ui.timepickr.css
