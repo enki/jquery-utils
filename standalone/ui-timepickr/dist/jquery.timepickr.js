@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.6a
+  jQuery utils - 0.6.1
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -85,7 +85,7 @@
 	});
 })(jQuery);
 /*
- * jQuery UI 0.6a
+ * jQuery UI 0.6.1
  *
  * Copyright (c) 2008 Paul Bakaus (ui.jquery.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -2996,7 +2996,7 @@ $.ui.plugin.add("sortable", "axis", {
 
 })(jQuery);
 /*
- * jQuery UI Effects 0.6a
+ * jQuery UI Effects 0.6.1
  *
  * Copyright (c) 2008 Aaron Eisenberger (aaronchi@gmail.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -8108,7 +8108,7 @@ $.extend($.ui.tabs.prototype, {
     };
 })(jQuery);
 /*
-  jQuery ui.timepickr - 0.6a
+  jQuery ui.timepickr - 0.6.1
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
