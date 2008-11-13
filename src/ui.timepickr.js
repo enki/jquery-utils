@@ -75,10 +75,9 @@
                 .dropslide(this.options.dropslide)
                 .bind('select', this.select);
             
-            this.element.blur(function(e) {
-                var timepickr = $(this);
-                timepickr.dropslide('hide')
-                         .val(timepickr.data('timepickr.initialValue'));
+            element.blur(function(e) {
+                $(this).dropslide('hide');
+                $(this).val($(this).data('timepickr.initialValue'));
             });
 
             if (this.options.val) {
@@ -154,7 +153,8 @@
             $(this.element).val(o);
         },
 
-        select: function(e, dropslide) {
+        select: function(e) {
+            var dropslide = $(this).data('dropslide');
             $(dropslide.element).timepickr('update');
             e.stopPropagation();
         },

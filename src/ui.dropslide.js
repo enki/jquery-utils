@@ -74,10 +74,10 @@
 
         // hide all levels
         hide: function() {
-            self = this;
+            var dropslide = this;
             setTimeout(function() {
-                self.wrapper.find('ol').hide();
-            }, self.options.hideDelay);
+                dropslide.wrapper.find('ol').hide();
+            }, dropslide.options.hideDelay);
         },
 
         // determine dropdown type
