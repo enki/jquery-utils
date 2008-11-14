@@ -11,30 +11,53 @@
 
 (function($){
      $.extend($.expr[':'], {
-        // Text Check (case insensitive)
+        // case insensitive version of :contains
         icontains: function(a,i,m){return (a.textContent||a.innerText||jQuery(a).text()||"").toLowerCase().indexOf(m[3].toLowerCase())>=0;}
     });
 	$.extend({ 
-        basename: function(s) {
-            var t = s.split('/');
+
+        // Redirect to a specified url
+        redirect: function(url) {
+            return window.location.href = url;
+        },
+
+        // Stop event shorthand
+        stop: function(e, preventDefault, stopPropagation) {
+            preventDefault  && e.preventDefault();
+            stopPropagation && e.stopPropagation();
+            return preventDefault && false || true;
+        },
+
+        // Returns the basename of a path
+        basename: function(path) {
+            var t = path.split('/');
             return t[t.length] == '' && s || t.slice(0, t.length).join('/');
         },
-        filename: function(s) {
-            return s.split('/').pop();
+
+        // Returns the filename of a path
+        filename: function(path) {
+            return path.split('/').pop();
         }, 
+        
+        // Returns true if an object is a RegExp
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;
 		},
+        
+        // Returns true if an object is an array
 		isArray: function(o) {
 			return o && o.constructor.toString().indexOf('Array()') != -1 || false;
 		},
-		toCurrency: function(o) {
-			o = parseFloat(o, 10).toFixed(2);
-			return (o=='NaN') ? '0.00' : o;
+        
+        // Convert input to currency (two decimal fixed number)
+		toCurrency: function(i) {
+			i = parseFloat(i, 10).toFixed(2);
+			return (i=='NaN') ? '0.00' : i;
 		},
-        // http://blog.outofhanwell.com/2006/03/29/javascript-range-function/
-        // - Matthias Miller 
-        //
+
+        // Returns a range object
+        // Author: Matthias Miller
+        // Site:   http://blog.outofhanwell.com/2006/03/29/javascript-range-function/
         range:  function() {
             if (!arguments.length) { return []; }
             var min, max, step;
@@ -66,6 +89,7 @@
 	});
 
 	$.extend($.fn, { 
+        // Select a text range in a textarea
         selectRange: function(start, end) {
             // use only the first one since only one input can be focused
             if ($(this).get(0).createTextRange) {
