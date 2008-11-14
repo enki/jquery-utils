@@ -16,68 +16,48 @@
     });
 	$.extend({ 
 
-        /* Redirect to a specified url
-         * @url string  Url to redirect to
-         */
+        // Redirect to a specified url
         redirect: function(url) {
             return window.location.href = url;
         },
 
-        /* Stop event shorthand
-         * @e               object  Event object (required)
-         * @preventDefault  bool    Prevent default action, default is true
-         * @stopPropagation bool    Stop propagation, default is true
-         */
+        // Stop event shorthand
         stop: function(e, preventDefault, stopPropagation) {
             preventDefault  && e.preventDefault();
             stopPropagation && e.stopPropagation();
             return preventDefault && false || true;
         },
 
-        /* Returns the basename of a path
-         * @path    string 
-         */
+        // Returns the basename of a path
         basename: function(path) {
             var t = path.split('/');
             return t[t.length] == '' && s || t.slice(0, t.length).join('/');
         },
 
-        /* Returns the filename of a path
-         * @path    string 
-         */
+        // Returns the filename of a path
         filename: function(path) {
             return path.split('/').pop();
         }, 
         
-        /* Returns true if an object is a RegExp
-         * @o  object 
-         */
+        // Returns true if an object is a RegExp
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;
 		},
         
-        /* Returns true if an object is an array
-         * @o   object
-         */
+        // Returns true if an object is an array
 		isArray: function(o) {
 			return o && o.constructor.toString().indexOf('Array()') != -1 || false;
 		},
         
-        /* Convert input to currency (two decimal fixed number)
-         * @i   mixed
-         */
+        // Convert input to currency (two decimal fixed number)
 		toCurrency: function(i) {
 			i = parseFloat(i, 10).toFixed(2);
 			return (i=='NaN') ? '0.00' : i;
 		},
 
-        /* Returns a range object
-         * @1 start or length
-         * @2 end
-         *
-         * Author: Matthias Miller
-         * Site:   http://blog.outofhanwell.com/2006/03/29/javascript-range-function/
-         */
+        // Returns a range object
+        // Author: Matthias Miller
+        // Site:   http://blog.outofhanwell.com/2006/03/29/javascript-range-function/
         range:  function() {
             if (!arguments.length) { return []; }
             var min, max, step;
@@ -109,10 +89,7 @@
 	});
 
 	$.extend($.fn, { 
-        /* Select a text range in a textarea
-         * @start   int     Where to start the selection
-         * @stop    int     Where to stop the selection
-         */
+        // Select a text range in a textarea
         selectRange: function(start, end) {
             // use only the first one since only one input can be focused
             if ($(this).get(0).createTextRange) {
