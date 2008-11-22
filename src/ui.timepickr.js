@@ -20,7 +20,7 @@
 (function($) {
     $.widget('ui.timepickr', {
         init: function() {
-            var menu    = this._buildMenu(this.options);
+            var menu    = this._buildMenu();
             var element = this.element;
             element.data('timepickr.initialValue', element.val());
             menu.insertAfter(this.element);
@@ -144,36 +144,37 @@
             return $('<li class="ui-reset" />').addClass(cn).data('id', i).append($('<span class="ui-default-state" />').text(o));
         },
 
-        _createRow: function(obj, format, className) {
+        _createRow: function(range, format, className) {
             var row = $('<ol class="ui-clearfix ui-reset" />');
-            for (var x in obj) {
-                row.append(this._createButton(obj[x], format || false, className || false));
+            for (var x in range) {
+                row.append(this._createButton(range[x], format || false, className || false));
             }
             return row;
         },
         
-        _getRanges12: function(options) {
-            var o = [];
-            if (options.hours)   { o.push(this._createRow($.range(1, 13),   '{0:0.2d}', 'hour')); }
-            if (options.minutes) { o.push(this._createRow(options.rangeMin, '{0:0.2d}', 'minute')); }
-            if (options.seconds) { o.push(this._createRow(options.rangeSec, '{0:0.2d}', 'second')); }
-            if (options.suffix)  { o.push(this._createRow(options.suffix,   false,      'suffix')); }
+        _getRanges12: function() {
+            var o = [], opt = this.options;
+            if (opt.hours)   { o.push(this._createRow($.range(1, 13), '{0:0.2d}', 'hour')); }
+            if (opt.minutes) { o.push(this._createRow(opt.rangeMin,   '{0:0.2d}', 'minute')); }
+            if (opt.seconds) { o.push(this._createRow(opt.rangeSec,   '{0:0.2d}', 'second')); }
+            if (opt.suffix)  { o.push(this._createRow(opt.suffix,     false,      'suffix')); }
             return o;
         },
 
-        _getRanges24: function(options) {
-            var o = [];
-            o.push(this._createRow(options.prefix, false, 'prefix')); // prefix is required in 24h mode
-            if (options.hours)   { o.push(this._createRow($.range(0, 24),   '{0:0.2d}', 'hour')); }
-            if (options.minutes) { o.push(this._createRow(options.rangeMin, '{0:0.2d}', 'minute')); }
-            if (options.seconds) { o.push(this._createRow(options.rangeSec, '{0:0.2d}', 'second')); }
+        _getRanges24: function() {
+            var o = [], opt = this.options;
+            o.push(this._createRow(opt.prefix, false, 'prefix')); // prefix is required in 24h mode
+            if (opt.hours)   { o.push(this._createRow($.range(0, 24),   '{0:0.2d}', 'hour')); }
+            if (opt.minutes) { o.push(this._createRow(opt.rangeMin, '{0:0.2d}', 'minute')); }
+            if (opt.seconds) { o.push(this._createRow(opt.rangeSec, '{0:0.2d}', 'second')); }
             return o;
         },
 
-        _buildMenu: function(options) {
-            var ranges = options.convention === 24 && this._getRanges24(options) || this._getRanges12(options); 
+        _buildMenu: function() {
             var menu   = $('<span class="ui-reset ui-dropslide ui-component">');
-            //if () {options.convention}
+            var ranges = this.options.convention === 24 
+                         && this._getRanges24() || this._getRanges12();
+
             for (var x in ranges) {
                 menu.append(ranges[x]);
             }
