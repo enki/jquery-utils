@@ -152,29 +152,26 @@
             return row;
         },
         
-        _getTimeRanges: function(options) {
+        _getRanges12: function(options) {
             var o = [];
-            if (options.prefix && options.convention === 24) {
-                o.push(this._createRow(options.prefix, false, 'prefix'));
-            }
-            if (options.hours) {
-                var h = (options.convention === 24) && $.range(0, 24) || $.range(1, 13);
-                o.push(this._createRow(h, '{0:0.2d}', 'hour'));
-            }
-            if (options.minutes) {
-                o.push(this._createRow(options.rangeMin, '{0:0.2d}', 'minute'));
-            }
-            if (options.seconds) {
-                o.push(this._createRow(options.rangeSec, '{0:0.2d}', 'second'));
-            }
-            if (options.suffix && options.convention === 12) {
-                o.push(this._createRow(options.suffix, false, 'suffix'));
-            }
+            if (options.hours)   { o.push(this._createRow($.range(1, 13),   '{0:0.2d}', 'hour')); }
+            if (options.minutes) { o.push(this._createRow(options.rangeMin, '{0:0.2d}', 'minute')); }
+            if (options.seconds) { o.push(this._createRow(options.rangeSec, '{0:0.2d}', 'second')); }
+            if (options.suffix)  { o.push(this._createRow(options.suffix,   false,      'suffix')); }
+            return o;
+        },
+
+        _getRanges24: function(options) {
+            var o = [];
+            o.push(this._createRow(options.prefix, false, 'prefix')); // prefix is required in 24h mode
+            if (options.hours)   { o.push(this._createRow($.range(0, 24),   '{0:0.2d}', 'hour')); }
+            if (options.minutes) { o.push(this._createRow(options.rangeMin, '{0:0.2d}', 'minute')); }
+            if (options.seconds) { o.push(this._createRow(options.rangeSec, '{0:0.2d}', 'second')); }
             return o;
         },
 
         _buildMenu: function(options) {
-            var ranges = this._getTimeRanges(options);
+            var ranges = options.convention === 24 && this._getRanges24(options) || this._getRanges12(options); 
             var menu   = $('<span class="ui-reset ui-dropslide ui-component">');
             //if () {options.convention}
             for (var x in ranges) {
