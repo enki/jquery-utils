@@ -112,15 +112,15 @@
             e.stopPropagation();
         },
 
-        getHour: function(selection) {
+        getHour: function() {
             return this.getValue('hour');
         },
 
-        getMinute: function(selection) {
+        getMinute: function() {
             return this.getValue('minute');
         },
 
-        getSecond: function(selection) {
+        getSecond: function() {
             return this.getValue('second');
         },
 
