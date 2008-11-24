@@ -16,6 +16,16 @@
     });
 	$.extend({ 
 
+        // Taken from ui.core.js. 
+        // Why are you keeping this gem for yourself guys ? :|
+        keyCode: {
+            BACKSPACE: 8, CAPS_LOCK: 20, COMMA: 188, CONTROL: 17, DELETE: 46, DOWN: 40,
+            END: 35, ENTER: 13, ESCAPE: 27, HOME: 36, INSERT:  45, LEFT: 37,
+            NUMPAD_ADD: 107, NUMPAD_DECIMAL: 110, NUMPAD_DIVIDE: 111, NUMPAD_ENTER: 108, 
+            NUMPAD_MULTIPLY: 106, NUMPAD_SUBTRACT: 109, PAGE_DOWN: 34, PAGE_UP: 33, 
+            PERIOD: 190, RIGHT: 39, SHIFT: 16, SPACE: 32, TAB: 9, UP: 38
+        },
+
         // Redirect to a specified url
         redirect: function(url) {
             return window.location.href = url;
@@ -38,6 +48,18 @@
         filename: function(path) {
             return path.split('/').pop();
         }, 
+
+        // Returns a formated file size
+        filesizeformat: function(bytes, suffixes){
+            var b = parseInt(bytes, 10);
+            var s = suffixes || ['byte', 'bytes', 'KB', 'MB', 'GB'];
+            if (isNaN(b) || b == 0) { return '0 ' + s[0]; }
+            if (b == 1)             { return '1 ' + s[0]; }
+            if (b < 1024)           { return  b.toFixed(2) + ' ' + s[1]; }
+            if (b < 1048576)        { return (b / 1024).toFixed(2) + ' ' + s[2]; }
+            if (b < 1073741824)     { return (b / 1048576).toFixed(2) + ' '+ s[3]; }
+            else                    { return (b / 1073741824).toFixed(2) + ' '+ s[4]; }
+        },
         
         // Returns true if an object is a RegExp
 		isRegExp: function(o) {
@@ -553,55 +575,9 @@
 */
 
 (function($) {
-    function createButton(i, format, className) {
-        var o  = format && $.format(format, i) || i;
-        var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
-        return $('<li class="ui-reset" />').addClass(cn).data('id', i).append($('<span class="ui-default-state" />').text(o));
-    }
-
-    function createRow(obj, format, className) {
-        var row = $('<ol class="ui-clearfix ui-reset" />');
-        for (var x in obj) {
-            row.append(createButton(obj[x], format || false, className || false));
-        }
-        return row;
-    }
-    
-    function getTimeRanges(options) {
-        var o = [];
-        if (options.prefix && options.convention === 24) {
-            o.push(createRow(options.prefix, false, 'prefix'));
-        }
-        if (options.hours) {
-            var h = (options.convention === 24) && $.range(0, 24) || $.range(1, 13);
-
-            o.push(createRow(h, '{0:0.2d}', 'hour'));
-        }
-        if (options.minutes) {
-            o.push(createRow(options.rangeMin, '{0:0.2d}', 'minute'));
-        }
-        if (options.seconds) {
-            o.push(createRow(options.rangeSec, '{0:0.2d}', 'second'));
-        }
-        if (options.suffix && options.convention === 12) {
-            o.push(createRow(options.suffix, false, 'suffix'));
-        }
-        return o;
-    }
-
-    function buildMenu (options) {
-        var ranges = getTimeRanges(options);
-        var menu   = $('<span class="ui-reset ui-dropslide ui-component">');
-        //if () {options.convention}
-        for (var x in ranges) {
-            menu.append(ranges[x]);
-        }
-        return menu;
-    }
-
     $.widget('ui.timepickr', {
         init: function() {
-            var menu    = buildMenu(this.options);
+            var menu    = this._buildMenu();
             var element = this.element;
             element.data('timepickr.initialValue', element.val());
             menu.insertAfter(this.element);
@@ -637,7 +613,6 @@
                 });
             }
 
-            // TODO: remember selection
             var hrs = menu.find('ol:eq(1)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
             var min = menu.find('ol:eq(2)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
             var sec = menu.find('ol:eq(3)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
@@ -694,15 +669,15 @@
             e.stopPropagation();
         },
 
-        getHour: function(selection) {
+        getHour: function() {
             return this.getValue('hour');
         },
 
-        getMinute: function(selection) {
+        getMinute: function() {
             return this.getValue('minute');
         },
 
-        getSecond: function(selection) {
+        getSecond: function() {
             return this.getValue('second');
         },
 
@@ -716,11 +691,53 @@
 
         destroy: function() {
             this.element.dropslide('destroy');
-        }
+        },
         
-    });
+        /* UI private methods */
+        
+        _createButton: function(i, format, className) {
+            var o  = format && $.format(format, i) || i;
+            var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
+            return $('<li class="ui-reset" />').addClass(cn).data('id', i).append($('<span class="ui-default-state" />').text(o));
+        },
 
-    //$.ui.timepickr.getter = '';
+        _createRow: function(range, format, className) {
+            var row = $('<ol class="ui-clearfix ui-reset" />');
+            for (var x in range) {
+                row.append(this._createButton(range[x], format || false, className || false));
+            }
+            return row;
+        },
+        
+        _getRanges12: function() {
+            var o = [], opt = this.options;
+            if (opt.hours)   { o.push(this._createRow($.range(1, 13), '{0:0.2d}', 'hour')); }
+            if (opt.minutes) { o.push(this._createRow(opt.rangeMin,   '{0:0.2d}', 'minute')); }
+            if (opt.seconds) { o.push(this._createRow(opt.rangeSec,   '{0:0.2d}', 'second')); }
+            if (opt.suffix)  { o.push(this._createRow(opt.suffix,     false,      'suffix')); }
+            return o;
+        },
+
+        _getRanges24: function() {
+            var o = [], opt = this.options;
+            o.push(this._createRow(opt.prefix, false, 'prefix')); // prefix is required in 24h mode
+            if (opt.hours)   { o.push(this._createRow($.range(0, 24),   '{0:0.2d}', 'hour')); }
+            if (opt.minutes) { o.push(this._createRow(opt.rangeMin, '{0:0.2d}', 'minute')); }
+            if (opt.seconds) { o.push(this._createRow(opt.rangeSec, '{0:0.2d}', 'second')); }
+            return o;
+        },
+
+        _buildMenu: function() {
+            var menu   = $('<span class="ui-reset ui-dropslide ui-component">');
+            var ranges = this.options.convention === 24 
+                         && this._getRanges24() || this._getRanges12();
+
+            for (var x in ranges) {
+                menu.append(ranges[x]);
+            }
+            return menu;
+        }
+    });
 
     $.ui.timepickr.defaults = {
         convention:  24, // 24, 12
@@ -739,4 +756,5 @@
         resetOnBlur: true,
         val:         false
     };
- })(jQuery);
+
+})(jQuery);

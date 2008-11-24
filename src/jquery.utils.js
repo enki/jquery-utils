@@ -48,6 +48,18 @@
         filename: function(path) {
             return path.split('/').pop();
         }, 
+
+        // Returns a formated file size
+        filesizeformat: function(bytes, suffixes){
+            var b = parseInt(bytes, 10);
+            var s = suffixes || ['byte', 'bytes', 'KB', 'MB', 'GB'];
+            if (isNaN(b) || b == 0) { return '0 ' + s[0]; }
+            if (b == 1)             { return '1 ' + s[0]; }
+            if (b < 1024)           { return  b.toFixed(2) + ' ' + s[1]; }
+            if (b < 1048576)        { return (b / 1024).toFixed(2) + ' ' + s[2]; }
+            if (b < 1073741824)     { return (b / 1048576).toFixed(2) + ' '+ s[3]; }
+            else                    { return (b / 1073741824).toFixed(2) + ' '+ s[4]; }
+        },
         
         // Returns true if an object is a RegExp
 		isRegExp: function(o) {
@@ -55,8 +67,9 @@
 		},
         
         // Returns true if an object is an array
+        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-			return o && o.constructor.toString().indexOf('Array()') != -1 || false;
+            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
         
         // Convert input to currency (two decimal fixed number)

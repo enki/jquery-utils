@@ -1,0 +1,32 @@
+/*
+ * jQuery UI tablegrid component
+ * Author: Maxime Haineault, haineault@gmail.com, http://www.haineault.com
+ * Visit themeroller.com
+*/
+
+.ui-tablegrid {
+    /*resets*/margin: 0; padding: 0; border: 0; outline: 0; line-height: 1.3; text-decoration: none; font-size: 100%; list-style: none;
+}
+
+.ui-tablegrid.ui-stretch { width:100%; }
+
+.ui-tablegrid thead th {
+    /*resets*/margin: 0; padding: 0; border: 0; outline: 0; line-height: 1.3; text-decoration: none; font-size: 100%; list-style: none;
+    background:#dadada url(images/dadada_40x100_textures_02_glass_75.png) repeat-x scroll 0 50%;
+    color:#666 !important;
+    font-size:60%;
+    font-weight:normal;
+    padding:2px 8px;
+    text-align:left;
+    border-bottom:1px solid #ccc;
+}
+
+table.ui-tablegrid tbody td { 
+    padding:2px 4px;
+    color:#333;
+    font-size:80%;
+}
+
+table.ui-tablegrid tbody tr td    { border-bottom:1px solid #ccc; vertical-align:top; }
+table.ui-tablegrid tbody tr.odd   { background:#fefefe; }
+table.ui-tablegrid tbody tr.even  { background:#ececec; }
