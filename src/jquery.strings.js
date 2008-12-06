@@ -229,18 +229,30 @@
         return (buffer.length > 1)? buffer.join(''): buffer[0];
     };
 
-    var calc = function(str, args) {
-        return eval(format(str, args));
-    };
-
+    var calc = 
     $.extend({
         // Format/sprintf functions
         format: format,
-        calc:   calc,
         strConversion: conversion,
-        repeat:  function(s, n) { return new Array(n+1).join(s); },
-        UTF8encode: function(s) { return unescape(encodeURIComponent(s)); },
-        UTF8decode: function(s) { return decodeURIComponent(escape(s)); }
+        repeat:     function(s, n)  { return new Array(n+1).join(s); },
+        UTF8encode: function(s)     { return unescape(encodeURIComponent(s)); },
+        UTF8decode: function(s)     { return decodeURIComponent(escape(s)); },
+        tpl: function() {
+            var out = '';
+            if (!arguments[1]) {
+                out = this[arguments[0]];
+            }
+            else if ($.isArray(arguments[1])) {
+                out = this[arguments[0]] = arguments[1].join('');
+            }
+            else if (typeof(arguments[1]) == 'object') {
+                out = $.format(this[arguments[0]], arguments[1]);
+            }
+            return $(out);
+        },
+        calc: function(str, args) {
+            return eval(format(str, args));
+        }
     });
 
 })(jQuery);
