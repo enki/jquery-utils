@@ -69,6 +69,7 @@
         // Returns true if an object is an array
         // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
+            if (!o) { return false; }
             return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
         

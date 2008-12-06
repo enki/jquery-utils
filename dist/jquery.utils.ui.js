@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.5
+  jQuery utils - 0.6
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -67,8 +67,10 @@
 		},
         
         // Returns true if an object is an array
+        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-			return o && o.constructor.toString().indexOf('Array()') != -1 || false;
+            if (o == null) { return false; }
+            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
         
         // Convert input to currency (two decimal fixed number)
@@ -2556,7 +2558,7 @@ $(document).ready(function(){
     $('body').youtubeLinksToEmbed();
 });
 /*
-  jQuery utils - 0.5
+  jQuery utils - 0.6
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -2624,8 +2626,10 @@ $(document).ready(function(){
 		},
         
         // Returns true if an object is an array
+        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-			return o && o.constructor.toString().indexOf('Array()') != -1 || false;
+            if (o == null) { return false; }
+            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
         
         // Convert input to currency (two decimal fixed number)
@@ -2688,7 +2692,7 @@ $(document).ready(function(){
 	});
 })(jQuery);
 /*
-  jQuery utils - 0.5
+  jQuery utils - 0.6
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -2756,8 +2760,10 @@ $(document).ready(function(){
 		},
         
         // Returns true if an object is an array
+        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-			return o && o.constructor.toString().indexOf('Array()') != -1 || false;
+            if (o == null) { return false; }
+            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
         
         // Convert input to currency (two decimal fixed number)
@@ -4475,7 +4481,256 @@ if (window.attachEvent) {
 	};
 
 })(jQuery);
-/* Copyright (c) 2006 Brandon Aaron (brandon.aaron@gmail.com || http://brandonaaron.net)
+/* Copyright (c) 2007 Brandon Aaron (brandon.aaron@gmail.com || http://brandonaaron.net)
+ * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) 
+ * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
+ *
+ * Version: 1.0.2
+ * Requires jQuery 1.1.3+
+ * Docs: http://docs.jquery.com/Plugins/livequery
+ */
+
+(function($) {
+	
+$.extend($.fn, {
+	livequery: function(type, fn, fn2) {
+		var self = this, q;
+		
+		// Handle different call patterns
+		if ($.isFunction(type))
+			fn2 = fn, fn = type, type = undefined;
+			
+		// See if Live Query already exists
+		$.each( $.livequery.queries, function(i, query) {
+			if ( self.selector == query.selector && self.context == query.context &&
+				type == query.type && (!fn || fn.$lqguid == query.fn.$lqguid) && (!fn2 || fn2.$lqguid == query.fn2.$lqguid) )
+					// Found the query, exit the each loop
+					return (q = query) && false;
+		});
+		
+		// Create new Live Query if it wasn't found
+		q = q || new $.livequery(this.selector, this.context, type, fn, fn2);
+		
+		// Make sure it is running
+		q.stopped = false;
+		
+		// Run it
+		$.livequery.run( q.id );
+		
+		// Contnue the chain
+		return this;
+	},
+	
+	expire: function(type, fn, fn2) {
+		var self = this;
+		
+		// Handle different call patterns
+		if ($.isFunction(type))
+			fn2 = fn, fn = type, type = undefined;
+			
+		// Find the Live Query based on arguments and stop it
+		$.each( $.livequery.queries, function(i, query) {
+			if ( self.selector == query.selector && self.context == query.context && 
+				(!type || type == query.type) && (!fn || fn.$lqguid == query.fn.$lqguid) && (!fn2 || fn2.$lqguid == query.fn2.$lqguid) && !this.stopped )
+					$.livequery.stop(query.id);
+		});
+		
+		// Continue the chain
+		return this;
+	}
+});
+
+$.livequery = function(selector, context, type, fn, fn2) {
+	this.selector = selector;
+	this.context  = context || document;
+	this.type     = type;
+	this.fn       = fn;
+	this.fn2      = fn2;
+	this.elements = [];
+	this.stopped  = false;
+	
+	// The id is the index of the Live Query in $.livequery.queries
+	this.id = $.livequery.queries.push(this)-1;
+	
+	// Mark the functions for matching later on
+	fn.$lqguid = fn.$lqguid || $.livequery.guid++;
+	if (fn2) fn2.$lqguid = fn2.$lqguid || $.livequery.guid++;
+	
+	// Return the Live Query
+	return this;
+};
+
+$.livequery.prototype = {
+	stop: function() {
+		var query = this;
+		
+		if ( this.type )
+			// Unbind all bound events
+			this.elements.unbind(this.type, this.fn);
+		else if (this.fn2)
+			// Call the second function for all matched elements
+			this.elements.each(function(i, el) {
+				query.fn2.apply(el);
+			});
+			
+		// Clear out matched elements
+		this.elements = [];
+		
+		// Stop the Live Query from running until restarted
+		this.stopped = true;
+	},
+	
+	run: function() {
+		// Short-circuit if stopped
+		if ( this.stopped ) return;
+		var query = this;
+		
+		var oEls = this.elements,
+			els  = $(this.selector, this.context),
+			nEls = els.not(oEls);
+		
+		// Set elements to the latest set of matched elements
+		this.elements = els;
+		
+		if (this.type) {
+			// Bind events to newly matched elements
+			nEls.bind(this.type, this.fn);
+			
+			// Unbind events to elements no longer matched
+			if (oEls.length > 0)
+				$.each(oEls, function(i, el) {
+					if ( $.inArray(el, els) < 0 )
+						$.event.remove(el, query.type, query.fn);
+				});
+		}
+		else {
+			// Call the first function for newly matched elements
+			nEls.each(function() {
+				query.fn.apply(this);
+			});
+			
+			// Call the second function for elements no longer matched
+			if ( this.fn2 && oEls.length > 0 )
+				$.each(oEls, function(i, el) {
+					if ( $.inArray(el, els) < 0 )
+						query.fn2.apply(el);
+				});
+		}
+	}
+};
+
+$.extend($.livequery, {
+	guid: 0,
+	queries: [],
+	queue: [],
+	running: false,
+	timeout: null,
+	
+	checkQueue: function() {
+		if ( $.livequery.running && $.livequery.queue.length ) {
+			var length = $.livequery.queue.length;
+			// Run each Live Query currently in the queue
+			while ( length-- )
+				$.livequery.queries[ $.livequery.queue.shift() ].run();
+		}
+	},
+	
+	pause: function() {
+		// Don't run anymore Live Queries until restarted
+		$.livequery.running = false;
+	},
+	
+	play: function() {
+		// Restart Live Queries
+		$.livequery.running = true;
+		// Request a run of the Live Queries
+		$.livequery.run();
+	},
+	
+	registerPlugin: function() {
+		$.each( arguments, function(i,n) {
+			// Short-circuit if the method doesn't exist
+			if (!$.fn[n]) return;
+			
+			// Save a reference to the original method
+			var old = $.fn[n];
+			
+			// Create a new method
+			$.fn[n] = function() {
+				// Call the original method
+				var r = old.apply(this, arguments);
+				
+				// Request a run of the Live Queries
+				$.livequery.run();
+				
+				// Return the original methods result
+				return r;
+			}
+		});
+	},
+	
+	run: function(id) {
+		if (id != undefined) {
+			// Put the particular Live Query in the queue if it doesn't already exist
+			if ( $.inArray(id, $.livequery.queue) < 0 )
+				$.livequery.queue.push( id );
+		}
+		else
+			// Put each Live Query in the queue if it doesn't already exist
+			$.each( $.livequery.queries, function(id) {
+				if ( $.inArray(id, $.livequery.queue) < 0 )
+					$.livequery.queue.push( id );
+			});
+		
+		// Clear timeout if it already exists
+		if ($.livequery.timeout) clearTimeout($.livequery.timeout);
+		// Create a timeout to check the queue and actually run the Live Queries
+		$.livequery.timeout = setTimeout($.livequery.checkQueue, 20);
+	},
+	
+	stop: function(id) {
+		if (id != undefined)
+			// Stop are particular Live Query
+			$.livequery.queries[ id ].stop();
+		else
+			// Stop all Live Queries
+			$.each( $.livequery.queries, function(id) {
+				$.livequery.queries[ id ].stop();
+			});
+	}
+});
+
+// Register core DOM manipulation methods
+$.livequery.registerPlugin('append', 'prepend', 'after', 'before', 'wrap', 'attr', 'removeAttr', 'addClass', 'removeClass', 'toggleClass', 'empty', 'remove');
+
+// Run Live Queries when the Document is ready
+$(function() { $.livequery.play(); });
+
+
+// Save a reference to the original init method
+var init = $.prototype.init;
+
+// Create a new init method that exposes two new properties: selector and context
+$.prototype.init = function(a,c) {
+	// Call the original init and save the result
+	var r = init.apply(this, arguments);
+	
+	// Copy over properties if they exist already
+	if (a && a.selector)
+		r.context = a.context, r.selector = a.selector;
+		
+	// Set properties
+	if ( typeof a == 'string' )
+		r.context = c || document, r.selector = a;
+	
+	// Return the result
+	return r;
+};
+
+// Give the init function the jQuery prototype for later instantiation (needed after Rev 4091)
+$.prototype.init.prototype = $.prototype;
+	
+})(jQuery);/* Copyright (c) 2006 Brandon Aaron (brandon.aaron@gmail.com || http://brandonaaron.net)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  * Thanks to: http://adomas.org/javascript-mouse-wheel/ for some pointers.
@@ -4995,6 +5250,394 @@ $.fn.extend({
 $(document).ready(function(){
     $('body').youtubeLinksToEmbed();
 });
+/*
+  jQuery ui.dropslide - 0.3
+  http://code.google.com/p/jquery-utils/
+
+  (c) Maxime Haineault <haineault@gmail.com> 
+  http://haineault.com
+
+  MIT License (http://www.opensource.org/licenses/mit-license.php
+
+*/
+
+(function($) {
+    $.widget('ui.dropslide', $.extend({}, $.ui.mouse, {
+        getter: 'showLevel showNextLevel',
+        init: function() {
+            var next     = this.element.next();
+            this.wrapper = next.hasClass('ui-dropslide') && next || this.options.tree || false;
+
+            if (this.wrapper) {
+                this.element.bind(this.options.trigger +'.dropslide', onActivate);
+                this.wrapper
+                    .data('dropslide', this)
+                    .css({width:this.options.width})
+                    .find('li, li ol li').bind('mouseover.dropslide', onLiMouseover)
+                               .bind('click.dropslide',     onLiClick).end()
+                    .find('ol').bind('mousemove.dropslide', onOlMousemove).hide();
+            }
+        },
+        // show specified level, id is the DOM position
+        showLevel: function(id) {
+            var ols = this.wrapper.find('ol');
+            var ds  = this;
+            if (id == 0) {            
+                ols.eq(0).css('left', this.element.position().left);
+            }
+            setTimeout(function() {
+                ols.removeClass('active').eq(id).addClass('active').show(ds.options.animSpeed);
+            }, ds.options.showDelay);
+        },
+
+        // guess what it does
+        showNextLevel: function() {
+            if (this.is2d()) {
+                this.wrapper.find('ol.active')
+                    .removeClass('active')
+                    .next('ol').addClass('active').show(this.options.animSpeed);
+            }
+            else {
+                this.wrapper.find('ol.active').removeClass('active').find('li.hover > ol').addClass('active').show(this.options.animSpeed);
+            }
+        },
+
+        getSelection: function(level) {
+            if (level) {
+                return this.wrapper.find('ol').eq(level).find('li span.ui-hover-state');
+            }
+            else {
+                return $.makeArray(this.wrapper.find('span.ui-hover-state')
+                    .map(function() { 
+                         return $(this).text(); 
+                    }));
+            }
+        },
+
+        // essentially reposition each ol
+        redraw: function() {
+            redraw(this);
+        },
+
+        // show level 0 (shortcut)
+        show: function(e) {
+            this.showLevel(0);
+        },
+
+        // hide all levels
+        hide: function() {
+            var dropslide = this;
+            setTimeout(function() {
+                dropslide.wrapper.find('ol').hide();
+            }, dropslide.options.hideDelay);
+        },
+
+        // determine dropdown type
+        is2d: function() {
+            return !this.is3d();
+        },
+
+        is3d: function() {
+            return !!this.wrapper.find('ol > li > ol').get(0);
+        },
+
+        activate: function(e) {
+            this.element.focus();
+            this.show(this.options.animSpeed);
+        },
+                  
+        destroy: function(e) {
+            this.wrapper.remove();
+        }
+    }));
+
+    //$.ui.dropslide.getter = '';
+
+    $.ui.dropslide.defaults = {
+        // options
+        tree:    false,
+        trigger: 'mouseover',
+        top:     6,
+        left:    0,
+        showDelay: 0,
+        hideDelay: 0,
+        animSpeed: 0,
+        // events
+        select:  function() {},
+        click:   function(e, dropslide) {
+            dropslide.hide();
+        }
+    }
+
+    function onActivate(e) {
+        var dropslide = getDropSlide(this);
+        dropslide.show();
+    }
+
+    function onLiMouseover(e) {
+        var dropslide = getDropSlide(this);
+        $(this).siblings().removeClass('hover')
+            .find('ol').hide().end()
+            .find('span').removeClass('ui-hover-state').end();
+
+        $(this).find('ol').show().end().addClass('hover').children(0).addClass('ui-hover-state');
+        dropslide.showNextLevel();
+    }
+
+    function onLiClick(e) {
+        var dropslide = getDropSlide(this);
+        $(dropslide.element).triggerHandler('dropslideclick',  [e, dropslide], dropslide.options.click); 
+        $(dropslide.element).triggerHandler('select',          [e, dropslide], dropslide.options.select); 
+    }
+    
+    function redraw(dropslide) {
+        var prevLI = false;
+        var prevOL = false;
+        var nextOL = false;
+        var pos    = false;
+        var offset = dropslide.element.position().left + dropslide.options.left;
+
+        var ols    = $(dropslide.wrapper).find('ol');
+
+        $(dropslide.wrapper).css({
+            top: dropslide.element.position().top + dropslide.element.height() + dropslide.options.top,
+            left: dropslide.element.position().left
+        });
+        
+        // reposition each ol
+        ols.each(function(i) {
+            prevOL = $(this).prevAll('ol:visible:first');
+            // without the try/catch I often get a 
+            // Error: "Could not convert JavaScript argument arg 0 ..."
+            try {
+                if (prevOL.get(0)) {
+                    prevLI = prevOL.find('li.hover, li:first').eq(0);
+                    $(this).css('margin-left', prevLI.position().left);
+                }
+            } catch(e) {};
+        });
+    
+    }
+
+    function onOlMousemove(e) {
+        var dropslide = getDropSlide(this);
+        return redraw(dropslide);
+    }
+    
+    function getDropSlide(el) {
+        return $(el).data('dropslide')
+                || $(el).parents('.ui-dropslide').data('dropslide');
+    };
+})(jQuery);
+/*
+  jQuery ui.timepickr - 0.6
+  http://code.google.com/p/jquery-utils/
+
+  (c) Maxime Haineault <haineault@gmail.com> 
+  http://haineault.com
+
+  MIT License (http://www.opensource.org/licenses/mit-license.php
+
+  Note: if you want the original experimental plugin checkout the rev 224 
+
+  Dependencies
+  ------------
+  - jquery.utils.js
+  - jquery.strings.js
+  - ui.dropslide.js
+
+  // Could do something interesting with this..
+  U+25F4  ◴  White circle with upper left quadrant
+  U+25F5  ◵  White circle with lower left quadrant
+  U+25F6  ◶  White circle with lower right quadrant
+  U+25F7  ◷  White circle with upper right quadrant
+  
+*/
+
+(function($) {
+    $.widget('ui.timepickr', {
+        init: function() {
+            var menu    = this._buildMenu();
+            var element = this.element;
+            element.data('timepickr.initialValue', element.val());
+            menu.insertAfter(this.element);
+            element
+                .addClass('ui-timepickr')
+                .dropslide(this.options.dropslide)
+                .bind('select', this.select);
+            
+            element.blur(function(e) {
+                $(this).dropslide('hide');
+                $(this).val($(this).data('timepickr.initialValue'));
+            });
+
+            if (this.options.val) {
+                element.val(this.options.val);
+            }
+
+            if (this.options.handle) {
+                $(this.options.handle).click(function() {
+                    $(element).dropslide('show');
+                });
+            }
+
+            if (this.options.resetOnBlur) {
+                menu.find('li > span').bind('mousedown.timepickr', function(){
+                    $(element).data('timepickr.initialValue', $(element).val()); 
+                });
+            }
+
+            if (this.options.updateLive) {
+                menu.find('li').bind('mouseover.timepickr', function() {
+                    $(element).timepickr('update'); 
+                });
+            }
+
+            var hrs = menu.find('ol:eq(1)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
+            var min = menu.find('ol:eq(2)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
+            var sec = menu.find('ol:eq(3)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
+
+            if (this.options.convention === 24) {
+                var day        = menu.find('ol:eq(0) li:eq(0)');
+                var night      = menu.find('ol:eq(0) li:eq(1)');
+                var dayHours   = hrs.find('li').slice(0, 12);
+                var nightHours = hrs.find('li').slice(12, 24);
+                var index      = 0;
+                var selectHr   = function(id) {
+                    hrs.find('li').removeClass('hover');
+                    hrs.find('span').removeClass('ui-hover-state');
+                    hrs.find('li').eq(id).addClass('hover').find('span').addClass('ui-hover-state')
+                };
+
+                day.mouseover(function() {
+                    nightHours.hide();
+                    dayHours.show(0);
+                    index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
+                    selectHr(index > 11 && index - 12 || index);
+                    element.dropslide('redraw');
+                });
+
+                night.mouseover(function() {
+                    dayHours.hide();
+                    nightHours.show(0);
+                    index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
+                    selectHr(index < 12 && index + 12 || index);
+                    element.dropslide('redraw');
+                });
+            }
+            element.dropslide('redraw');
+            element.data('timepickr', this);
+        },
+
+        update: function() {
+            var frmt = this.options.convention === 24 && 'format24' || 'format12';
+            var val = {
+                h: this.getValue('hour'),
+                m: this.getValue('minute'),
+                s: this.getValue('second'),
+                prefix: this.getValue('prefix'),
+                suffix: this.getValue('suffix')
+            };
+            var o = $.format(this.options[frmt], val);
+
+            $(this.element).val(o);
+        },
+
+        select: function(e) {
+            var dropslide = $(this).data('dropslide');
+            $(dropslide.element).timepickr('update');
+            e.stopPropagation();
+        },
+
+        getHour: function() {
+            return this.getValue('hour');
+        },
+
+        getMinute: function() {
+            return this.getValue('minute');
+        },
+
+        getSecond: function() {
+            return this.getValue('second');
+        },
+
+        getValue: function(type) {
+            return $('.ui-timepickr.'+ type +'.hover', this.element.next()).text();
+        },
+        
+        activate: function() {
+            this.element.dropslide('activate');
+        },
+
+        destroy: function() {
+            this.element.dropslide('destroy');
+        },
+        
+        /* UI private methods */
+        
+        _createButton: function(i, format, className) {
+            var o  = format && $.format(format, i) || i;
+            var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
+            return $('<li class="ui-reset" />').addClass(cn).data('id', i).append($('<span class="ui-default-state" />').text(o));
+        },
+
+        _createRow: function(range, format, className) {
+            var row = $('<ol class="ui-clearfix ui-reset" />');
+            for (var x in range) {
+                row.append(this._createButton(range[x], format || false, className || false));
+            }
+            return row;
+        },
+        
+        _getRanges12: function() {
+            var o = [], opt = this.options;
+            if (opt.hours)   { o.push(this._createRow($.range(1, 13), '{0:0.2d}', 'hour')); }
+            if (opt.minutes) { o.push(this._createRow(opt.rangeMin,   '{0:0.2d}', 'minute')); }
+            if (opt.seconds) { o.push(this._createRow(opt.rangeSec,   '{0:0.2d}', 'second')); }
+            if (opt.suffix)  { o.push(this._createRow(opt.suffix,     false,      'suffix')); }
+            return o;
+        },
+
+        _getRanges24: function() {
+            var o = [], opt = this.options;
+            o.push(this._createRow(opt.prefix, false, 'prefix')); // prefix is required in 24h mode
+            if (opt.hours)   { o.push(this._createRow($.range(0, 24),   '{0:0.2d}', 'hour')); }
+            if (opt.minutes) { o.push(this._createRow(opt.rangeMin, '{0:0.2d}', 'minute')); }
+            if (opt.seconds) { o.push(this._createRow(opt.rangeSec, '{0:0.2d}', 'second')); }
+            return o;
+        },
+
+        _buildMenu: function() {
+            var menu   = $('<span class="ui-reset ui-dropslide ui-component">');
+            var ranges = this.options.convention === 24 
+                         && this._getRanges24() || this._getRanges12();
+
+            for (var x in ranges) {
+                menu.append(ranges[x]);
+            }
+            return menu;
+        }
+    });
+
+    $.ui.timepickr.defaults = {
+        convention:  24, // 24, 12
+        dropslide:   { trigger: 'focus' },
+        format12:    '{h:02.d}:{m:02.d} {suffix:s}',
+        format24:    '{h:02.d}:{m:02.d}',
+        handle:      false,
+        hours:       true,
+        minutes:     true,
+        seconds:     false,
+        prefix:      ['am', 'pm'],
+        suffix:      ['am', 'pm'],
+        rangeMin:    ['00', '15', '30', '45'],
+        rangeSec:    ['00', '15', '30', '45'],
+        updateLive:  true,
+        resetOnBlur: true,
+        val:         false
+    };
+
+})(jQuery);
 /* jQuery ui.toaster.js - 0.1rc1
  *
  * (c) Maxime Haineault <haineault@gmail.com>
@@ -5357,7 +6000,7 @@ $.ui.toaster.defaults = {
 	};
 })(jQuery);
 /*
-  jQuery utils - 0.5
+  jQuery utils - 0.6
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -5425,8 +6068,10 @@ $.ui.toaster.defaults = {
 		},
         
         // Returns true if an object is an array
+        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-			return o && o.constructor.toString().indexOf('Array()') != -1 || false;
+            if (o == null) { return false; }
+            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
         
         // Convert input to currency (two decimal fixed number)

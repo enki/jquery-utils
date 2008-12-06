@@ -4,6 +4,7 @@ svnrev: true
 dest: standalone/ui-timepickr/dist/
 modules:
   - file: src/ui.timepickr.js
+    name: "timepickr"
     destfile: jquery.timepickr.js
     depends:
       - src: src/jquery.utils.js

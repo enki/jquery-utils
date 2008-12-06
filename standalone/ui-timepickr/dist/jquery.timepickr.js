@@ -67,8 +67,10 @@
 		},
         
         // Returns true if an object is an array
+        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-			return o && o.constructor.toString().indexOf('Array()') != -1 || false;
+            if (o == null) { return false; }
+            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
         
         // Convert input to currency (two decimal fixed number)
@@ -572,6 +574,12 @@
   - jquery.strings.js
   - ui.dropslide.js
 
+  // Could do something interesting with this..
+  U+25F4  ◴  White circle with upper left quadrant
+  U+25F5  ◵  White circle with lower left quadrant
+  U+25F6  ◶  White circle with lower right quadrant
+  U+25F7  ◷  White circle with upper right quadrant
+  
 */
 
 (function($) {

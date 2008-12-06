@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.5
+  jQuery utils - 0.6
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -67,8 +67,10 @@
 		},
         
         // Returns true if an object is an array
+        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-			return o && o.constructor.toString().indexOf('Array()') != -1 || false;
+            if (o == null) { return false; }
+            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
         
         // Convert input to currency (two decimal fixed number)
@@ -2556,7 +2558,7 @@ $(document).ready(function(){
     $('body').youtubeLinksToEmbed();
 });
 /*
-  jQuery utils - 0.5
+  jQuery utils - 0.6
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -2624,8 +2626,10 @@ $(document).ready(function(){
 		},
         
         // Returns true if an object is an array
+        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-			return o && o.constructor.toString().indexOf('Array()') != -1 || false;
+            if (o == null) { return false; }
+            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
         
         // Convert input to currency (two decimal fixed number)
