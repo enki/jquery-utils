@@ -60,6 +60,16 @@
             if (b < 1073741824)     { return (b / 1048576).toFixed(2) + ' '+ s[3]; }
             else                    { return (b / 1073741824).toFixed(2) + ' '+ s[4]; }
         },
+
+        fileExtension: function(s) {
+            var tokens = s.split('.');
+            return tokens[tokens.length-1] || false;
+        },
+        
+        // Returns true if an object is a String
+        isString: function(o) {
+            return typeof(o) == 'string' && true || false;
+        },
         
         // Returns true if an object is a RegExp
 		isRegExp: function(o) {
