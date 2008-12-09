@@ -21,6 +21,7 @@ $(function(){
         return this._to;
     };
 
+    module('ui.timepickr.js');
     test('12h: Picker inputs', function(){
         expect(23); stop();
         tp12.focus();
