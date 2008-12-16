@@ -152,9 +152,11 @@
 
         _createRow: function(range, format, className) {
             var row = $('<ol class="ui-clearfix ui-reset" />');
-            for (var x in range) {
-                row.append(this._createButton(range[x], format || false, className || false));
-            }
+            var button = this._createButton;
+            // Thanks to Christoph Müller-Spengler for the bug report
+            $.each(range, function(idx, val){
+                row.append(button(val, format || false, className || false));
+            });
             return row;
         },
         
@@ -181,9 +183,9 @@
             var ranges = this.options.convention === 24 
                          && this._getRanges24() || this._getRanges12();
 
-            for (var x in ranges) {
-                menu.append(ranges[x]);
-            }
+            $.each(ranges, function(idx, val){
+                menu.append(val);
+            });
             return menu;
         }
     });
