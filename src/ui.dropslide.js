@@ -32,6 +32,8 @@
             var ds  = this;
             if (id == 0) {            
                 ols.eq(0).css('left', this.element.position().left);
+                this.wrapper.css('top', ds.element.position().top + ds.element.height() + ds.options.top);
+                this.wrapper.css('z-index', 1000);
             }
             setTimeout(function() {
                 ols.removeClass('active').eq(id).addClass('active').show(ds.options.animSpeed);
