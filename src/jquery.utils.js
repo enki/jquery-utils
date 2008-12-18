@@ -131,7 +131,7 @@
          * Copyright (c) 2008 Filament Group
          * Dual licensed under the MIT (filamentgroup.com/examples/mit-license.txt) and GPL (filamentgroup.com/examples/gpl-license.txt) licenses.
          *
-         * Description: Extends the native Number and String objects with pxToEm method. pxToEm converts a pixel value to ems depending on inherited font size.  
+         * Description: pxToEm converts a pixel value to ems depending on inherited font size.  
          * Article: http://www.filamentgroup.com/lab/retaining_scalable_interfaces_with_pixel_to_em_conversion/
          * Demo: http://www.filamentgroup.com/examples/pxToEm/	 	
          *							
