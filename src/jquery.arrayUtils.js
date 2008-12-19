@@ -130,7 +130,7 @@
             var iterator = iterator || function(i) { return parseInt(i, 10) };
             var t = 0;
             $.each(object, function(){
-                var v = iterator(this)
+                var v = iterator(this);
                 if (!isNaN(v)) { t = t + v; }
             });
             return t;

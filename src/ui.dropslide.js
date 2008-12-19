@@ -117,7 +117,7 @@
         click:   function(e, dropslide) {
             dropslide.hide();
         }
-    }
+    };
 
     function onActivate(e) {
         var dropslide = getDropSlide(this);

@@ -8,6 +8,7 @@ modules:
     depends:
       - src: src/jquery.utils.js
       - src: src/jquery.anchorHandler.js
+      - src: src/jquery.arrayUtils.js
       - src: src/jquery.cookie.js
       - src: src/jquery.countdown.js
       - src: src/jquery.cycle.js
@@ -28,6 +29,7 @@ modules:
     depends:
       - src: src/jquery.utils.js
       - src: src/jquery.anchorHandler.js
+      - src: src/jquery.arrayUtils.js
       - src: src/jquery.cookie.js
       - src: src/jquery.countdown.js
       - src: src/jquery.cycle.js

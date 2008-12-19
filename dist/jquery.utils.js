@@ -14,6 +14,7 @@
         // case insensitive version of :contains
         icontains: function(a,i,m){return (a.textContent||a.innerText||jQuery(a).text()||"").toLowerCase().indexOf(m[3].toLowerCase())>=0;}
     });
+
 	$.extend({ 
 
         // Taken from ui.core.js. 
@@ -28,20 +29,21 @@
 
         // Redirect to a specified url
         redirect: function(url) {
-            return window.location.href = url;
+            window.location.href = url;
+            return url;
         },
 
         // Stop event shorthand
         stop: function(e, preventDefault, stopPropagation) {
-            preventDefault  && e.preventDefault();
-            stopPropagation && e.stopPropagation();
+            if (preventDefault)  { e.preventDefault(); }
+            if (stopPropagation) { e.stopPropagation(); }
             return preventDefault && false || true;
         },
 
         // Returns the basename of a path
         basename: function(path) {
             var t = path.split('/');
-            return t[t.length] == '' && s || t.slice(0, t.length).join('/');
+            return t[t.length] === '' && s || t.slice(0, t.length).join('/');
         },
 
         // Returns the filename of a path
@@ -53,12 +55,12 @@
         filesizeformat: function(bytes, suffixes){
             var b = parseInt(bytes, 10);
             var s = suffixes || ['byte', 'bytes', 'KB', 'MB', 'GB'];
-            if (isNaN(b) || b == 0) { return '0 ' + s[0]; }
-            if (b == 1)             { return '1 ' + s[0]; }
-            if (b < 1024)           { return  b.toFixed(2) + ' ' + s[1]; }
-            if (b < 1048576)        { return (b / 1024).toFixed(2) + ' ' + s[2]; }
-            if (b < 1073741824)     { return (b / 1048576).toFixed(2) + ' '+ s[3]; }
-            else                    { return (b / 1073741824).toFixed(2) + ' '+ s[4]; }
+            if (isNaN(b) || b === 0) { return '0 ' + s[0]; }
+            if (b == 1)              { return '1 ' + s[0]; }
+            if (b < 1024)            { return  b.toFixed(2) + ' ' + s[1]; }
+            if (b < 1048576)         { return (b / 1024).toFixed(2) + ' ' + s[2]; }
+            if (b < 1073741824)      { return (b / 1048576).toFixed(2) + ' '+ s[3]; }
+            else                     { return (b / 1073741824).toFixed(2) + ' '+ s[4]; }
         },
 
         fileExtension: function(s) {
@@ -131,7 +133,7 @@
          * Copyright (c) 2008 Filament Group
          * Dual licensed under the MIT (filamentgroup.com/examples/mit-license.txt) and GPL (filamentgroup.com/examples/gpl-license.txt) licenses.
          *
-         * Description: Extends the native Number and String objects with pxToEm method. pxToEm converts a pixel value to ems depending on inherited font size.  
+         * Description: pxToEm converts a pixel value to ems depending on inherited font size.  
          * Article: http://www.filamentgroup.com/lab/retaining_scalable_interfaces_with_pixel_to_em_conversion/
          * Demo: http://www.filamentgroup.com/examples/pxToEm/	 	
          *							
@@ -145,7 +147,7 @@
          * Changelog:
          *		08.02.2007 initial Version 1.0
          *		08.01.2008 - fixed font-size calculation for IE
-         *		18.12.2008 - removed native object prototyping to stay in jQuery's spirit (Maxime Haineault <haineault@gmail.com>)
+         *		18.12.2008 - removed native object prototyping to stay in jQuery's spirit, jsLinted (Maxime Haineault <haineault@gmail.com>)
         --------------------------------------------------------------------*/
 
         pxToEm: function(i, settings){
@@ -155,7 +157,7 @@
                 reverse: false
             }, settings);
             
-            var pxVal = (i == '') ? 0 : parseFloat(i);
+            var pxVal = (i === '') ? 0 : parseFloat(i);
             var scopeVal;
             var getWindowWidth = function(){
                 var de = document.documentElement;
@@ -173,9 +175,9 @@
                 };
                 scopeVal = calcFontSize();
             }
-            else { scopeVal = parseFloat(jQuery(settings.scope).css("font-size")); };
+            else { scopeVal = parseFloat(jQuery(settings.scope).css("font-size")); }
                     
-            var result = (settings.reverse == true) ? (pxVal * scopeVal).toFixed(2) + 'px' : (pxVal / scopeVal).toFixed(2) + 'em';
+            var result = (settings.reverse === true) ? (pxVal * scopeVal).toFixed(2) + 'px' : (pxVal / scopeVal).toFixed(2) + 'em';
             return result;
         }
 	});
@@ -215,7 +217,7 @@
                 Optional: to set min-height in px, pass a true argument: $(element).equalHeights(true);
          * Version: 2.1, 18.12.2008
          *
-         * Note: Changed pxToEm call to call $.pxToEm instead (Maxime Haineault <haineault@gmail.com>)
+         * Note: Changed pxToEm call to call $.pxToEm instead, jsLinted (Maxime Haineault <haineault@gmail.com>)
         --------------------------------------------------------------------*/
 
         equalHeights: function(px) {
@@ -224,7 +226,7 @@
                 $(this).children().each(function(i){
                     if ($(this).height() > currentTallest) { currentTallest = $(this).height(); }
                 });
-                if (!px || !$.pxToEm) currentTallest = $.pxToEm(currentTallest); //use ems unless px is specified
+                if (!px || !$.pxToEm) { currentTallest = $.pxToEm(currentTallest); } //use ems unless px is specified
                 // for ie6, set height since min-height isn't supported
                 if ($.browser.msie && $.browser.version == 6.0) { $(this).children().css({'height': currentTallest}); }
                 $(this).children().css({'min-height': currentTallest}); 
@@ -276,6 +278,169 @@
 			}
 		}
 	});
+})(jQuery);
+/*
+  jQuery array utils - 0.1
+  http://code.google.com/p/jquery-utils/
+
+  (c) Maxime Haineault <haineault@gmail.com> 
+  http://haineault.com
+
+  MIT License (http://www.opensource.org/licenses/mit-license.php
+
+*/
+
+(function($){
+    
+    var dummy      = function(i) { return i; };
+    var truthiness = function(i) { return !!i; };
+
+    $.extend({
+
+        all: function(object, iterator){
+            var output   = true;
+            var iterator = iterator || truthiness;
+            $.each(object, function(idx, i){
+                if (!iterator(i)) { output = false; }
+            });
+            return output;
+        },
+
+        any: function(object, iterator){
+            var output   = false;
+            var iterator = iterator || truthiness;
+            $.each(object, function(idx, i){
+                return iterator(i) && !(output = true) || true;
+            });
+            return output;
+        },
+
+        // equivalent of array.find
+        detect: function(object, iterator){
+            var output   = false;
+            var iterator = iterator || truthiness;
+            $.each(object, function(idx, i){
+                //return iterator(i) && !(output = i) || true;
+                if (iterator(i)) { 
+                    output = i; 
+                    return false;
+                }
+            });      
+            return output;
+        },
+
+        eachSlice: function(object, size, iterator){
+            var index = - size, slices = [];
+            while ((index += size) < object.length){ 
+                slices.push($.map(object.slice(index, index + size), iterator || dummy)); 
+            } 
+            return slices;
+        },
+
+        inject: function(object, acc, iterator){
+            $.each(object, function (idx, val) {
+                acc = iterator(acc, val, idx);
+            }); 
+            return acc;
+        },
+
+        invoke: function(object, method, args){
+            $.each(object, function(){
+                if ($.isFunction(method)){
+                    method.apply(object, args);
+                }
+                else if ($.isFunction(window[method])){
+                    window[method].apply(object, args);
+                }
+            });
+            return object;
+        },
+
+        max: function(object, iterator) {
+            var output = false; 
+            $.each(object, function (idx, val) {
+                var rs = (iterator || dummy)(val, idx);
+                if (!output || rs > output) { output = rs; }
+            }); 
+            return output;
+        },
+
+        min: function(object, iterator) {
+            var output = false; 
+            $.each(object, function (idx, val) {
+                var rs = (iterator || dummy)(val, idx);
+                if (!output || rs < output) { output = rs; }
+            }); 
+            return output;
+        },
+
+        partition: function(object, iterator) {
+            var trues = [], falses = []; 
+            $.each(object, function (idx, val) {
+                ((iterator || truthiness)(val, idx) ? trues : falses).push(val);
+            }); 
+            return [trues, falses];
+        },
+        
+        pluck: function(object, property, iterator) {
+            var output = [];
+            var iterator = iterator || dummy;
+            $.each(object, function(){
+                output.push(iterator(this[property]));
+            });
+            return output;
+        },
+
+        reject: function(object, iterator){
+            return $.select(object, (iterator || function(i){ return !i; }));
+        },
+
+        // findAll equivalent
+        select: function(object, iterator){
+            var output   = [];
+            var iterator = iterator || truthiness;
+            $.each(object, function(idx, i){
+                if (iterator(i)) { 
+                    output.push(i); 
+                }
+            });
+            return output;
+        },
+
+        sum: function(object, iterator){
+            var iterator = iterator || function(i) { return parseInt(i, 10) };
+            var t = 0;
+            $.each(object, function(){
+                var v = iterator(this);
+                if (!isNaN(v)) { t = t + v; }
+            });
+            return t;
+        },
+
+        zip: function(object, object2, iterator) {
+            var output = [];
+            var iterator = iterator || dummy;
+            $.each(object, function(idx, i){
+                if (object2[idx]) { output.push([i, object2[idx]]); }
+            });
+            return output;
+        }
+    });
+
+    $.extend($.fn, {
+        all:       function(iterator) { return $.all(this, iterator); },
+        any:       function(iterator) { return $.any(this, iterator); },
+        pluck:     function(property, iterator) { return $.pluck(this, property, iterator); },
+        detect:    function(iterator) { return $($.detect(this, iterator)); },
+        eachSlice: function(size, iterator) { return $.eachSlice(this, size, iterator); },
+        select:    function(iterator) { return $.findAll(this, iterator); },
+        sum: function(iterator) {
+            var iterator = iterator || function(i) {
+                return parseFloat($(i).val() || $(i).text(), 10);
+            };
+            return $.sum(this, iterator);
+        }
+    });
 })(jQuery);
 /**
  * Cookie plugin
@@ -2693,6 +2858,7 @@ $(document).ready(function(){
         // case insensitive version of :contains
         icontains: function(a,i,m){return (a.textContent||a.innerText||jQuery(a).text()||"").toLowerCase().indexOf(m[3].toLowerCase())>=0;}
     });
+
 	$.extend({ 
 
         // Taken from ui.core.js. 
@@ -2707,20 +2873,21 @@ $(document).ready(function(){
 
         // Redirect to a specified url
         redirect: function(url) {
-            return window.location.href = url;
+            window.location.href = url;
+            return url;
         },
 
         // Stop event shorthand
         stop: function(e, preventDefault, stopPropagation) {
-            preventDefault  && e.preventDefault();
-            stopPropagation && e.stopPropagation();
+            if (preventDefault)  { e.preventDefault(); }
+            if (stopPropagation) { e.stopPropagation(); }
             return preventDefault && false || true;
         },
 
         // Returns the basename of a path
         basename: function(path) {
             var t = path.split('/');
-            return t[t.length] == '' && s || t.slice(0, t.length).join('/');
+            return t[t.length] === '' && s || t.slice(0, t.length).join('/');
         },
 
         // Returns the filename of a path
@@ -2732,12 +2899,12 @@ $(document).ready(function(){
         filesizeformat: function(bytes, suffixes){
             var b = parseInt(bytes, 10);
             var s = suffixes || ['byte', 'bytes', 'KB', 'MB', 'GB'];
-            if (isNaN(b) || b == 0) { return '0 ' + s[0]; }
-            if (b == 1)             { return '1 ' + s[0]; }
-            if (b < 1024)           { return  b.toFixed(2) + ' ' + s[1]; }
-            if (b < 1048576)        { return (b / 1024).toFixed(2) + ' ' + s[2]; }
-            if (b < 1073741824)     { return (b / 1048576).toFixed(2) + ' '+ s[3]; }
-            else                    { return (b / 1073741824).toFixed(2) + ' '+ s[4]; }
+            if (isNaN(b) || b === 0) { return '0 ' + s[0]; }
+            if (b == 1)              { return '1 ' + s[0]; }
+            if (b < 1024)            { return  b.toFixed(2) + ' ' + s[1]; }
+            if (b < 1048576)         { return (b / 1024).toFixed(2) + ' ' + s[2]; }
+            if (b < 1073741824)      { return (b / 1048576).toFixed(2) + ' '+ s[3]; }
+            else                     { return (b / 1073741824).toFixed(2) + ' '+ s[4]; }
         },
 
         fileExtension: function(s) {
@@ -2810,7 +2977,7 @@ $(document).ready(function(){
          * Copyright (c) 2008 Filament Group
          * Dual licensed under the MIT (filamentgroup.com/examples/mit-license.txt) and GPL (filamentgroup.com/examples/gpl-license.txt) licenses.
          *
-         * Description: Extends the native Number and String objects with pxToEm method. pxToEm converts a pixel value to ems depending on inherited font size.  
+         * Description: pxToEm converts a pixel value to ems depending on inherited font size.  
          * Article: http://www.filamentgroup.com/lab/retaining_scalable_interfaces_with_pixel_to_em_conversion/
          * Demo: http://www.filamentgroup.com/examples/pxToEm/	 	
          *							
@@ -2824,7 +2991,7 @@ $(document).ready(function(){
          * Changelog:
          *		08.02.2007 initial Version 1.0
          *		08.01.2008 - fixed font-size calculation for IE
-         *		18.12.2008 - removed native object prototyping to stay in jQuery's spirit (Maxime Haineault <haineault@gmail.com>)
+         *		18.12.2008 - removed native object prototyping to stay in jQuery's spirit, jsLinted (Maxime Haineault <haineault@gmail.com>)
         --------------------------------------------------------------------*/
 
         pxToEm: function(i, settings){
@@ -2834,7 +3001,7 @@ $(document).ready(function(){
                 reverse: false
             }, settings);
             
-            var pxVal = (i == '') ? 0 : parseFloat(i);
+            var pxVal = (i === '') ? 0 : parseFloat(i);
             var scopeVal;
             var getWindowWidth = function(){
                 var de = document.documentElement;
@@ -2852,9 +3019,9 @@ $(document).ready(function(){
                 };
                 scopeVal = calcFontSize();
             }
-            else { scopeVal = parseFloat(jQuery(settings.scope).css("font-size")); };
+            else { scopeVal = parseFloat(jQuery(settings.scope).css("font-size")); }
                     
-            var result = (settings.reverse == true) ? (pxVal * scopeVal).toFixed(2) + 'px' : (pxVal / scopeVal).toFixed(2) + 'em';
+            var result = (settings.reverse === true) ? (pxVal * scopeVal).toFixed(2) + 'px' : (pxVal / scopeVal).toFixed(2) + 'em';
             return result;
         }
 	});
@@ -2894,7 +3061,7 @@ $(document).ready(function(){
                 Optional: to set min-height in px, pass a true argument: $(element).equalHeights(true);
          * Version: 2.1, 18.12.2008
          *
-         * Note: Changed pxToEm call to call $.pxToEm instead (Maxime Haineault <haineault@gmail.com>)
+         * Note: Changed pxToEm call to call $.pxToEm instead, jsLinted (Maxime Haineault <haineault@gmail.com>)
         --------------------------------------------------------------------*/
 
         equalHeights: function(px) {
@@ -2903,7 +3070,7 @@ $(document).ready(function(){
                 $(this).children().each(function(i){
                     if ($(this).height() > currentTallest) { currentTallest = $(this).height(); }
                 });
-                if (!px || !$.pxToEm) currentTallest = $.pxToEm(currentTallest); //use ems unless px is specified
+                if (!px || !$.pxToEm) { currentTallest = $.pxToEm(currentTallest); } //use ems unless px is specified
                 // for ie6, set height since min-height isn't supported
                 if ($.browser.msie && $.browser.version == 6.0) { $(this).children().css({'height': currentTallest}); }
                 $(this).children().css({'min-height': currentTallest}); 

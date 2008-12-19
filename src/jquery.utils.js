@@ -14,6 +14,7 @@
         // case insensitive version of :contains
         icontains: function(a,i,m){return (a.textContent||a.innerText||jQuery(a).text()||"").toLowerCase().indexOf(m[3].toLowerCase())>=0;}
     });
+
 	$.extend({ 
 
         // Taken from ui.core.js. 
@@ -28,20 +29,21 @@
 
         // Redirect to a specified url
         redirect: function(url) {
-            return window.location.href = url;
+            window.location.href = url;
+            return url;
         },
 
         // Stop event shorthand
         stop: function(e, preventDefault, stopPropagation) {
-            preventDefault  && e.preventDefault();
-            stopPropagation && e.stopPropagation();
+            if (preventDefault)  { e.preventDefault(); }
+            if (stopPropagation) { e.stopPropagation(); }
             return preventDefault && false || true;
         },
 
         // Returns the basename of a path
         basename: function(path) {
             var t = path.split('/');
-            return t[t.length] == '' && s || t.slice(0, t.length).join('/');
+            return t[t.length] === '' && s || t.slice(0, t.length).join('/');
         },
 
         // Returns the filename of a path
@@ -53,12 +55,12 @@
         filesizeformat: function(bytes, suffixes){
             var b = parseInt(bytes, 10);
             var s = suffixes || ['byte', 'bytes', 'KB', 'MB', 'GB'];
-            if (isNaN(b) || b == 0) { return '0 ' + s[0]; }
-            if (b == 1)             { return '1 ' + s[0]; }
-            if (b < 1024)           { return  b.toFixed(2) + ' ' + s[1]; }
-            if (b < 1048576)        { return (b / 1024).toFixed(2) + ' ' + s[2]; }
-            if (b < 1073741824)     { return (b / 1048576).toFixed(2) + ' '+ s[3]; }
-            else                    { return (b / 1073741824).toFixed(2) + ' '+ s[4]; }
+            if (isNaN(b) || b === 0) { return '0 ' + s[0]; }
+            if (b == 1)              { return '1 ' + s[0]; }
+            if (b < 1024)            { return  b.toFixed(2) + ' ' + s[1]; }
+            if (b < 1048576)         { return (b / 1024).toFixed(2) + ' ' + s[2]; }
+            if (b < 1073741824)      { return (b / 1048576).toFixed(2) + ' '+ s[3]; }
+            else                     { return (b / 1073741824).toFixed(2) + ' '+ s[4]; }
         },
 
         fileExtension: function(s) {
@@ -145,7 +147,7 @@
          * Changelog:
          *		08.02.2007 initial Version 1.0
          *		08.01.2008 - fixed font-size calculation for IE
-         *		18.12.2008 - removed native object prototyping to stay in jQuery's spirit (Maxime Haineault <haineault@gmail.com>)
+         *		18.12.2008 - removed native object prototyping to stay in jQuery's spirit, jsLinted (Maxime Haineault <haineault@gmail.com>)
         --------------------------------------------------------------------*/
 
         pxToEm: function(i, settings){
@@ -155,7 +157,7 @@
                 reverse: false
             }, settings);
             
-            var pxVal = (i == '') ? 0 : parseFloat(i);
+            var pxVal = (i === '') ? 0 : parseFloat(i);
             var scopeVal;
             var getWindowWidth = function(){
                 var de = document.documentElement;
@@ -173,9 +175,9 @@
                 };
                 scopeVal = calcFontSize();
             }
-            else { scopeVal = parseFloat(jQuery(settings.scope).css("font-size")); };
+            else { scopeVal = parseFloat(jQuery(settings.scope).css("font-size")); }
                     
-            var result = (settings.reverse == true) ? (pxVal * scopeVal).toFixed(2) + 'px' : (pxVal / scopeVal).toFixed(2) + 'em';
+            var result = (settings.reverse === true) ? (pxVal * scopeVal).toFixed(2) + 'px' : (pxVal / scopeVal).toFixed(2) + 'em';
             return result;
         }
 	});
@@ -215,7 +217,7 @@
                 Optional: to set min-height in px, pass a true argument: $(element).equalHeights(true);
          * Version: 2.1, 18.12.2008
          *
-         * Note: Changed pxToEm call to call $.pxToEm instead (Maxime Haineault <haineault@gmail.com>)
+         * Note: Changed pxToEm call to call $.pxToEm instead, jsLinted (Maxime Haineault <haineault@gmail.com>)
         --------------------------------------------------------------------*/
 
         equalHeights: function(px) {
@@ -224,7 +226,7 @@
                 $(this).children().each(function(i){
                     if ($(this).height() > currentTallest) { currentTallest = $(this).height(); }
                 });
-                if (!px || !$.pxToEm) currentTallest = $.pxToEm(currentTallest); //use ems unless px is specified
+                if (!px || !$.pxToEm) { currentTallest = $.pxToEm(currentTallest); } //use ems unless px is specified
                 // for ie6, set height since min-height isn't supported
                 if ($.browser.msie && $.browser.version == 6.0) { $(this).children().css({'height': currentTallest}); }
                 $(this).children().css({'min-height': currentTallest}); 
