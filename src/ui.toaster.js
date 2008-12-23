@@ -12,7 +12,8 @@
 
 if ($.ui) {
 $.widget('ui.toaster', {
-	init: function(){
+    init:  function(){ this._init.apply(this, arguments); },
+	_init: function(){
 		var self	= this;
 		var wrapper = '#ui-toaster-'+ self.options.position;
 

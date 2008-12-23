@@ -25,7 +25,10 @@
 
 (function($) {
     $.widget('ui.timepickr', {
-        init: function() {
+        // Backward compatibility for UI < 1.6 - will be removed in 0.5.0
+        // TODO: remove in 0.5
+        init:  function() { this._init.apply(this, arguments); },
+        _init: function() {
             var menu    = this._buildMenu();
             var element = this.element;
             element.data('timepickr.initialValue', element.val());

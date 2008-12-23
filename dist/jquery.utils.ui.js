@@ -5937,7 +5937,10 @@ $(document).ready(function(){
 (function($) {
     $.widget('ui.dropslide', $.extend({}, $.ui.mouse, {
         getter: 'showLevel showNextLevel',
-        init: function() {
+        // Backward compatibility for UI < 1.6 - will be removed in 0.5.0
+        // TODO: remove in 0.5
+        init:  function() { this._init.apply(this, arguments); },
+        _init: function() {
             var next     = this.element.next();
             this.wrapper = next.hasClass('ui-dropslide') && next || this.options.tree || false;
 
@@ -6131,7 +6134,10 @@ $(document).ready(function(){
 
 (function($) {
     $.widget('ui.timepickr', {
-        init: function() {
+        // Backward compatibility for UI < 1.6 - will be removed in 0.5.0
+        // TODO: remove in 0.5
+        init:  function() { this._init.apply(this, arguments); },
+        _init: function() {
             var menu    = this._buildMenu();
             var element = this.element;
             element.data('timepickr.initialValue', element.val());
@@ -6329,7 +6335,8 @@ $(document).ready(function(){
 
 if ($.ui) {
 $.widget('ui.toaster', {
-	init: function(){
+    init:  function(){ this._init.apply(this, arguments); },
+	_init: function(){
 		var self	= this;
 		var wrapper = '#ui-toaster-'+ self.options.position;
 

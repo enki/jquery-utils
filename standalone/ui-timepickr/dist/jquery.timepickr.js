@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.6.2
+  jQuery utils - 0.6.3
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -514,7 +514,10 @@
 (function($) {
     $.widget('ui.dropslide', $.extend({}, $.ui.mouse, {
         getter: 'showLevel showNextLevel',
-        init: function() {
+        // Backward compatibility for UI < 1.6 - will be removed in 0.5.0
+        // TODO: remove in 0.5
+        init:  function() { this._init.apply(this, arguments); },
+        _init: function() {
             var next     = this.element.next();
             this.wrapper = next.hasClass('ui-dropslide') && next || this.options.tree || false;
 
@@ -682,7 +685,7 @@
     };
 })(jQuery);
 /*
-  jQuery ui.timepickr - 0.6.2
+  jQuery ui.timepickr - 0.6.3
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -708,7 +711,10 @@
 
 (function($) {
     $.widget('ui.timepickr', {
-        init: function() {
+        // Backward compatibility for UI < 1.6 - will be removed in 0.5.0
+        // TODO: remove in 0.5
+        init:  function() { this._init.apply(this, arguments); },
+        _init: function() {
             var menu    = this._buildMenu();
             var element = this.element;
             element.data('timepickr.initialValue', element.val());
