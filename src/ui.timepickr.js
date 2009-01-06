@@ -182,7 +182,7 @@
         },
 
         _buildMenu: function() {
-            var menu   = $('<span class="ui-reset ui-dropslide ui-component">');
+            var menu   = $('<span class="ui-reset ui-dropslide ui-component" />');
             var ranges = this.options.convention === 24 
                          && this._getRanges24() || this._getRanges12();
 
