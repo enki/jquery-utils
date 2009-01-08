@@ -395,7 +395,7 @@
         },
 
         // Randomize an array object with the Fisher-Yates algorythm
-        // AUthor: Ashley Pond V. (http://sedition.com/perl/javascript-fy.html)
+        // Author: Ashley Pond V. (http://sedition.com/perl/javascript-fy.html)
         randomize: function(object) {  
             var i = object.length;
             if (i == 0) return false;
@@ -563,27 +563,56 @@ jQuery.cookie = function(name, value, options) {
 
 (function($) {
     function countdown(el, options) {
-        var o       = '';
-        var timer   = false;
-        var now     = new Date();
+        var calc = function (target, current) {
+            /* Return true if the target date has arrived,
+             * an object of the time left otherwise.
+             */
+            if (current === undefined) {
+                current = new Date();
+            }
+
+            if (current >= target) {
+                return true;
+            }
+
+            var o = {};
+            var remain = Math.floor((target.getTime() - current.getTime()) / 1000);
+
+            o.days = Math.floor(remain / 86400);
+            remain %= 86400;
+            o.hours = Math.floor(remain / 3600);
+            remain %= 3600;
+            o.minutes = Math.floor(remain / 60);
+            remain %= 60;
+            o.seconds = remain;
+            o.years = Math.floor(o.days / 365);
+            o.months = Math.floor(o.days / 30);
+            o.weeks = Math.floor(o.days / 7);
+
+            return o;
+        };
 
         var getWeek = function(date) { 
             var onejan = new Date(date.getFullYear(),0,1);
-            return Math.ceil((((date - onejan) / 86400000) + onejan.getDay())/7); };
+            return Math.ceil((((date - onejan) / 86400000) + onejan.getDay())/7);
+        };
 
         var options = $.extend({
-                year : now.getFullYear(), month: now.getMonth(), day: now.getDate(),
-                week: getWeek(now), hour: 0, min: 0, sec: 0, interval: 1000,
-                msgFormat: '%d [day|days] %hh %mm %ss', msgNow: 'Now !'}, options);
+            date: new Date(),
+            modifiers: [],
+            interval: 1000,
+            msgFormat: '%d [day|days] %hh %mm %ss',
+            msgNow: 'Now !'
+        }, options);
 
         var tokens = {
-            y: new RegExp ('\\%y(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // years 
-            M: new RegExp ('\\%M(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // months 
-            w: new RegExp ('\\%w(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // weeks
-            d: new RegExp ('\\%d(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // days
-            h: new RegExp ('\\%h(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // hours
-            m: new RegExp ('\\%m(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // minutes
-            s: new RegExp ('\\%s(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g')  // seconds
+            y: new RegExp ('\\%y(.+?)\\[(\\w+)\\|(\\w+)\\]', 'g'), // years 
+            M: new RegExp ('\\%M(.+?)\\[(\\w+)\\|(\\w+)\\]', 'g'), // months 
+            w: new RegExp ('\\%w(.+?)\\[(\\w+)\\|(\\w+)\\]', 'g'), // weeks
+            d: new RegExp ('\\%d(.+?)\\[(\\w+)\\|(\\w+)\\]', 'g'), // days
+            h: new RegExp ('\\%h(.+?)\\[(\\w+)\\|(\\w+)\\]', 'g'), // hours
+            m: new RegExp ('\\%m(.+?)\\[(\\w+)\\|(\\w+)\\]', 'g'), // minutes
+            s: new RegExp ('\\%s(.+?)\\[(\\w+)\\|(\\w+)\\]', 'g')  // seconds
         };
 
         var formatToken = function(str, token, val) {
@@ -592,66 +621,67 @@ jQuery.cookie = function(name, value, options) {
                     || str.replace('%'+token, val);
         };
 
+        var format = function(str, obj) {
+            var o = str;
+            o = formatToken(o, 'y', obj.years);
+            o = formatToken(o, 'M', obj.months);
+            o = formatToken(o, 'w', obj.weeks);
+            o = formatToken(o, 'd', obj.days);
+            o = formatToken(o, 'h', obj.hours);
+            o = formatToken(o, 'm', obj.minutes);
+            o = formatToken(o, 's', obj.seconds);
+            return o;
+        };
+
         var update = function() {
-            cd.remain = Math.floor((cd.date.getTime() - (new Date()).getTime())/1000);
-            if(cd.remain < 0) {
+            var date_obj = calc(cd.date);
+            if (date_obj === true) {
                 cd.stop(); clearInterval(cd.id);
                 $(cd.el).html(options.msgNow);
                 return true;
             }
-
-            cd.days   = Math.floor(cd.remain/86400);  // days
-            cd.remain = cd.remain%86400;
-            cd.hours  = Math.floor(cd.remain/3600);   // hours
-            cd.remain = cd.remain%3600;
-            cd.mins   = Math.floor(cd.remain/60);     // minutes
-            cd.remain = cd.remain%60;
-            cd.secs   = Math.floor(cd.remain);        // seconds
-            cd.weeks  = Math.floor(cd.days/7);        // weeks 
-            cd.years  = Math.floor(cd.days/365);      // years
-            cd.months = Math.floor(cd.days/30);       // months, TODO: find a more precise way to calculate months
-
-            o = options.msgFormat;
-            o = formatToken(o, 'y', cd.years);
-            o = formatToken(o, 'M', cd.months);
-            o = formatToken(o, 'w', cd.weeks);
-            o = formatToken(o, 'd', cd.days);
-            o = formatToken(o, 'h', cd.hours);
-            o = formatToken(o, 'm', cd.mins);
-            o = formatToken(o, 's', cd.secs);
-
-            $(cd.el).text(o);
+            else {
+                $(cd.el).text(format(options.msgFormat, date_obj));
+            }
         };
-        var parse = function(type, val) {
-           function calc(str, i) {
-               if (str.slice(0,1) == '+') { var o = i + parseInt(str.match(/\d+/)||0, 10); }
-               else { var o = i - parseInt(str.match(/\d+/)||0, 10); }
-               return o;
-           }
-           if (typeof(val)=='number') return val;
-           else {
-               switch(type) {
-                   case 'year':  return calc(val, (new Date()).getFullYear());
-                   case 'month': return calc(val, (new Date()).getMonth()+1);
-                   case 'day':   return calc(val, (new Date()).getDate());
-                   case 'hour':  return calc(val, (new Date()).getHours());
-                   case 'min':   return calc(val, (new Date()).getMinutes());
-                   case 'sec':   return calc(val, (new Date()).getSeconds());
-               }
-           }
+
+        var apply_modifiers = function (modifiers, date) {
+            if (modifiers.length === 0) {
+                return date;
+            }
+
+            var modifier_re = /^([+-]\d+)([yMdhms])$/;
+            var conversions = {
+                s: 1000,
+                m: 60 * 1000,
+                h: 60 * 60 * 1000,
+                d: 24 * 60 * 60 * 1000,
+                M: 30 * 24 * 60 * 60 * 1000,
+                y: 365 * 24 * 60 * 60 * 1000
+            };
+
+            var displacement = 0;
+            for (var i = 0, n = modifiers.length; i < n; ++i) {
+                var match = modifiers[i].match(modifier_re);
+                if (match !== null) {
+                    displacement += parseInt(match[1], 10) * conversions[match[2]];
+                }
+            }
+
+            return new Date(date.getTime() + displacement);
         };
+
         var cd = {
-            id:     setInterval(update, options.interval), el: el,
-            remain: null, el: el, days: 0, hours: 0, mins: 0, secs: 0,
-            start:  function(){ return new countdown($(this.el), options); },
-            stop:   function(){ return clearInterval(this.id);},
-            date:   new Date(parse('year', options.year), parse('month', options.month), parse('day', options.day), 
-                             parse('hour', options.hour), parse('min', options.min),     parse('sec', options.sec)) 
+            id    : setInterval(update, options.interval),
+            el    : el,
+            start : function(){ return new countdown($(this.el), options); },
+            stop  : function(){ return clearInterval(this.id); },
+            date  : apply_modifiers(options.modifiers, options.date),
         };
         $(el).data('countdown', cd);
         update();
         return $(el).data('countdown');
-    };
+    }
     $.fn.countdown = function(args) { if(this.get(0)) return new countdown(this.get(0), args); };
 })(jQuery);
 /*
