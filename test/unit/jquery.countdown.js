@@ -22,7 +22,7 @@ $(function(){
         equals($('#countdown4').show().text(), '364', 'Functional argument (year)');
         $('#countdown4').data('countdown').stop();
 
-        $('#countdown5').countdown({msgFormat: '%M', month: '+1' });
+        $('#countdown5').countdown({msgFormat: '%M', month: '+2' });
         equals($('#countdown5').text(), '2', 'Functional argument (month)');
         $('#countdown5').data('countdown').stop();
 

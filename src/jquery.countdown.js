@@ -1,5 +1,5 @@
 /*
-  jQuery countdown - 0.1
+  jQuery countdown - 0.2
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com>
@@ -21,13 +21,12 @@
 
         var options = $.extend({
                 year : now.getFullYear(), month: now.getMonth(), day: now.getDate(),
-                week: getWeek(now), hour: now.getHours(), min: now.getMinutes(), sec: now.getSeconds(),
-                msgFormat: '%d [day|days] %hh %mm %ss', msgNow: 'Now !',
-                interval:  1000 }, options); 
+                week: getWeek(now), hour: 0, min: 0, sec: 0, interval: 1000,
+                msgFormat: '%d [day|days] %hh %mm %ss', msgNow: 'Now !'}, options);
 
         var tokens = {
             y: new RegExp ('\\%y(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // years 
-            M: new RegExp ('\\%y(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // months 
+            M: new RegExp ('\\%M(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // months 
             w: new RegExp ('\\%w(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // weeks
             d: new RegExp ('\\%d(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // days
             h: new RegExp ('\\%h(\\s+|\\w+)\\[(\\w+)\\|(\\w+)\\]', 'g'), // hours
@@ -44,15 +43,14 @@
         var update = function() {
             cd.remain = Math.floor((cd.date.getTime() - (new Date()).getTime())/1000);
             if(cd.remain < 0) {
-                cd.stop();
-                clearInterval(cd.id);
+                cd.stop(); clearInterval(cd.id);
                 $(cd.el).html(options.msgNow);
                 return true;
             }
 
             cd.days   = Math.floor(cd.remain/86400);  // days
             cd.remain = cd.remain%86400;
-            cd.hours  = Math.floor(cd.remain/3600); // hours
+            cd.hours  = Math.floor(cd.remain/3600);   // hours
             cd.remain = cd.remain%3600;
             cd.mins   = Math.floor(cd.remain/60);     // minutes
             cd.remain = cd.remain%60;
