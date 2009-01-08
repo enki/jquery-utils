@@ -91,38 +91,6 @@
 			return (i=='NaN') ? '0.00' : i;
 		},
 
-        // Returns a range object
-        // Author: Matthias Miller
-        // Site:   http://blog.outofhanwell.com/2006/03/29/javascript-range-function/
-        range:  function() {
-            if (!arguments.length) { return []; }
-            var min, max, step;
-            if (arguments.length == 1) {
-                min  = 0;
-                max  = arguments[0]-1;
-                step = 1;
-            }
-            else {
-                // default step to 1 if it's zero or undefined
-                min  = arguments[0];
-                max  = arguments[1]-1;
-                step = arguments[2] || 1;
-            }
-            // convert negative steps to positive and reverse min/max
-            if (step < 0 && min >= max) {
-                step *= -1;
-                var tmp = min;
-                min = max;
-                max = tmp;
-                min += ((max-min) % step);
-            }
-            var a = [];
-            for (var i = min; i <= max; i += step) { 
-                    a.push(i);
-            }
-            return a;
-        },
-
         /*-------------------------------------------------------------------- 
          * javascript method: "pxToEm"
          * by:
@@ -424,6 +392,51 @@
                 if (object2[idx]) { output.push([i, object2[idx]]); }
             });
             return output;
+        },
+
+        // Randomize an array object with the Fisher-Yates algorythm
+        // AUthor: Ashley Pond V. (http://sedition.com/perl/javascript-fy.html)
+        randomize: function(object) {  
+            var i = object.length;
+            if (i == 0) return false;
+            while (--i) {
+               var j = Math.floor( Math.random() * ( i + 1 ) );
+               var tempi = object[i];
+               var tempj = object[j];
+               object[i] = tempj;
+               object[j] = tempi;
+             }
+            return object;
+        },
+
+        // Returns a range object
+        // Author: Matthias Miller
+        // Site:   http://blog.outofhanwell.com/2006/03/29/javascript-range-function/
+        range:  function() {
+            if (!arguments.length) { return []; }
+            var min, max, step;
+            if (arguments.length == 1) {
+                min  = 0;
+                max  = arguments[0]-1;
+                step = 1;
+            }
+            else {
+                // default step to 1 if it's zero or undefined
+                min  = arguments[0];
+                max  = arguments[1]-1;
+                step = arguments[2] || 1;
+            }
+            // convert negative steps to positive and reverse min/max
+            if (step < 0 && min >= max) {
+                step *= -1;
+                var tmp = min;
+                min = max;
+                max = tmp;
+                min += ((max-min) % step);
+            }
+            var a = [];
+            for (var i = min; i <= max; i += step) { a.push(i); }
+            return a;
         }
     });
 
@@ -2932,38 +2945,6 @@ $(document).ready(function(){
 			i = parseFloat(i, 10).toFixed(2);
 			return (i=='NaN') ? '0.00' : i;
 		},
-
-        // Returns a range object
-        // Author: Matthias Miller
-        // Site:   http://blog.outofhanwell.com/2006/03/29/javascript-range-function/
-        range:  function() {
-            if (!arguments.length) { return []; }
-            var min, max, step;
-            if (arguments.length == 1) {
-                min  = 0;
-                max  = arguments[0]-1;
-                step = 1;
-            }
-            else {
-                // default step to 1 if it's zero or undefined
-                min  = arguments[0];
-                max  = arguments[1]-1;
-                step = arguments[2] || 1;
-            }
-            // convert negative steps to positive and reverse min/max
-            if (step < 0 && min >= max) {
-                step *= -1;
-                var tmp = min;
-                min = max;
-                max = tmp;
-                min += ((max-min) % step);
-            }
-            var a = [];
-            for (var i = min; i <= max; i += step) { 
-                    a.push(i);
-            }
-            return a;
-        },
 
         /*-------------------------------------------------------------------- 
          * javascript method: "pxToEm"
