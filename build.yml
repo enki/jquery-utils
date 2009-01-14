@@ -1,5 +1,5 @@
 title: jquery.utils
-version: 0.6
+version: 0.7.0
 svnrev: true
 dest: dist/
 modules:
@@ -52,3 +52,13 @@ merge:
       - src: src/css/ui.dropslide.css
       - src: src/css/ui.timepickr.css
       - src: src/css/ui.toaster.css
+
+zip:
+  - dest: downloads/jquery.utils-%v-standalone.zip
+    src: dist/
+    exclude: [".svn", "downloads"]
+
+gzip:
+  - dest: downloads/jquery.utils-%v-standalone.tar.gz
+    src: dist/
+    exclude: [".svn", "downloads"]

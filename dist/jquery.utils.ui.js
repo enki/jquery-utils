@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.6
+  jQuery utils - 0.7.0
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -152,7 +152,7 @@
 
 	$.extend($.fn, { 
         // Select a text range in a textarea
-        selectRange: function(start, end) {
+        selectRange: function(start, end){
             // use only the first one since only one input can be focused
             if ($(this).get(0).createTextRange) {
                 var range = $(this).get(0).createTextRange();
@@ -188,7 +188,7 @@
          * Note: Changed pxToEm call to call $.pxToEm instead, jsLinted (Maxime Haineault <haineault@gmail.com>)
         --------------------------------------------------------------------*/
 
-        equalHeights: function(px) {
+        equalHeights: function(px){
             $(this).each(function(){
                 var currentTallest = 0;
                 $(this).children().each(function(i){
@@ -200,7 +200,14 @@
                 $(this).children().css({'min-height': currentTallest}); 
             });
             return this;
-        }
+        },
+
+        // Copyright (c) 2009 James Padolsey
+        // http://james.padolsey.com/javascript/jquery-delay-plugin/
+        delay: function(time, callback){
+            jQuery.fx.step.delay = function(){};
+            return this.animate({delay:1}, time, callback);
+        }        
 	});
 })(jQuery);
 /*
@@ -2884,7 +2891,7 @@ $(document).ready(function(){
     $('body').youtubeLinksToEmbed();
 });
 /*
-  jQuery utils - 0.6
+  jQuery utils - 0.7.0
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -3037,7 +3044,7 @@ $(document).ready(function(){
 
 	$.extend($.fn, { 
         // Select a text range in a textarea
-        selectRange: function(start, end) {
+        selectRange: function(start, end){
             // use only the first one since only one input can be focused
             if ($(this).get(0).createTextRange) {
                 var range = $(this).get(0).createTextRange();
@@ -3073,7 +3080,7 @@ $(document).ready(function(){
          * Note: Changed pxToEm call to call $.pxToEm instead, jsLinted (Maxime Haineault <haineault@gmail.com>)
         --------------------------------------------------------------------*/
 
-        equalHeights: function(px) {
+        equalHeights: function(px){
             $(this).each(function(){
                 var currentTallest = 0;
                 $(this).children().each(function(i){
@@ -3085,11 +3092,18 @@ $(document).ready(function(){
                 $(this).children().css({'min-height': currentTallest}); 
             });
             return this;
-        }
+        },
+
+        // Copyright (c) 2009 James Padolsey
+        // http://james.padolsey.com/javascript/jquery-delay-plugin/
+        delay: function(time, callback){
+            jQuery.fx.step.delay = function(){};
+            return this.animate({delay:1}, time, callback);
+        }        
 	});
 })(jQuery);
 /*
-  jQuery utils - 0.6
+  jQuery utils - 0.7.0
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -3242,7 +3256,7 @@ $(document).ready(function(){
 
 	$.extend($.fn, { 
         // Select a text range in a textarea
-        selectRange: function(start, end) {
+        selectRange: function(start, end){
             // use only the first one since only one input can be focused
             if ($(this).get(0).createTextRange) {
                 var range = $(this).get(0).createTextRange();
@@ -3278,7 +3292,7 @@ $(document).ready(function(){
          * Note: Changed pxToEm call to call $.pxToEm instead, jsLinted (Maxime Haineault <haineault@gmail.com>)
         --------------------------------------------------------------------*/
 
-        equalHeights: function(px) {
+        equalHeights: function(px){
             $(this).each(function(){
                 var currentTallest = 0;
                 $(this).children().each(function(i){
@@ -3290,7 +3304,14 @@ $(document).ready(function(){
                 $(this).children().css({'min-height': currentTallest}); 
             });
             return this;
-        }
+        },
+
+        // Copyright (c) 2009 James Padolsey
+        // http://james.padolsey.com/javascript/jquery-delay-plugin/
+        delay: function(time, callback){
+            jQuery.fx.step.delay = function(){};
+            return this.animate({delay:1}, time, callback);
+        }        
 	});
 })(jQuery);
 /*
@@ -6158,7 +6179,7 @@ $(document).ready(function(){
     };
 })(jQuery);
 /*
-  jQuery ui.timepickr - 0.6
+  jQuery ui.timepickr - 0.7.0
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -6734,7 +6755,7 @@ $.ui.toaster.defaults = {
 	};
 })(jQuery);
 /*
-  jQuery utils - 0.6
+  jQuery utils - 0.7.0
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -6887,7 +6908,7 @@ $.ui.toaster.defaults = {
 
 	$.extend($.fn, { 
         // Select a text range in a textarea
-        selectRange: function(start, end) {
+        selectRange: function(start, end){
             // use only the first one since only one input can be focused
             if ($(this).get(0).createTextRange) {
                 var range = $(this).get(0).createTextRange();
@@ -6923,7 +6944,7 @@ $.ui.toaster.defaults = {
          * Note: Changed pxToEm call to call $.pxToEm instead, jsLinted (Maxime Haineault <haineault@gmail.com>)
         --------------------------------------------------------------------*/
 
-        equalHeights: function(px) {
+        equalHeights: function(px){
             $(this).each(function(){
                 var currentTallest = 0;
                 $(this).children().each(function(i){
@@ -6935,6 +6956,13 @@ $.ui.toaster.defaults = {
                 $(this).children().css({'min-height': currentTallest}); 
             });
             return this;
-        }
+        },
+
+        // Copyright (c) 2009 James Padolsey
+        // http://james.padolsey.com/javascript/jquery-delay-plugin/
+        delay: function(time, callback){
+            jQuery.fx.step.delay = function(){};
+            return this.animate({delay:1}, time, callback);
+        }        
 	});
 })(jQuery);
