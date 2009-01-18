@@ -118,8 +118,9 @@ def create_zip(src, dest, exclude):
     log('%s -> %s' % (src, dest), 'zip')
     cmd = ["zip -rq %s %s" % (dest, src)]
 
+    cmd.append("-x") 
     for ex in exclude:
-        cmd.append("-x *%s*" % ex) 
+        cmd.append(" \*%s\*" % ex) 
 
     rs = os.popen(' '.join(cmd))
     rs.close()
