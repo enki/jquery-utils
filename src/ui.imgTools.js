@@ -59,7 +59,7 @@ function _(str, args) {
 // {{{
 $.widget('ui.imgTools', {
     plugins: {},
-	init: function(){
+	_init: function(){
 		var self = this;
         self.state = {};
         self.state.initial = self.state.actual = {

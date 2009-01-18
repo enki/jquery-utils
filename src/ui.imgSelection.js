@@ -11,7 +11,7 @@ if ($.ui) {
 $.ui.log = (typeof(console) != 'undefined')? console.log: function(){};
 
 $.widget('ui.imgSelection', {
-	init: function(){
+	_init: function(){
 		var self = this;
             
         $(document).bind('click.imgSelection', function(e){

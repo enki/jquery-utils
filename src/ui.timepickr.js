@@ -13,6 +13,8 @@
   ------------
   - jquery.utils.js
   - jquery.strings.js
+  - jquery.arrayUtils.js
+  - jquery.ui.js
   - ui.dropslide.js
 
   // Could do something interesting with this..
@@ -25,9 +27,6 @@
 
 (function($) {
     $.widget('ui.timepickr', {
-        // Backward compatibility for UI < 1.6 - will be removed in 0.5.0
-        // TODO: remove in 0.5
-        init:  function() { this._init.apply(this, arguments); },
         _init: function() {
             var menu    = this._buildMenu();
             var element = this.element;
@@ -150,11 +149,11 @@
         _createButton: function(i, format, className) {
             var o  = format && $.format(format, i) || i;
             var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
-            return $('<li class="ui-reset" />').addClass(cn).data('id', i).append($('<span class="ui-default-state" />').text(o));
+            return $('<li />').addClass(cn).data('id', i).append($('<span />').text(o));
         },
 
         _createRow: function(range, format, className) {
-            var row = $('<ol class="ui-clearfix ui-reset" />');
+            var row = $('<ol class="ui-timepickr" />');
             var button = this._createButton;
             // Thanks to Christoph Müller-Spengler for the bug report
             $.each(range, function(idx, val){

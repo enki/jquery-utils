@@ -1,260 +1,172 @@
 <html>
-    <head>
-        <link rel="Stylesheet" media="screen" href="data/styles.css" />
-        <link rel="Stylesheet" media="screen" href="../src/css/ui.dropslide.css" />
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
-        <script type="text/javascript" src="data/ui.js"></script>
-        <script type="text/javascript" src="../src/jquery.utils.js"></script>
-        <script type="text/javascript" src="../src/jquery.strings.js"></script>
-        <script type="text/javascript" src="../src/ui.dropslide.js"></script>
+<head>
+    <link rel="Stylesheet" media="screen" href="data/styles.css" />
+    <link rel="Stylesheet" media="screen" href="themes/default/ui.all.css" />
+    <link rel="Stylesheet" media="screen" href="../src/css/ui.dropslide.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="data/jquery-ui-1.6rc2.js"></script>
+    <script type="text/javascript" src="../src/jquery.utils.js"></script>
+    <script type="text/javascript" src="../src/jquery.strings.js"></script>
+    <script type="text/javascript" src="../src/ui.dropslide.js"></script>
 
-        <script type="text/javascript">
-            $(function(){
-                $('#ui-dropslide-trigger1').dropslide({trigger: 'focus'})
-                    .bind('select', function(e, dropslide){
-                         $(this).val(dropslide.getSelection().join(':'));
-                         e.stopPropagation();
-                    });
-                $('#ui-dropslide-trigger2').dropslide({trigger: 'focus'})
-                    .bind('select', function(e, dropslide){
-                         $(this).val(dropslide.getSelection().join(', '));
-                         e.stopPropagation();
-                    });
-            });
-        </script>
-    </head>
-    <body id="body">
-        <h2>ui.dropslide.js</h2>
-        <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
-        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
-        <a class="related-links experimental">Experimental code !</a>
-        <p>
-            Multi-level dropdown menu
-        </p>
-        <h3>Demo</h3>
+    <script type="text/javascript">
+        $(function(){
+            $('#ui-dropslide-trigger1').dropslide({trigger: 'focus'})
+                .bind('select', function(e, dropslide){
+                     $(this).val(dropslide.getSelection().join(':'));
+                     e.stopPropagation();
+                });
+            $('#ui-dropslide-trigger2').dropslide({trigger: 'focus'})
+                .bind('select', function(e, dropslide){
+                     $(this).val(dropslide.getSelection().join(', '));
+                     e.stopPropagation();
+                });
+        });
+    </script>
+</head>
+<body id="themeroller">
+    <h2>ui.dropslide.js</h2>
+    <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
+    <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+    <a class="related-links experimental">Experimental code !</a>
+    <p>
+        Multi-level dropdown menu
+    </p>
+    <h3>Demo</h3>
 
-        <h4>Time picker (2d mode)</h4>
-        <p>
-            <input type="text" id="ui-dropslide-trigger1" style="width:80px;" />
-            <span class="ui-dropslide">
-                <ol>
-                    <li><span>1</span></li>
-                    <li><span>2</span></li>
-                    <li><span>3</span></li>
-                    <li><span>4</span></li>
-                    <li><span>5</span></li>
-                    <li><span>6</span></li>
-                    <li><span>7</span></li>
-                    <li><span>8</span></li>
-                    <li><span>9</span></li>
-                    <li><span>10</span></li>
-                    <li><span>11</span></li>
-                    <li><span>12</span></li>
-                </ol>
-                <ol>
-                    <li><span>00</span></li>
-                    <li><span>15</span></li>
-                    <li><span>30</span></li>
-                    <li><span>45</span></li>
-                </ol>
-                <ol>
-                    <li><span>00</span></li>
-                    <li><span>15</span></li>
-                    <li><span>30</span></li>
-                    <li><span>45</span></li>
-                </ol>
-            </span>
-        </p>
-        <pre>$('#ui-dropslide-trigger1').dropslide({trigger: 'focus'})
+    <h4>Time picker</h4>
+    <p>
+        <input type="text" id="ui-dropslide-trigger1" style="width:80px;" />
+        <span class="ui-dropslide">
+            <ol>
+                <li><span>1</span></li>
+                <li><span>2</span></li>
+                <li><span>3</span></li>
+                <li><span>4</span></li>
+                <li><span>5</span></li>
+                <li><span>6</span></li>
+                <li><span>7</span></li>
+                <li><span>8</span></li>
+                <li><span>9</span></li>
+                <li><span>10</span></li>
+                <li><span>11</span></li>
+                <li><span>12</span></li>
+            </ol>
+            <ol>
+                <li><span>00</span></li>
+                <li><span>15</span></li>
+                <li><span>30</span></li>
+                <li><span>45</span></li>
+            </ol>
+            <ol>
+                <li><span>00</span></li>
+                <li><span>15</span></li>
+                <li><span>30</span></li>
+                <li><span>45</span></li>
+            </ol>
+        </span>
+    </p>
+    <pre>$('#ui-dropslide-trigger1').dropslide({trigger: 'focus'})
 .bind('select', function(e, dropslide){
-     $(this).val(dropslide.getSelection().join(':'));
-     e.stopPropagation();
+ $(this).val(dropslide.getSelection().join(':'));
+ e.stopPropagation();
 });</pre>
-        <h4>Location picker (3d mode)</h4>
-        <p>
-            <input type="text" id="ui-dropslide-trigger2" />
-            <span class="ui-dropslide">
-                <ol>
-                    <li>
-                        <span>CA</span>
-                        <ol>
-                             <li><span>ON</span></li>
-                             <li><span>QC</span></li>
-                             <li><span>NS</span></li>
-                             <li><span>NB</span></li>
-                             <li><span>MB</span></li>
-                             <li><span>BC</span></li>
-                             <li><span>PE</span></li>
-                             <li><span>SK</span></li>
-                             <li><span>AB</span></li>
-                             <li><span>NL</span></li>
-                             <li><span>LB</span></li>
-                        </ol>
-                    </li>
-                    <li>
-                        <span>USA</span>
-                        <ol>
-                            <li><span>AL</span></li>
-                            <li><span>AL</span></li>
-                            <li><span>AK</span></li>
-                            <li><span>AZ</span></li>
-                            <li><span>AR</span></li>
-                            <li><span>CA</span></li>
-                            <li><span>CO</span></li>
-                            <li><span>CT</span></li>
-                            <li><span>DE</span></li>
-                            <li><span>FL</span></li>
-                            <li><span>GA</span></li>
-                            <li><span>HI</span></li>
-                            <li><span>ID</span></li>
-                            <li><span>IL</span></li>
-                            <li><span>IN</span></li>
-                            <li><span>IA</span></li>
-                            <li><span>KS</span></li>
-                            <li><span>KY</span></li>
-                            <li><span>LA</span></li>
-                            <li><span>ME</span></li>
-                            <li><span>MD</span></li>
-                            <li><span>MA</span></li>
-                            <li><span>MI</span></li>
-                            <li><span>MN</span></li>
-                            <li><span>MS</span></li>
-                            <li><span>MO</span></li>
-                            <li><span>MT</span></li>
-                            <li><span>NE</span></li>
-                            <li><span>NV</span></li>
-                            <li><span>NH</span></li>
-                            <li><span>NJ</span></li>
-                            <li><span>NM</span></li>
-                            <li><span>NY</span></li>
-                            <li><span>NC</span></li>
-                            <li><span>ND</span></li>
-                            <li><span>OH</span></li>
-                            <li><span>OK</span></li>
-                            <li><span>OR</span></li>
-                            <li><span>PA</span></li>
-                            <li><span>RI</span></li>
-                            <li><span>SC</span></li>
-                            <li><span>SD</span></li>
-                            <li><span>TN</span></li>
-                            <li><span>TX</span></li>
-                            <li><span>UT</span></li>
-                            <li><span>VT</span></li>
-                            <li><span>VA</span></li>
-                            <li><span>WA</span></li>
-                            <li><span>WV</span></li>
-                            <li><span>WI</span></li>
-                            <li><span>WY</span></li>
-                        </ol>
-                    </li>
-                </ol>
-            </span>
-        </p>
-        <pre>$('#ui-dropslide-trigger2').dropslide({trigger: 'focus'})
-.bind('select', function(e, dropslide){
-     $(this).val(dropslide.getSelection().join(', '));
-     e.stopPropagation();
-});</pre>
-        <h3>Events</h3>
-        <table class="list" cellpadding="0" cellspacing="0" summary="">
-            <thead>
-                <tr>
-                    <th>Event</th>
-                    <th>Default</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>click</th>
-                    <td>function(e, dropslide) { dropslide.hide(); }</td>
-                    <td>called when a li is clicked (before select)</td>
-                </tr>
-                <tr>
-                    <th>select</th>
-                    <td>false</td>
-                    <td>function called on selection</td>
-                </tr>
-            </tbody>
-        </table>
-        <h3>Options</h3>
-        <table class="list" cellpadding="0" cellspacing="0" summary="">
-            <thead>
-                <tr>
-                    <th>Options</th>
-                    <th>Default</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="niy">
-                    <th>tree</th>
-                    <td>false</td>
-                    <td>create tree from a JSON object</td>
-                </tr>
-                <tr>
-                    <th>trigger</th>
-                    <td>'mouseover'</td>
-                    <td>triggering event</td>
-                </tr>
-                <tr>
-                    <th>top</th>
-                    <td>6</td>
-                    <td>margin-top (li)</td>
-                </tr>
-                <tr>
-                    <th>left</th>
-                    <td>0</td>
-                    <td>margin-left (ol)</td>
-                </tr>
-                <tr>
-                    <th>showDelay</th>
-                    <td>0</td>
-                    <td>delay before showing</td>
-                </tr>
-                <tr>
-                    <th>hideDelay</th>
-                    <td>0</td>
-                    <td>delay before hiding</td>
-                </tr>
-            </tbody>
-        </table>
-        <h3>Methods</h3>
-        <table class="list" cellpadding="0" cellspacing="0" summary="">
-            <thead>
-                <tr>
-                    <th>Method</th>
-                    <th>Arguments</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>showLevel</th>
-                    <td>id</td>
-                    <td>Show specified navigation level (id is the DOM position)</td>
-                </tr>
-                <tr>
-                    <th>showNextLevel</th>
-                    <td>&nbsp;</td>
-                    <td>Show the next level if present</td>
-                </tr>
-                <tr>
-                    <th>show</th>
-                    <td>&nbsp;</td>
-                    <td>Simple shorthand for showLevel(0)</td>
-                </tr>
-                <tr>
-                    <th>hide</th>
-                    <td>&nbsp;</td>
-                    <td>Hide all level</td>
-                </tr>
-            </tbody>
-        </table>
-        <!--h3>Todo</h3>
-        <ul>
-            <li></li>
-        </ul-->
-    </body>
+    <h3>Events</h3>
+    <table class="list" cellpadding="0" cellspacing="0" summary="">
+        <thead>
+            <tr>
+                <th>Event</th>
+                <th>Default</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>click</th>
+                <td>function(e, dropslide) { dropslide.hide(); }</td>
+                <td>called when a li is clicked (before select)</td>
+            </tr>
+            <tr>
+                <th>select</th>
+                <td>false</td>
+                <td>function called on selection</td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>Options</h3>
+    <table class="list" cellpadding="0" cellspacing="0" summary="">
+        <thead>
+            <tr>
+                <th>Options</th>
+                <th>Default</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="niy">
+                <th>tree</th>
+                <td>false</td>
+                <td>create tree from a JSON object</td>
+            </tr>
+            <tr>
+                <th>trigger</th>
+                <td>'mouseover'</td>
+                <td>triggering event</td>
+            </tr>
+            <tr>
+                <th>top</th>
+                <td>6</td>
+                <td>margin-top (li)</td>
+            </tr>
+            <tr>
+                <th>left</th>
+                <td>0</td>
+                <td>margin-left (ol)</td>
+            </tr>
+            <tr>
+                <th>showDelay</th>
+                <td>0</td>
+                <td>delay before showing</td>
+            </tr>
+            <tr>
+                <th>hideDelay</th>
+                <td>0</td>
+                <td>delay before hiding</td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>Methods</h3>
+    <table class="list" cellpadding="0" cellspacing="0" summary="">
+        <thead>
+            <tr>
+                <th>Method</th>
+                <th>Arguments</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>showLevel</th>
+                <td>id</td>
+                <td>Show specified navigation level (id is the DOM position)</td>
+            </tr>
+            <tr>
+                <th>showNextLevel</th>
+                <td>&nbsp;</td>
+                <td>Show the next level if present</td>
+            </tr>
+            <tr>
+                <th>show</th>
+                <td>&nbsp;</td>
+                <td>Simple shorthand for showLevel(0)</td>
+            </tr>
+            <tr>
+                <th>hide</th>
+                <td>&nbsp;</td>
+                <td>Hide all level</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
 </html>
 

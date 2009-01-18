@@ -1,25 +1,8 @@
-/* dropslide */
+/* ui.dropslide */
 
-.ui-dropslide {
-    position:absolute;
-}
-.ui-dropslide ol {
-    width:500px;
-    margin-top:4px;
-    height:24px;
-}
-.ui-dropslide ol ol {
-    margin-top:0;
-}
-.ui-dropslide ol ol li {
-    margin-top:7px;
-}
-.ui-dropslide li {
-    float:left;
-}
-.ui-dropslide li.hour   { width:30px; }
-.ui-dropslide li.minute { width:30px; }
-.ui-dropslide li.second { width:30px; }
+.ui-dropslide      { position:absolute; }
+.ui-dropslide ol   { margin-top:2px; list-style:none; }
+.ui-dropslide li   { float:left; }
 .ui-dropslide span {
     font-size:.7em;
     padding:4px 6px 4px 6px;

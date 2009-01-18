@@ -66,6 +66,12 @@ def get_builds():
         out.append([f, buff])
     return out
 
+def create_dir_if_not_exists(path):
+    if not os.path.isdir(path):
+        log("creating directory: %s/" % path, 'list')
+        os.mkdir(path)
+    return path
+
 def minify(src, dest):
     global JAR
     global BUILD_DIR
@@ -82,6 +88,7 @@ def minify(src, dest):
         return True
 
 def create_gzip(src, dest, exclude):
+    create_dir_if_not_exists(os.path.dirname(dest))
     log('%s -> %s' % (src, dest), 'gzip')
     cmd = ["tar -czf %s %s" % (dest, src)]
 
@@ -92,6 +99,7 @@ def create_gzip(src, dest, exclude):
     rs.close()
 
 def create_zip(src, dest, exclude):
+    create_dir_if_not_exists(os.path.dirname(dest))
     log('%s -> %s' % (src, dest), 'zip')
     cmd = ["zip -rq %s %s" % (dest, src)]
 
@@ -129,11 +137,7 @@ def get_dest_filename(module):
     return fn
 
 def get_dest_dir(build):
-    dest = build['dest']
-    if not os.path.isdir(dest):
-        log("creating destination directory: %s" % dest, 'list')
-        os.mkdir(dest)
-    return dest
+    return create_dir_if_not_exists(build['dest'])
 
 def make(build, options):
     global LOG

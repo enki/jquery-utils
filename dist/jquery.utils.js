@@ -15,6 +15,11 @@
         icontains: function(a,i,m){return (a.textContent||a.innerText||jQuery(a).text()||"").toLowerCase().indexOf(m[3].toLowerCase())>=0;}
     });
 
+    $.iterators = {
+        getText:  function() { return $(this).text(); },
+        parseInt: function(v){ return parseInt(v, 10); }
+    };
+
 	$.extend({ 
 
         // Taken from ui.core.js. 
@@ -2906,6 +2911,11 @@ $(document).ready(function(){
         // case insensitive version of :contains
         icontains: function(a,i,m){return (a.textContent||a.innerText||jQuery(a).text()||"").toLowerCase().indexOf(m[3].toLowerCase())>=0;}
     });
+
+    $.iterators = {
+        getText:  function() { return $(this).text(); },
+        parseInt: function(v){ return parseInt(v, 10); }
+    };
 
 	$.extend({ 
 

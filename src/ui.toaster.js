@@ -1,4 +1,4 @@
-/* jQuery ui.toaster.js - 0.1rc1
+/* jQuery ui.toaster.js - 0.2
  *
  * (c) Maxime Haineault <haineault@gmail.com>
  * http://haineault.com 
@@ -12,7 +12,6 @@
 
 if ($.ui) {
 $.widget('ui.toaster', {
-    init:  function(){ this._init.apply(this, arguments); },
 	_init: function(){
 		var self	= this;
 		var wrapper = '#ui-toaster-'+ self.options.position;

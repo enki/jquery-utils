@@ -1,5 +1,5 @@
 /*
-  jQuery awesomebar - 0.1
+  jQuery awesomebar - 0.2
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com>
@@ -15,7 +15,7 @@
 
 if ($.ui) {
 $.widget('ui.awesomebar', {
-	init: function(){
+	_init: function(){
 		var self = this;
         self.preventUpdate = false;
 

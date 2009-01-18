@@ -12,7 +12,6 @@ $(function(){
         ok(typeof $.fn.selectRange == 'function', 'jQuery.fn selectRange is defined')
         ok(typeof $.fn.mousewheel  == 'function', 'jQuery.fn mousewheel is defined')
 
-
         // isRegExp
         ok(!$.isRegExp(''),    '"" !isRegExp');
         ok(!$.isRegExp('a'),   'a !isRegExp');

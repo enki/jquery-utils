@@ -1,5 +1,5 @@
 /*
-  jQuery ui.keynav - 0.2
+  jQuery ui.keynav - 0.3
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -15,7 +15,7 @@
 */
 
 $.widget('ui.keynav', {
-    init: function(){
+    _init: function(){
         var self = this;
 
         // try to guess format from class if none is specified
@@ -30,7 +30,6 @@ $.widget('ui.keynav', {
         self.keynav = $.ui.keynav.formats[self.options.format];
         $.each(['focus', 'blur'], function(i, callback) {
             if (self.keynav[callback] && $(self.element)[callback]) {
-                //console.log($(self.element)[callback]);
                 $(self.element)[callback].apply(self, [self.keynav[callback]]);
             }
         });
@@ -71,7 +70,7 @@ $.widget('ui.keynav', {
     },
     select: function(s, e) {
         return $(this.element).selectRange(s || 0, typeof(e) == 'undefined' && s+1 || e);
-    },
+    }
 });
 
 $.ui.keynav.defaults = {
