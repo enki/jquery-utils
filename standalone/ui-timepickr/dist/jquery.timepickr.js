@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.6.3
+  jQuery utils - 0.6.4
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -828,7 +828,7 @@
     };
 })(jQuery);
 /*
-  jQuery ui.timepickr - 0.6.3
+  jQuery ui.timepickr - 0.6.4
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 

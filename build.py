@@ -13,29 +13,30 @@ LOG = True
 JAR = "java -jar %s" % os.path.join(BUILD_DIR, 'js.jar')
 SVNREV = ''
 
+LOGS = {
+    'list':         ' - %s',
+    'build':        '\n [\x1b\x5b1;31mB\x1b\x5b0;0m] %s',
+    'dependency':   ' [\x1b\x5b01;34mD\x1b\x5b0;0m]  - %s',
+    'minify':       '\n [\x1b\x5b01;33mM\x1b\x5b0;0m] %s',
+    'zip':          '\n [\x1b\x5b01;32mZ\x1b\x5b0;0m] %s',
+    'gzip':         '\n [\x1b\x5b01;32mG\x1b\x5b0;0m] %s',
+    'merge':        '\n [\x1b\x5b1;36mM\x1b\x5b0;0m] %s',
+    'copy':         '\n [\x1b\x5b1;36mC\x1b\x5b0;0m] %s',
+    'error':        'Error: %s',
+}
+
 def log(i, type=False):
     global LOG
     if LOG or type in ['error', 'debug']:
-        if type == 0:
+        try:
+            print LOGS[type] % i
+        except:
             print i
-        elif type == 'build':
-            print '\n [\x1b\x5b1;31mB\x1b\x5b0;0m] %s' % i
-        elif type == 'list':
-            print ' - %s' % i
-        elif type == 'dependency':
-            print ' [\x1b\x5b01;34mD\x1b\x5b0;0m]  - %s' % i
-        elif type == 'minify':
-            print '\n [\x1b\x5b01;33mM\x1b\x5b0;0m] %s' % i
-        elif type == 'zip':
-            print '\n [\x1b\x5b01;32mZ\x1b\x5b0;0m] %s' % i
-        elif type == 'gzip':
-            print '\n [\x1b\x5b01;32mG\x1b\x5b0;0m] %s' % i
-        elif type == 'merge':
-            print '\n [\x1b\x5b1;36mM\x1b\x5b0;0m] %s' % i
-        elif type == 'error':
-            print 'Error: %s' % i
-        else:
-            print i
+
+def legend():
+    for k in LOGS:
+        if k not in ['list', 'error']:
+            print LOGS[k] % k
 
 def get_svn_rev(path=''):
     """
@@ -86,6 +87,20 @@ def minify(src, dest):
         return False
     else:
         return True
+
+def cp(src, dest):
+    create_dir_if_not_exists(os.path.dirname(dest))
+    log('%s -> %s' % (src, dest), 'copy')
+    rs = os.popen('cp -rf %s %s' % (src, dest))
+    buff = rs.readlines()
+    rs.close()
+    if len(buff) > 0:
+        log(''.join(buff), 'error')
+        return False
+    else:
+        return True
+
+
 
 def create_gzip(src, dest, exclude):
     create_dir_if_not_exists(os.path.dirname(dest))
@@ -165,6 +180,9 @@ def make(build, options):
             f.write(o)
             f.close()
 
+    if build.has_key('copy'):
+        for c in build['copy']:
+            cp(c['src'], c['dest'])
 
     if build['modules']:
         o = []
@@ -213,15 +231,21 @@ if __name__ == '__main__':
                       help='Build only specified modules',
                       action='store_true', default=False)
     parser.add_option('-m', '--minify', dest='minify',
-                      help='Build only specified modules',
+                      help='Minify',
                       action='store_true', default=False)
     parser.add_option('-q', '--quiet', dest='quiet',
                       help='Not console output',
                       action='store_true', default=False)
+    parser.add_option('-l', '--legend', dest='legend',
+                      help='Print legend',
+                      action='store_true', default=False)
     
     (options, args) = parser.parse_args()
 
-    for build in builds:
-        make(build, options)
+    if options.legend:
+        legend()
+    else:
+        for build in builds:
+            make(build, options)
 
-    print '\n Done.\n'
+        print '\n Done.\n'

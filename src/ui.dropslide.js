@@ -47,6 +47,7 @@
 
             this._redraw();
         },
+
         // show specified level, id is the DOM position
         showLevel: function(id) {
             var ols = this.wrapper.find('ol');

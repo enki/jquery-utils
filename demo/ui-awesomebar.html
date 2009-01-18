@@ -1,71 +1,70 @@
 <html>
-    <head>
-        <link rel="Stylesheet" media="screen" href="data/styles.css" />
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
-        <script type="text/javascript" src="data/jquery-ui-1.6rc2.js"></script>
-        <script type="text/javascript" src="../src/ui.awesomebar.js"></script>
+<head>
+    <link rel="Stylesheet" media="screen" href="data/styles.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="../src/jquery.ui.all.js"></script>
+    <script type="text/javascript" src="../src/ui.awesomebar.js"></script>
 
-        <script type="text/javascript">
-            $(document).ready(function(){
-                $('#test-1').awesomebar({
-                    width: 300,
-                    dataSource: 'data/awesomebar-data.php?str=%s'
-                });
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#test-1').awesomebar({
+                width: 300,
+                dataSource: 'data/awesomebar-data.php?str=%s'
             });
-        </script>
-        <style type="text/css">
-        .ui-awesomebar {
-            z-index:1000;
-        }
-        .ui-awesomebar input {
-            width:100%;
-            border-left:1px solid #999;
-            border-top:1px solid #999;
-            border-right:1px solid #666;
-            border-bottom:1px solid #666;
-            -moz-border-radius:3px;
-        }
-        .ui-awesomebar ul {
-            margin:0!important;
-            padding:0!important;
-            background:#eee;
-            border:1px solid #ccc;
-            border-width:0 1px 1px 1px;
-            position:absolute;
-        }
-        .ui-awesomebar li {
-            margin:0!important;
-            padding:3px 5px!important;
-            list-style:none!important;
-            border-bottom:1px solid #ddd;
-            cursor:pointer;
-        }
-        .ui-awesomebar li.last {
-            border:0!important;
-        }
-        .ui-awesomebar li.hover,
-        .ui-awesomebar li.selected {
-            background:#ffd; 
-        }
-        .ui-awesomebar input.match { background-color:#ffc; }
-        .ui-awesomebar input.no-match { background-color:#ffdfdf; }
-        </style>
-    </head>
-    <body id="body">
-        <h2>ui.awesomebar.js</h2>
-        <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
-        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
-        <a class="related-links experimental">Experimental code !</a>
+        });
+    </script>
+    <style type="text/css">
+    .ui-awesomebar {
+        z-index:1000;
+    }
+    .ui-awesomebar input {
+        width:100%;
+        border-left:1px solid #999;
+        border-top:1px solid #999;
+        border-right:1px solid #666;
+        border-bottom:1px solid #666;
+        -moz-border-radius:3px;
+    }
+    .ui-awesomebar ul {
+        margin:0!important;
+        padding:0!important;
+        background:#eee;
+        border:1px solid #ccc;
+        border-width:0 1px 1px 1px;
+        position:absolute;
+    }
+    .ui-awesomebar li {
+        margin:0!important;
+        padding:3px 5px!important;
+        list-style:none!important;
+        border-bottom:1px solid #ddd;
+        cursor:pointer;
+    }
+    .ui-awesomebar li.last {
+        border:0!important;
+    }
+    .ui-awesomebar li.hover,
+    .ui-awesomebar li.selected {
+        background:#ffd; 
+    }
+    .ui-awesomebar input.match { background-color:#ffc; }
+    .ui-awesomebar input.no-match { background-color:#ffdfdf; }
+    </style>
+</head>
+<body id="body">
+    <h2>ui.awesomebar.js</h2>
+    <div class="copyright">Copyright (c) 2007-2008 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
+    <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+    <a class="related-links experimental">Experimental code !</a>
 
-        <h3>Demo</h3>
-        <p>
-            <input type="text" id="test-1" />
-        </p>
-        <hr size="1" />
-        <h3>Usage</h3>
-        <pre>$('#test-1').awesomebar({
+    <h3>Demo</h3>
+    <p>
+        <input type="text" id="test-1" />
+    </p>
+    <hr size="1" />
+    <h3>Usage</h3>
+    <pre>$('#test-1').awesomebar({
     dataSource: 'data/awesomebar-data.php?str=%s'
 });</pre>
-        <hr size="1" />
-    </body>
+</body>
 </html>

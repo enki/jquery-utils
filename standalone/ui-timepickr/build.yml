@@ -1,5 +1,5 @@
 title: jquery.timepickr
-version: 0.6.3
+version: 0.6.4
 svnrev: true
 dest: standalone/ui-timepickr/dist/
 modules:
@@ -8,22 +8,21 @@ modules:
     destfile: jquery.timepickr.js
     depends:
       - src: src/jquery.utils.js
-      # src: src/jquery.ui.all.js
       - src: src/jquery.strings.js
+      - src: src/jquery.arrayUtils.js
       # src: src/jquery.i18n.js
       - src: src/ui.dropslide.js
-# got do implement move :|
-merge:
+
+copy: 
+  - src: demo/themes/default/images/*.png
+    dest: standalone/ui-timepickr/dist/themes/default/images/
+  - src: demo/themes/default/*.css
+    dest: standalone/ui-timepickr/dist/themes/default/
   - dest: standalone/ui-timepickr/page/jquery.ui.all.js
-    files:
-      - src: src/jquery.ui.all.css
+    src: src/jquery.ui.all.js
+
 merge:
-  - dest: standalone/ui-timepickr/dist/jquery.timepickr.css
-    files:
-      - src: src/css/ui.dropslide.css
-      - src: src/css/ui.timepickr.css
-merge:
-  - dest: standalone/ui-timepickr/dist/jquery.timepickr.css
+  - dest: standalone/ui-timepickr/dist/themes/default/ui.timepickr.css
     files:
       - src: src/css/ui.dropslide.css
       - src: src/css/ui.timepickr.css
