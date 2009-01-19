@@ -1,8 +1,40 @@
 (function($){
 
+    $.extend($.ui, {
+        builder: {
+            button: function(label, icon) {
+                if (icon) {
+                    return $($.format('<a class="ui-button ui-state-default ui-corner-all" href="#"><span class="ui-icon ui-icon-{0:s}"/>{1:s}</a>', icon, label));
+                }
+                else {
+                    return $('<a class="ui-state-default ui-corner-all" href="#" />').text(label);
+                }
+            },
+            checkbox: function(id, label){
+                return $($.format('<label for="{0:s}"><input id="{0:s}" type="checkbox"> {1:s}</label>', id, label));
+            },
+            icon: function(icon){
+                return $($.format('<span class="ui-icon ui-icon-{0:s}"/>', icon));
+            },
+            tabs: function(id) {
+                return $($.format('<div id="{0:s}" class="ui-tabs ui-widget ui-widget-content ui-corner-all"><ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all"></ul></div>', id));
+            },
+            tab: function(tabs, title, content) {
+                var id    = $('.ui-tabs-nav li', tabs).length + 1;
+                var tcn   = (id == 1) ? 'ui-corner-top ui-tabs-selected ui-state-active ui-state-hover': 'ui-state-default ui-corner-top';
+                var bcn   = (id == 1) ? 'ui-tabs-panel ui-widget-content ui-corner-bottom': 'ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide';
+                var title = $($.format('<li class="{0:s}"><a href="#tabs-{1:s}">{2:s}</a></li>', tcn, id, title));
+                var body  = $($.format('<div id="tabs-{0:s}" class="{1:s}" />', id, bcn)).append($(content));
+                return $(tabs).find('ul.ui-tabs-nav').append(title).end().append(body);
+            }
+        }         
+    });
+
     $.widget('ui.googleChart', {
         _init: function(){
             this._bindEvents();
+            $('.ui-button').hover(function(){  $(this).addClass('ui-state-hover'); }, 
+                                  function (){ $(this).removeClass('ui-state-hover'); });
         },
 
         _width:  function() { var s = this.options.chs.split('x'); return parseInt(s[0], 10); },
@@ -28,16 +60,20 @@
         _ui: {
             wrapper:    $('<div class="api-gc-wrapper" />'),
             viewport:   $('<div class="api-gc-viewport" />'),
-            rightpanel: $('<div class="api-gc-panel" />')
+            rightpanel: $('<div class="api-gc-panel" />'),
+            toolbar:    $('<div class="api-gc-toolbar ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-bottom" />'),
+            label:      $('<span id="api-gc-map-title">World</span>'),
+            link:       $('<div id="api-gc-map-link" class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="display:none;"><input type="text" value="" class=" ui-corner-all" /></div>'),
+            options:    $('<div id="api-gc-map-options" class="ui-helper-reset ui-widget-content ui-corner-all" style="display:none;">test</div>')
         },
 
         _events: {
             wrapper: {
                 load: function(e, widget) {
-                    widget._ui.wrapper
-                        .append(widget._ui.rightpanel)
-                        .append(widget._ui.viewport)
-                        .appendTo(widget.element);
+                    widget._ui.wrapper.append(widget._ui.rightpanel)
+                                      .append(widget._ui.viewport)
+                                      .append(widget._ui.toolbar.append(widget._ui.label))
+                                      .appendTo(widget.element);
 
                     $.ui.googleChart.charts[widget.options.cht].call(widget);
                 }
@@ -45,20 +81,21 @@
         },
 
         _refresh: function(opt) {
-            var charturl = $.format('#ddd url({0:s}) no-repeat 0 0', this._get_url(opt || this.options, this.params));
-            //console.log(charturl);
+            var url = this._get_url(opt || this.options, this.params);
+            var css = $.format('#ddd url({0:s}) no-repeat 0 0', url);
+            this._ui.link.find('input[type=text]').val(url);
             this._ui.viewport
                 .width(this._width()).height(this._height())
-                .css('background', charturl);
+                .css('background', css);
         },
 
         
         _get_area_list: function() {
-            var o = ['<ul class="api-gc-area-list ui-reset"><li class="label">Area</li>'];
+            var o = ['<ul class="api-gc-area-list ui-reset">'];
             for (k in $.ui.googleChart.areas) {
                 o.push($.format('<li id="{0:s}" class="ui-reset"><a href="#" class="ui-state-default"><span class="ui-icon ui-icon-triangle-1-e"></span>{1:s}</a></li>', k, $.ui.googleChart.areas[k]));
             }
-            o.push('</ul>');
+            o.push('<li class="label ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-bottom">Area</li></ul>');
             return $(o.join('')).height(this._height());
         },
 
@@ -165,14 +202,16 @@
             widget = this;
             this.params  = ['chs', 'cht', 'chd', 'chtm', 'chld', 'chco', 'chf'];
             this.options = $.extend({
-                cht:    't',
-                chd:    's:_',
-                chtm:   'world', // area
-                chld:   '',      // country(ies)
-                chco:   'DDDDDD,DFB5B5,DFDBB5,B7DFB5',
-                chf:    'bg,s,C3D1DF',
-                areas:  true,
-                countries: true
+                cht:       't',
+                chd:       's:_',
+                chtm:      'world', // area
+                chld:      '',      // country(ies)
+                chco:      'DDDDDD,DFB5B5,DFDBB5,B7DFB5',
+                chf:       'bg,s,C3D1DF',
+                link:      true,
+                areas:     true,
+                options:   true,
+                countries: true,
             }, this.options);
             
             if (this.options.areas) {
@@ -181,9 +220,16 @@
                     .find('li')
                         .click(function(e){
                             var chtm = $(this).attr('id');
+                            var lbl  = $(this).text();
                             var id   = $.format('#area-country-{0:s}', chtm);
                             widget.options.chtm = chtm;
+
+                            widget._ui.label.fadeOut(1000, function(){
+                                $(this).text(lbl).fadeIn(); 
+                            });
+
                             widget._refresh();
+
                             if ($('.api-gc-countries select:visible').length == 0) {
                                 $('.api-gc-countries select').filter(id).show('slide', {direction: 'left'});
                             }
@@ -208,7 +254,27 @@
                             });
                 }
             }
-
+            if (this.options.options) {
+                this._ui.options = $.ui.builder.tabs('api-gc-options');
+                $.ui.builder.tab(this._ui.options, 'Colors', '<b>yay</b>')
+                $.ui.builder.tab(this._ui.options, 'Gradient', '<b>bleh</b>')
+                this._ui.options.hide().appendTo(this._ui.wrapper);
+                this._ui.options.tabs();
+                $.ui.builder.button('Options', 'gear')
+                    .bind('click.googlechart', function(e){
+                        widget._ui.options.toggle();
+                    })
+                    .appendTo(this._ui.toolbar);
+            }
+            if (this.options.link) {
+                this._ui.link.appendTo(this._ui.wrapper);
+                $.ui.builder.button('Link', 'link')
+                    .bind('click.googlechart', function(e){
+                        widget._ui.link.toggle();
+                    })
+                    .appendTo(this._ui.toolbar);
+            }
+            //this._ui.toolbar.append($.ui.builder.button('Save', 'disk'));
             this._refresh(); // initial load
         }
     });
