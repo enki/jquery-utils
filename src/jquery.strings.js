@@ -1,5 +1,5 @@
 /*
-  jQuery strings - 0.1a
+  jQuery strings - 0.2
   http://code.google.com/p/jquery-utils/
   
   (c) Maxime Haineault <haineault@gmail.com>
@@ -190,8 +190,8 @@
             if (!arguments[1]) {
                 out = this[arguments[0]];
             }
-            else if ($.isArray(arguments[1])) {
-                out = this[arguments[0]] = arguments[1].join('');
+            else if ($.isArray(arguments[1]) || $.isString(arguments[1])) {
+                out = this[arguments[0]] = $.isArray(arguments[1]) && arguments[1].join('') || arguments[1];
             }
             else if (typeof(arguments[1]) == 'object') {
                 out = $.format(this[arguments[0]], arguments[1]);

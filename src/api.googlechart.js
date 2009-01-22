@@ -1,34 +1,29 @@
+/*
+  jQuery api.googlechart - 0.1
+  http://code.google.com/p/jquery-utils/
+
+  (c) Maxime Haineault <haineault@gmail.com> 
+  http://haineault.com
+
+  MIT License (http://www.opensource.org/licenses/mit-license.php
+
+  Dependencies
+  ------------
+  - jquery.utils.js
+  - jquery.strings.js
+  - jquery.builder.js
+  - jquery.ui.js
+  
+*/
+
 (function($){
 
-    $.extend($.ui, {
-        builder: {
-            button: function(label, icon) {
-                if (icon) {
-                    return $($.format('<a class="ui-button ui-state-default ui-corner-all" href="#"><span class="ui-icon ui-icon-{0:s}"/>{1:s}</a>', icon, label));
-                }
-                else {
-                    return $('<a class="ui-state-default ui-corner-all" href="#" />').text(label);
-                }
-            },
-            checkbox: function(id, label){
-                return $($.format('<label for="{0:s}"><input id="{0:s}" type="checkbox"> {1:s}</label>', id, label));
-            },
-            icon: function(icon){
-                return $($.format('<span class="ui-icon ui-icon-{0:s}"/>', icon));
-            },
-            tabs: function(id) {
-                return $($.format('<div id="{0:s}" class="ui-tabs ui-widget ui-widget-content ui-corner-all"><ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all"></ul></div>', id));
-            },
-            tab: function(tabs, title, content) {
-                var id    = $('.ui-tabs-nav li', tabs).length + 1;
-                var tcn   = (id == 1) ? 'ui-corner-top ui-tabs-selected ui-state-active ui-state-hover': 'ui-state-default ui-corner-top';
-                var bcn   = (id == 1) ? 'ui-tabs-panel ui-widget-content ui-corner-bottom': 'ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide';
-                var title = $($.format('<li class="{0:s}"><a href="#tabs-{1:s}">{2:s}</a></li>', tcn, id, title));
-                var body  = $($.format('<div id="tabs-{0:s}" class="{1:s}" />', id, bcn)).append($(content));
-                return $(tabs).find('ul.ui-tabs-nav').append(title).end().append(body);
-            }
-        }         
-    });
+    $.tpl('googlechart.panelOptionsColor', [
+        '<ul class="ui-from ui-helper-reset">',
+            '<li><label for="">Background color:</label> <input id="api-gc-bgcolor" type="text" style="width:110px;" /></li>',
+            '<li><label for="">Foreground color:</label> <input id="api-gc-fgcolor" type="text" style="width:110px;" /></li>',
+        '</ul>'
+    ]);
 
     $.widget('ui.googleChart', {
         _init: function(){
@@ -61,10 +56,10 @@
             wrapper:    $('<div class="api-gc-wrapper" />'),
             viewport:   $('<div class="api-gc-viewport" />'),
             rightpanel: $('<div class="api-gc-panel" />'),
-            toolbar:    $('<div class="api-gc-toolbar ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-bottom" />'),
+            toolbar:    $.ui.builder.toolbar().attr('id', 'api-gc-toolbar'),
             label:      $('<span id="api-gc-map-title">World</span>'),
             link:       $('<div id="api-gc-map-link" class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="display:none;"><input type="text" value="" class=" ui-corner-all" /></div>'),
-            options:    $('<div id="api-gc-map-options" class="ui-helper-reset ui-widget-content ui-corner-all" style="display:none;">test</div>')
+            options:    $('<div id="api-gc-map-options" class="ui-helper-reset ui-widget-content ui-corner-all" style="display:none;" />')
         },
 
         _events: {
@@ -123,6 +118,11 @@
             }
             o.push('</select>');
             return o.join('');
+        },
+
+        _get_options_colors: function() {
+    
+            $.tpl('googlechart.panelOptionsColor').appendTo();
         },
 
         _get_url: function(options, params) {
@@ -206,8 +206,8 @@
                 chd:       's:_',
                 chtm:      'world', // area
                 chld:      '',      // country(ies)
-                chco:      'DDDDDD,DFB5B5,DFDBB5,B7DFB5',
-                chf:       'bg,s,C3D1DF',
+                chco:      'eeeeee,DFB5B5,DFDBB5,B7DFB5',
+                chf:       'bg,s,cccccc',
                 link:      true,
                 areas:     true,
                 options:   true,
@@ -255,12 +255,34 @@
                 }
             }
             if (this.options.options) {
-                this._ui.options = $.ui.builder.tabs('api-gc-options');
-                $.ui.builder.tab(this._ui.options, 'Colors', '<b>yay</b>')
-                $.ui.builder.tab(this._ui.options, 'Gradient', '<b>bleh</b>')
+                this._ui.options   = $.ui.builder.tabs().attr('id', 'api-gc-options');
+                this._ui.colorsTab = $.ui.builder.tab(this._ui.options, {title: 'Colors'});
+                $.ui.builder.tab(this._ui.options, {title: 'Gradient'})
                 this._ui.options.hide().appendTo(this._ui.wrapper);
                 this._ui.options.tabs();
-                $.ui.builder.button('Options', 'gear')
+
+                $.tpl('googlechart.panelOptionsColor')
+                    .appendTo(this._ui.colorsTab)
+                    .find('#api-gc-bgcolor')
+                        .bind('mapRefresh.googleChart', function(){
+                            widget.options.chf = 'bg,s,'+ $(this).val().replace('#','');
+                            widget._refresh();
+                        })
+                        .bind('blur', function(){ $(this).trigger('mapRefresh.googleChart'); })
+                        .val('#'+ widget.options.chf.split(',')[2])
+                        .end()
+                    .find('#api-gc-fgcolor')
+                        .bind('mapRefresh.googleChart', function(){
+                            var chco = widget.options.chco.split(',');
+                            chco[0] = $(this).val().replace('#','');
+
+                            widget.options.chco = chco.join(',');
+                            widget._refresh();
+                        })
+                        .bind('blur', function(){ $(this).trigger('mapRefresh.googleChart'); })
+                        .val('#'+widget.options.chco.split(',')[0]);
+                
+                $.ui.builder.button({label: 'Options', icon: 'gear'})
                     .bind('click.googlechart', function(e){
                         widget._ui.options.toggle();
                     })
@@ -268,7 +290,7 @@
             }
             if (this.options.link) {
                 this._ui.link.appendTo(this._ui.wrapper);
-                $.ui.builder.button('Link', 'link')
+                $.ui.builder.button({label: 'Link', icon: 'link'})
                     .bind('click.googlechart', function(e){
                         widget._ui.link.toggle();
                     })
