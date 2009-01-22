@@ -75,7 +75,7 @@
                 var id    = $('.ui-tabs-nav li', tabset).length + 1;
                 var opt   = $.extend({title: '', titleCorner: 'top', panelCorner: 'bottom', id: id}, o);
                 var title = $.tpl('ui.tabTitle', opt);
-                var body  = $.tpl('ui.tabBody',  opt).attr('id', opt.id);
+                var body  = $.tpl('ui.tabBody',  opt).attr('id', 'tabs-'+ opt.id);
                 $(tabset).find('ul.ui-tabs-nav').append(title).end().append(body);
                 return body;
             },

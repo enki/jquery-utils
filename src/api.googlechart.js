@@ -19,9 +19,9 @@
 (function($){
 
     $.tpl('googlechart.panelOptionsColor', [
-        '<ul class="ui-from ui-helper-reset">',
-            '<li><label for="">Background color:</label> <input id="api-gc-bgcolor" type="text" style="width:110px;" /></li>',
-            '<li><label for="">Foreground color:</label> <input id="api-gc-fgcolor" type="text" style="width:110px;" /></li>',
+        '<ul class="ui-form ui-helper-reset">',
+            '<li><label for="">Background color:</label> <input id="api-gc-bgcolor" type="text" /></li>',
+            '<li><label for="">Foreground color:</label> <input id="api-gc-fgcolor" type="text" /></li>',
         '</ul>'
     ]);
 
@@ -254,6 +254,7 @@
                             });
                 }
             }
+            // Options button
             if (this.options.options) {
                 this._ui.options   = $.ui.builder.tabs().attr('id', 'api-gc-options');
                 this._ui.colorsTab = $.ui.builder.tab(this._ui.options, {title: 'Colors'});
@@ -288,6 +289,7 @@
                     })
                     .appendTo(this._ui.toolbar);
             }
+            // Link button
             if (this.options.link) {
                 this._ui.link.appendTo(this._ui.wrapper);
                 $.ui.builder.button({label: 'Link', icon: 'link'})
@@ -296,7 +298,6 @@
                     })
                     .appendTo(this._ui.toolbar);
             }
-            //this._ui.toolbar.append($.ui.builder.button('Save', 'disk'));
             this._refresh(); // initial load
         }
     });
@@ -309,6 +310,4 @@
             console.log('building line chart');
         }
     });
-
 })(jQuery);
-
