@@ -186,19 +186,47 @@
         },
 
         tpl: function() {
-            var out = '';
-            if (!arguments[1]) {
-                out = this[arguments[0]];
+            var out    = '';
+            var render = true;
+            // Set
+            // $.tpl('ui.test', ['<span>', helloWorld ,'</span>']);
+            if (arguments.length == 2 && $.isArray(arguments[1])) {
+                out = this[arguments[0]] = arguments[1].join('');
+                //console.log('$.tpl: Storing "%s" from Array (%s...)', arguments[0], out.slice(0, 50))
             }
-            else if ($.isArray(arguments[1]) || $.isString(arguments[1])) {
-                out = this[arguments[0]] = $.isArray(arguments[1]) && arguments[1].join('') || arguments[1];
+            // $.tpl('ui.test', '<span>hello world</span>');
+            if (arguments.length == 2 && $.isString(arguments[1])) {
+                out = this[arguments[0]] = arguments[1];
+                //console.log('$.tpl: Storing "%s" from String (%s...)', arguments[0], out.slice(0, 50))
             }
-            else if (typeof(arguments[1]) == 'object') {
-                out = $.format(this[arguments[0]], arguments[1]);
+            // Call
+            // $.tpl('ui.test');
+            if (arguments.length == 1) {
+                render = true;
+                out    = this[arguments[0]];
+                //console.log('$.tpl: Calling1 "%s", render: %s (%s...)', arguments[0], render, out.slice(0, 50))
             }
-            return $(out);
+            // $.tpl('ui.test', false);
+            if (arguments.length == 2 && arguments[1] == false) {
+                render = false;
+                out    = this[arguments[0]];
+                //console.log('$.tpl: Calling2 "%s", render: %s (%s...)', arguments[0], render, out.slice(0, 50))
+            }
+            // $.tpl('ui.test', {value:blah});
+            if (arguments.length == 2 && $.isObject(arguments[1])) {
+                render = true;
+                out    = $.format(this[arguments[0]], arguments[1]);
+                //console.log('$.tpl: Calling3 "%s", render: %s (%s...)', arguments[0], render, out.slice(0, 50))
+            }
+            // $.tpl('ui.test', {value:blah}, false);
+            if (arguments.length == 3 && $.isObject(arguments[1])) {
+                render = (arguments[2] == true) ? false: true;
+                out    = $.format(this[arguments[0]], arguments[1]);
+                //console.log('$.tpl: Calling4 "%s", render: %s, arg2: %s (%s...)', arguments[0], render, arguments[2], out.slice(0, 50))
+            }
+            return render ? $(out) : out;
         }
-    };
+};
 
     var Argument = function(arg, args) {
         this.__arg  = arg;

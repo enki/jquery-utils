@@ -19,6 +19,7 @@
     var templates = {
         'ui.icon':     '<span class="ui-icon ui-icon-{icon:s}" />',
         'ui.input':    '<input type="{type:s}" class="ui-input ui-input-{type:s} ui-corner-{corner:s}" />',
+        'ui.option':   '<option value="{value:s}" class="ui-input ui-input-option" selected="{selected:s}">{label:s}</option>',
         'ui.button':   '<a class="ui-state-default ui-corner-{corner:s} ui-button" href="#">{label:s}</a>',
         'ui.toolbar':  '<div class="ui-toolbar ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-{corner:s}" />',
         'ui.tabTitle': '<li class="ui-state-default ui-corner-{titleCorner:s}"><a href="#tabs-{id:s}">{title:s}</a></li>',
@@ -47,8 +48,14 @@
 
     $.extend($.ui, {
         builder: {
-            
-            button: function(o) {
+            icon:    function(o, i) { return $.tpl('ui.icon',    $.extend({icon: 'bullet'}, o), i); },
+            input:   function(o, i) { return $.tpl('ui.input',   $.extend({type: 'text', corner: 'none'}, o), i); },
+            option:  function(o, i) { return $.tpl('ui.option',  $.extend({selected: 'false'}, o), i); },
+            tabs:    function(o, i) { return $.tpl('ui.tabs',    $.extend({corner: 'all', navCorner: 'all'}, o), i); },
+            toolbar: function(o, i) { return $.tpl('ui.toolbar', $.extend({corners: 'all'}, o), i); },
+            message: function(o, i) { return $.tpl('ui.message', $.extend({corners: 'all', state: 'highlight', icon: 'false', title: '', body: ''}, o), i); },
+
+            button:  function(o) {
                 var tpl = $.tpl('ui.button', $.extend({icon: false, label: ''}, o));
                 if (o.icon) { 
                     tpl.prepend($.tpl('ui.icon', {icon: o.icon})); 
@@ -56,19 +63,11 @@
                 }
                 return tpl;
             },
-
-            icon: function(o){
-                return $.tpl('ui.icon', $.extend({icon: 'bullet'}, o));
-            },
-
-            input: function(o) {
-                return $tpl('ui.input', $.extend({type: 'text', corner: 'none'}, o));
-            },
-
-            progressbar: function(o) {
-                return $tpl('ui.progressbar', $.extend({ 
+ 
+            progressbar: function(o, i) {
+                return $.tpl('ui.progressbar', $.extend({ 
                             valuemin: 0, valuemax: 100, valuenow: 
-                            0, role: 'progressbar', valcorner: 'left' }, o));
+                            0, role: 'progressbar', valcorner: 'left' }, o), i);
             },
 
             tab: function(tabset, o) {
@@ -78,18 +77,6 @@
                 var body  = $.tpl('ui.tabBody',  opt).attr('id', 'tabs-'+ opt.id);
                 $(tabset).find('ul.ui-tabs-nav').append(title).end().append(body);
                 return body;
-            },
-
-            tabs: function(o) {
-                return $.tpl('ui.tabs', $.extend({corner: 'all', navCorner: 'all'}, o));
-            },
-
-            toolbar: function(o){
-                return $.tpl('ui.toolbar', $.extend({corners: 'all'}, o));
-            },
-            
-            message: function(o){
-                return $.tpl('ui.message', $.extend({corners: 'all', state: 'highlight', icon: 'false', title: '', body: ''}, o));
             }
         }         
     });

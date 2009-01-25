@@ -109,7 +109,7 @@
             });
             return output;
         },
-
+/*
         reject: function(object, iterator){
             return $.select(object, (iterator || function(i){ return !i; }));
         },
@@ -125,6 +125,7 @@
             });
             return output;
         },
+*/
 
         sum: function(object, iterator){
             var iterator = iterator || function(i) { return parseInt(i, 10) };
@@ -197,7 +198,7 @@
         pluck:     function(property, iterator) { return $.pluck(this, property, iterator); },
         detect:    function(iterator) { return $($.detect(this, iterator)); },
         eachSlice: function(size, iterator) { return $.eachSlice(this, size, iterator); },
-        select:    function(iterator) { return $.findAll(this, iterator); },
+        //select:    function(iterator) { return $.findAll(this, iterator); },
         sum: function(iterator) {
             var iterator = iterator || function(i) {
                 return parseFloat($(i).val() || $(i).text(), 10);

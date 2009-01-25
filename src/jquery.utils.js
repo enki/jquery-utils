@@ -89,6 +89,10 @@
             if (!o) { return false; }
             return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
+
+        isObject: function(o) {
+            return (typeof(o) == 'object');
+        },
         
         // Convert input to currency (two decimal fixed number)
 		toCurrency: function(i) {
