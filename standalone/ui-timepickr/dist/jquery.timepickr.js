@@ -89,6 +89,10 @@
             if (!o) { return false; }
             return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
+
+        isObject: function(o) {
+            return (typeof(o) == 'object');
+        },
         
         // Convert input to currency (two decimal fixed number)
 		toCurrency: function(i) {
@@ -216,7 +220,7 @@
 	});
 })(jQuery);
 /*
-  jQuery strings - 0.1a
+  jQuery strings - 0.2
   http://code.google.com/p/jquery-utils/
   
   (c) Maxime Haineault <haineault@gmail.com>
@@ -403,19 +407,47 @@
         },
 
         tpl: function() {
-            var out = '';
-            if (!arguments[1]) {
-                out = this[arguments[0]];
-            }
-            else if ($.isArray(arguments[1])) {
+            var out    = '';
+            var render = true;
+            // Set
+            // $.tpl('ui.test', ['<span>', helloWorld ,'</span>']);
+            if (arguments.length == 2 && $.isArray(arguments[1])) {
                 out = this[arguments[0]] = arguments[1].join('');
+                //console.log('$.tpl: Storing "%s" from Array (%s...)', arguments[0], out.slice(0, 50))
             }
-            else if (typeof(arguments[1]) == 'object') {
-                out = $.format(this[arguments[0]], arguments[1]);
+            // $.tpl('ui.test', '<span>hello world</span>');
+            if (arguments.length == 2 && $.isString(arguments[1])) {
+                out = this[arguments[0]] = arguments[1];
+                //console.log('$.tpl: Storing "%s" from String (%s...)', arguments[0], out.slice(0, 50))
             }
-            return $(out);
+            // Call
+            // $.tpl('ui.test');
+            if (arguments.length == 1) {
+                render = true;
+                out    = this[arguments[0]];
+                //console.log('$.tpl: Calling1 "%s", render: %s (%s...)', arguments[0], render, out.slice(0, 50))
+            }
+            // $.tpl('ui.test', false);
+            if (arguments.length == 2 && arguments[1] == false) {
+                render = false;
+                out    = this[arguments[0]];
+                //console.log('$.tpl: Calling2 "%s", render: %s (%s...)', arguments[0], render, out.slice(0, 50))
+            }
+            // $.tpl('ui.test', {value:blah});
+            if (arguments.length == 2 && $.isObject(arguments[1])) {
+                render = true;
+                out    = $.format(this[arguments[0]], arguments[1]);
+                //console.log('$.tpl: Calling3 "%s", render: %s (%s...)', arguments[0], render, out.slice(0, 50))
+            }
+            // $.tpl('ui.test', {value:blah}, false);
+            if (arguments.length == 3 && $.isObject(arguments[1])) {
+                render = (arguments[2] == true) ? false: true;
+                out    = $.format(this[arguments[0]], arguments[1]);
+                //console.log('$.tpl: Calling4 "%s", render: %s, arg2: %s (%s...)', arguments[0], render, arguments[2], out.slice(0, 50))
+            }
+            return render ? $(out) : out;
         }
-    };
+};
 
     var Argument = function(arg, args) {
         this.__arg  = arg;
@@ -591,7 +623,7 @@
             });
             return output;
         },
-
+/*
         reject: function(object, iterator){
             return $.select(object, (iterator || function(i){ return !i; }));
         },
@@ -607,6 +639,7 @@
             });
             return output;
         },
+*/
 
         sum: function(object, iterator){
             var iterator = iterator || function(i) { return parseInt(i, 10) };
@@ -679,7 +712,7 @@
         pluck:     function(property, iterator) { return $.pluck(this, property, iterator); },
         detect:    function(iterator) { return $($.detect(this, iterator)); },
         eachSlice: function(size, iterator) { return $.eachSlice(this, size, iterator); },
-        select:    function(iterator) { return $.findAll(this, iterator); },
+        //select:    function(iterator) { return $.findAll(this, iterator); },
         sum: function(iterator) {
             var iterator = iterator || function(i) {
                 return parseFloat($(i).val() || $(i).text(), 10);

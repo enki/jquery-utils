@@ -70,7 +70,6 @@ $(function(){
         ok(typeof jQuery.fn.countdown       == 'function', 'jQuery.fn.countdown is defined')
         ok(typeof jQuery.fn.cycle           == 'function', 'jQuery.fn.cycle is defined')
         ok(typeof jQuery.fn.delayedObserver == 'function', 'jQuery.fn.delayedObserver is defined')
-        ok(typeof jQuery.ifixpng            == 'function', 'jQuery.ifixpng is defined')
         ok(typeof jQuery.format             == 'function', 'jQuery.format is defined')
         ok(typeof jQuery.calc               == 'function', 'jQuery.calc is defined')
         ok(typeof jQuery.repeat             == 'function', 'jQuery.repeat is defined')
