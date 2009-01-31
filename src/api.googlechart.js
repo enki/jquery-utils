@@ -31,7 +31,14 @@
 
     $.widget('ui.googleChart', {
         _init: function(){
-            this._bindEvents();
+            this._ui.wrapper.append(this._ui.rightpanel)
+                            .append(this._ui.viewport)
+                            .append(this._ui.toolbar.append(this._ui.label))
+                            .appendTo(this.element);
+
+            this._plugin_call('_init');
+            $.ui.googleChart.charts[this.options.cht].call(this);
+            this._plugin_call('_initialized');
             $('.ui-button').hover(function(){  $(this).addClass('ui-state-hover'); }, 
                                   function (){ $(this).removeClass('ui-state-hover'); });
         },
@@ -64,19 +71,6 @@
             label:      $('<span id="api-gc-map-title">World</span>'),
             link:       $('<div id="api-gc-map-link" class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="display:none;"><input type="text" value="" class=" ui-corner-all" /></div>'),
             options:    $('<div id="api-gc-map-options" class="ui-helper-reset ui-widget-content ui-corner-all" style="display:none;" />')
-        },
-
-        _events: {
-            wrapper: {
-                load: function(e, widget) {
-                    widget._ui.wrapper.append(widget._ui.rightpanel)
-                                      .append(widget._ui.viewport)
-                                      .append(widget._ui.toolbar.append(widget._ui.label))
-                                      .appendTo(widget.element);
-
-                    $.ui.googleChart.charts[widget.options.cht].call(widget);
-                }
-            }
         },
 
         _refresh: function(opt) {
@@ -127,11 +121,20 @@
             return o.join('');
         },
 
+        _plugin_call: function(method, args) {
+            for (k in $.ui.googleChart.plugins) {
+                var plugin = $.ui.googleChart.plugins[k];
+                if (plugin[method]) {
+                    //console.log(plugin, k, method, plugin[method]);
+                    plugin[method].apply(this, args || []);
+                }
+            }
+        },
+
         _get_url: function(options, params) {
             var o = [];
             for (k in params) {
-                console.log(params[k], options[params[k]]);
-
+                //console.log(params[k], options[params[k]]);
                 if (options[params[k]]) { o.push(params[k] +'='+ options[params[k]]); }
             }
             return options.url +'?'+ o.join('&');
@@ -141,28 +144,25 @@
     $.extend($.ui.googleChart, {
         charts: {},
         version: '0.0.1',
+        plugins: {},
         defaults: {
             url: 'http://chart.apis.google.com/chart',
             cht: 't',
-            chs: '440x220'
+            chs: '440x220',
+            link: true,
+            options: true
         },
         areas: {'africa':"Africa", 'asia':"Asia", 'europe':"Europe", 'middle_east':"Middle Eeast", 'south_america':"South America", 'usa':"USA", 'world':"World"},
         areasCountries: {
-            'usa':    ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV',
-                       'NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'],
-            'africa': ['AF','DZ','AO','AR','BD','BJ','BO','BW','BR','BF','BI','CM','CF','TD','CN','CG','CD','CI','DJ','EG','ER','ET','GA','GH','GR','GN','GW','GY',
-                       'IN','ID','IR','IQ','IL','IT','JO','KE','LA','LB','LR','LY','MG','MW','MY','ML','MR','MA','MZ','MM','NA','NE','NG','OM','PK','PY','PT','RW',
-                       'SA','SN','SL','SO','ZA','ES','LK','SD','SR','SY','TJ','TZ','TH','TG','TN','TR','TM','UG','AE','UY','UZ','VE','EH','YE','ZM','ZW'],
-            'asia':   ['AF','AM','AU','AZ','BD','BY','BT','BG','BF','BI','KH','CN','EG','ER','ET','GE','IN','ID','IR','IQ','JP','JO','KZ','KE','KP','KR','KW','KG',
-                       'LA','MW','MY','MD','MN','MZ','MM','NP','OM','PK','PG','PH','RO','RU','RW','SA','SO','LK','SD','SY','TW','TJ','TZ','TH','TR','TM','UG','UA',
-                       'AE','UZ','VN','YE','ZM'],
-            'europe': ['AL','AM','AT','AZ','BY','BE','BA','HR','CZ','DK','EE','FI','FR','GE','DE','GR','GL','GD','HU','IR','IQ','IE','IT','KZ','LV','LB','LT','LU',
-                       'MK','MD','MA','NL','NO','PL','PT','RO','RU','SK','SI','SB','ES','SE','CH','SY','TN','TR','TM','UA','GB','UZ'],
-            'middle_east': ['AF','AL','DZ','AM','BJ','BA','BG','BF','CM','TD','CN','HR','DJ','EG','ER','ET','FR','GE','GR','HU','IN','IR','IQ','IL','IT','JO','KZ',
-                            'KW','KG','LB','LY','MK','ML','NP','NE','NG','OM','PK','QA','RO','RU','SA','SN','SO','ES','SD','CH','SY','TJ','TO','TN','TR','TM','UA',
-                            'AE','UZ','YE'],
-            'south_america':    ['AO','AR','BJ','BO','BW','BV','BR','BF','CM','CF','TD','CL','CO','CG','CD','CR','CI','EC','GQ','FK','GF','GA','GH','GN','GW','GY',
-                                 'LR','ML','NA','NI','NE','NG','PA','PY','PE','SN','SL','ZA','SR','TG','UY','VE']
+            'usa': 'AL,AK,AZ,AR,CA,CO,CT,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY'.split(','),
+            'africa': 'AF,DZ,AO,AR,BD,BJ,BO,BW,BR,BF,BI,CM,CF,TD,CN,CG,CD,CI,DJ,EG,ER,ET,GA,GH,GR,GN,GW,GY,IN,ID,IR,IQ,IL,IT,JO,KE,LA,LB,LR,LY,MG,MW,MY,ML,MR,MA,MZ,MM,NA,NE,NG,OM,'+
+                      'PK,PY,PT,RW,SA,SN,SL,SO,ZA,ES,LK,SD,SR,SY,TJ,TZ,TH,TG,TN,TR,TM,UG,AE,UY,UZ,VE,EH,YE,ZM,ZW'.split(','),
+            'asia': 'AF,AM,AU,AZ,BD,BY,BT,BG,BF,BI,KH,CN,EG,ER,ET,GE,IN,ID,IR,IQ,JP,JO,KZ,KE,KP,KR,KW,KG,LA,MW,MY,MD,MN,MZ,MM,NP,OM,PK,PG,PH,RO,RU,RW,SA,SO,LK,SD,SY,TW,TJ,TZ,TH,'+
+                    'TR,TM,UG,UA,AE,UZ,VN,YE,ZM'.split(','),
+            'europe': 'AL,AM,AT,AZ,BY,BE,BA,HR,CZ,DK,EE,FI,FR,GE,DE,GR,GL,GD,HU,IR,IQ,IE,IT,KZ,LV,LB,LT,LU,MK,MD,MA,NL,NO,PL,PT,RO,RU,SK,SI,SB,ES,SE,CH,SY,TN,TR,TM,UA,GB,UZ'.split(','),
+            'middle_east': 'AF,AL,DZ,AM,BJ,BA,BG,BF,CM,TD,CN,HR,DJ,EG,ER,ET,FR,GE,GR,HU,IN,IR,IQ,IL,IT,JO,KZ,KW,KG,LB,LY,MK,ML,NP,NE,NG,OM,PK,QA,RO,RU,SA,SN,SO,ES,SD,CH,SY,',
+                           'TJ,TO,TN,TR,TM,UAAE,UZ,YE'.split(','),
+            'south_america': 'AO,AR,BJ,BO,BW,BV,BR,BF,CM,CF,TD,CL,CO,CG,CD,CR,CI,EC,GQ,FK,GF,GA,GH,GN,GW,GY,LR,ML,NA,NI,NE,NG,PA,PY,PE,SN,SL,ZA,SR,TG,UY,VE'.split(',')
         },
         countries: { 
             'AF':"Afghanistan",'AX':"Aland islands",'AL':"Albania",'DZ':"Algeria",'AS':"American samoa",'AD':"Andorra",'AO':"Angola",'AI':"Anguilla",'AQ':"Antarctica",'AG':"Antigua and Barbuda",
@@ -205,19 +205,17 @@
         t: function() {
             widget = this;
             this.params  = ['chs', 'cht', 'chd', 'chtm', 'chld', 'chco', 'chf'];
-            this.options = $.extend(this.options, {
+            this.options = $.extend({
                 cht:       't',
                 chd:       's:_',
                 chtm:      'world', // area
                 chld:      '',      // country(ies)
                 chco:      'eeeeee,DFB5B5,DFDBB5,B7DFB5',
                 chf:       'bg,s,cccccc',
-                link:      true,
                 areas:     true,
-                options:   true,
                 countries: true,
-                sizes:     ['440x220', '400x200', '380x190', '360x180', '340x170', '320x160', '300x150']
-            });
+                sizes:     ['440x220', '400x200', '380x190', '360x180', '340x170', '320x160']
+            }, this.options);
             
             if (this.options.areas) {
                 this._ui.areaList = this._get_area_list()
@@ -259,26 +257,21 @@
                             });
                 }
             }
-            // Options button
+
             if (this.options.options) {
-                this._ui.options   = $.ui.builder.tabs().attr('id', 'api-gc-options');
-                this._ui.colorsTab = $.ui.builder.tab(this._ui.options, {title: 'Colors'});
+                this._ui.colorsTab = $.ui.builder.tab(this._ui.options, {title: 'General'});
                 $.ui.builder.tab(this._ui.options, {title: 'Gradient'})
-                this._ui.options.hide().appendTo(this._ui.wrapper);
-                this._ui.options.tabs();
-                
                 
                 this._ui.options.sizes = $($.map(this.options.sizes, function(v){
                     return $.ui.builder.option({value: v, label: v}, true);
                 }).join(''));
-
                 $.tpl('googlechart.panelOptionsColor')
                     .appendTo(this._ui.colorsTab)
                     .find('#api-gc-size')
                         .append(this._ui.options.sizes)
                         .val(this.options.chs)
                         .change(function(){
-                            console.log($(this).val());
+                            //console.log($(this).val());
                             widget.options.chs = $(this).val();
                             widget._refresh(widget.options);
                         })
@@ -310,26 +303,12 @@
                         .bind('keyup', function(){ $(this).trigger('previewRefresh.googleChart'); })
                         .bind('blur', function(){ $(this).trigger('mapRefresh.googleChart'); })
                         .val('#'+widget.options.chco.split(',')[0]);
-
-                
-                $.ui.builder.button({label: 'Options', icon: 'gear'})
-                    .bind('click.googlechart', function(e){
-                        widget._ui.options.toggle();
-                    })
-                    .appendTo(this._ui.toolbar);
             }
-            // Link button
-            if (this.options.link) {
-                this._ui.link.appendTo(this._ui.wrapper);
-                $.ui.builder.button({label: 'Link', icon: 'link'})
-                    .bind('click.googlechart', function(e){
-                        widget._ui.link.toggle();
-                    })
-                    .appendTo(this._ui.toolbar);
-            }
+            
             this._refresh(); // initial load
         }
     });
+
 
     $.extend($.ui.googleChart.cht, {
         lc: function() {
@@ -338,5 +317,43 @@
         ls: function() {
             console.log('building line chart');
         }
+    });
+
+    // Google Chart Plugins
+    $.extend($.ui.googleChart.plugins, {
+
+        // Option panel
+        options: {
+            _init: function(){
+                if (this.options.options) {
+                    this._ui.options   = $.ui.builder.tabs().attr('id', 'api-gc-options');
+                    this._ui.options.hide().appendTo(this._ui.wrapper);
+                    $.ui.builder.button({label: 'Options', icon: 'gear'})
+                        .bind('click.googlechart', function(e){
+                            widget._ui.options.toggle();
+                        })
+                        .appendTo(this._ui.toolbar);
+                }
+            },
+            _initialized: function() {
+                this._ui.options.tabs();
+            }
+        },
+
+        // Text link 
+        link: {
+            _init: function() {
+                if (this.options.link) {
+                    this._ui.link.appendTo(this._ui.wrapper);
+                    $.ui.builder.button({label: 'Link', icon: 'link'})
+                        .bind('click.googlechart', function(e){
+                            widget._ui.link.toggle();
+                        })
+                        .appendTo(this._ui.toolbar);
+                }
+            }
+        
+        }
+             
     });
 })(jQuery);

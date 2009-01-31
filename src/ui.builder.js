@@ -56,7 +56,7 @@
             message: function(o, i) { return $.tpl('ui.message', $.extend({corners: 'all', state: 'highlight', icon: 'false', title: '', body: ''}, o), i); },
 
             button:  function(o) {
-                var tpl = $.tpl('ui.button', $.extend({icon: false, label: ''}, o));
+                var tpl = $.tpl('ui.button', $.extend({icon: false, label: '', corner: 'all'}, o));
                 if (o.icon) { 
                     tpl.prepend($.tpl('ui.icon', {icon: o.icon})); 
                     tpl.addClass('ui-has-icon');
