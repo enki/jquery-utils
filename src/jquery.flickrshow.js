@@ -12,8 +12,6 @@
 
 */
 
-var jsonFlickrFeed = function() {};
-
 (function($){
     $.tpl('flickrshow.wrapper',  '<div class="ui-flickrshow" />');
     $.tpl('flickrshow.titlebar', '<div class="ui-flickrshow-titlebar"><a href="{href:s}" title="{title:s}">{title:s}</a></div>');
@@ -29,12 +27,12 @@ var jsonFlickrFeed = function() {};
 		flickrshow: function(options, json) {
             var el  = this;
             var opt = $.extend({ 
+                cycle: {},
                 imgBorder: 0, 
-                toolbar: true,
-                titlebar: true,
-                browseTarget: '_self',
-                cycle: {}
-            }, options);
+                toolbar:   true,
+                titlebar:  true,
+                browseTarget: '_self'}, options);
+
             $.getJSON(opt.url, function(data, textStatus){ 
                 var tpl = ['<div class="ui-flickrshow-body ui-content">'];
                 var wrapper  = $.tpl('flickrshow.wrapper');
@@ -47,6 +45,7 @@ var jsonFlickrFeed = function() {};
                         border: opt.imgBorder
                     }, true));
                 }
+
                 tpl.push('</div>');
                 el.append(wrapper);
 
