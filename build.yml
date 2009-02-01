@@ -3,13 +3,6 @@ version: 0.7.0
 svnrev: true
 dest: dist/
 modules:
-  - file: src/jquery.ddbelated.js
-    name: "ddbelated"
-    title: jquery.ddbelated.js
-    destfile: jquery.ddbelated.js
-    depends:
-      - src: src/jquery.ddbelated.js
-
   - file: src/jquery.utils.js
     name: "utils"
     depends:
