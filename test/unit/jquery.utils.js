@@ -63,7 +63,7 @@ $(function(){
     });
 
     test('jQuery utils plugin tests', function() {
-        expect(13);
+        expect(12);
         // base plugins integrity check     
         ok(typeof jQuery.anchorHandler      == 'object',   'jQuery.anchorHandler is defined')
         ok(typeof jQuery.cookie             == 'function', 'jQuery.cookie is defined')

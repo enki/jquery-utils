@@ -48,7 +48,7 @@
 
     $.fn.youtubeLinksToEmbed = function(options){
         var opt = $.extend({autoOpen: false}, options);
-        $(this).find('a[href~=youtube.com/watch?v=]')
+        $(this).find('a[href*=youtube.com/watch?v=]')
             .addClass('youtubeLinksToEmbed')
             .each(function(){ 
                 $(this).click(yl2e.onclick);
@@ -58,7 +58,7 @@
     };
 
     $.fn.youtubeInputsToEmbed = function(options) {
-        $(this).find('input[value~=youtube.com/watch?v=]')
+        $(this).find('input[value*=youtube.com/watch?v=]')
             .addClass('youtubeLinksToEmbed')
             .each(function(){ 
                 $('<a href="'+ $(this).val() +'">watch</a>')
