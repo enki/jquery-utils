@@ -2,15 +2,13 @@ $(function(){
     module('jquery.utils.js');
 
     test('jQuery utils core tests', function() {
-        expect(33);
+        expect(31);
         
         // jquery.utils integrity check
-        ok(typeof $.ui             == 'object',   'jQuery UI is defined')
         ok(typeof $.isRegExp       == 'function', 'jQuery isRegExp is defined')
         ok(typeof $.isArray        == 'function', 'jQuery isArray is defined')
         ok(typeof $.toCurrency     == 'function', 'jQuery toCurrency is defined')
         ok(typeof $.fn.selectRange == 'function', 'jQuery.fn selectRange is defined')
-        ok(typeof $.fn.mousewheel  == 'function', 'jQuery.fn mousewheel is defined')
 
         // isRegExp
         ok(!$.isRegExp(''),    '"" !isRegExp');
@@ -63,7 +61,7 @@ $(function(){
     });
 
     test('jQuery utils plugin tests', function() {
-        expect(12);
+        expect(13);
         // base plugins integrity check     
         ok(typeof jQuery.anchorHandler      == 'object',   'jQuery.anchorHandler is defined')
         ok(typeof jQuery.cookie             == 'function', 'jQuery.cookie is defined')
@@ -76,6 +74,7 @@ $(function(){
         ok(typeof jQuery.UTF8encode         == 'function', 'jQuery.UTF8encode is defined')
         ok(typeof jQuery.UTF8decode         == 'function', 'jQuery.UTF8decode is defined')
         ok(typeof jQuery.strConversion      == 'object',   'jQuery.strConversion is defined')
+        ok(typeof jQuery.fn.mousewheel      == 'function', 'jQuery.fn.mousewheel is defined')
         ok(typeof jQuery.fn.youtubeLinksToEmbed == 'function', 'jQuery.fn.youtubeLinksToEmbed is defined')
     });
 

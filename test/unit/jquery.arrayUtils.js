@@ -85,11 +85,12 @@ $(function(){
         equals($.pluck([['a','b'],['c', 'd']], 0).join(''), 'ac', 'pluck by index');
         equals($.pluck(['a','b'], 0).join(''), 'ab', 'Invalid array return correctly')
     });
-
+    /* CONFLICTS WITH JQUERY
     test('array.select', function() {
         expect(1);
         equals($.select([1,2,3,4,5,6], function(i){ return i%2==0; }).join(''), '246', 'Simple select');
     });
+    */
     
     test('array.zip', function() {
         expect(3);

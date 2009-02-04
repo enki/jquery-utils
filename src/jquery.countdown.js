@@ -15,13 +15,8 @@
             /* Return true if the target date has arrived,
              * an object of the time left otherwise.
              */
-            if (current === undefined) {
-                current = new Date();
-            }
-
-            if (current >= target) {
-                return true;
-            }
+            var current = current || new Date();
+            if (current >= target) { return true; }
 
             var o = {};
             var remain = Math.floor((target.getTime() - current.getTime()) / 1000);
@@ -115,7 +110,6 @@
                     displacement += parseInt(match[1], 10) * conversions[match[2]];
                 }
             }
-
             return new Date(date.getTime() + displacement);
         };
 
@@ -124,7 +118,7 @@
             el    : el,
             start : function(){ return new countdown($(this.el), options); },
             stop  : function(){ return clearInterval(this.id); },
-            date  : apply_modifiers(options.modifiers, options.date),
+            date  : apply_modifiers(options.modifiers, options.date)
         };
         $(el).data('countdown', cd);
         update();

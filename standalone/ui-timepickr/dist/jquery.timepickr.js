@@ -619,7 +619,8 @@
             var output = [];
             var iterator = iterator || dummy;
             $.each(object, function(){
-                output.push(iterator(this[property]));
+                // "||this" is required to make IE behave like FF on simple arrays .. 
+                output.push(iterator(this[property]||this));
             });
             return output;
         },

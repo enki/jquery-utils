@@ -370,7 +370,8 @@
             var output = [];
             var iterator = iterator || dummy;
             $.each(object, function(){
-                output.push(iterator(this[property]));
+                // "||this" is required to make IE behave like FF on simple arrays .. 
+                output.push(iterator(this[property]||this));
             });
             return output;
         },
@@ -567,7 +568,8 @@ jQuery.cookie = function(name, value, options) {
         }
         return cookieValue;
     }
-};/*
+};
+/*
   jQuery countdown - 0.2
   http://code.google.com/p/jquery-utils/
 
@@ -584,13 +586,8 @@ jQuery.cookie = function(name, value, options) {
             /* Return true if the target date has arrived,
              * an object of the time left otherwise.
              */
-            if (current === undefined) {
-                current = new Date();
-            }
-
-            if (current >= target) {
-                return true;
-            }
+            var current = current || new Date();
+            if (current >= target) { return true; }
 
             var o = {};
             var remain = Math.floor((target.getTime() - current.getTime()) / 1000);
@@ -684,7 +681,6 @@ jQuery.cookie = function(name, value, options) {
                     displacement += parseInt(match[1], 10) * conversions[match[2]];
                 }
             }
-
             return new Date(date.getTime() + displacement);
         };
 
@@ -693,7 +689,7 @@ jQuery.cookie = function(name, value, options) {
             el    : el,
             start : function(){ return new countdown($(this.el), options); },
             stop  : function(){ return clearInterval(this.id); },
-            date  : apply_modifiers(options.modifiers, options.date),
+            date  : apply_modifiers(options.modifiers, options.date)
         };
         $(el).data('countdown', cd);
         update();
