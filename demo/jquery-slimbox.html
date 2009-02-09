@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <link rel="Stylesheet" media="screen" href="data/styles.css" />
+        <link rel="Stylesheet" media="screen" href="../src/css/jquery.slimbox.css" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="../dist/jquery.utils.js"></script>
+        <script type="text/javascript">
+        $(function(){
+            $(".slimbox a").slimbox({
+                loop:true,
+                counterText: "Image {x} sur {y}",
+                closeKeys: [27, 70],
+                nextKeys: [39, 83]
+            }, null, function(el) {
+                return (this == el) || ((this.rel.length > 8) && (this.rel == el.rel));
+            });
+        });
+        </script>
+    </head>
+    <body id="body">
+        <h2>jquery.slimbox.js</h2>
+        <div class="copyright">Copyright (c) 2007-2009 Christophe Beyls (<a href="http://www.digitalia.be" target="_blank">digitalia.be</a>)</div>
+        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <a class="related-links documentation" href="http://code.google.com/p/slimbox/wiki/jQueryManual">Documentation</a>
+        <ul class="slimbox">
+            <li><a href="data/banksy-01.jpg" rel="lightbox-banksy" title="Banksy 1"><img src="data/banksy-01.jpg" alt="" width="100" /></a></li>
+            <li><a href="data/banksy-02.jpg" rel="lightbox-banksy" title="Banksy 2"><img src="data/banksy-02.jpg" alt="" width="100" /></a></li>
+            <li><a href="data/banksy-03.jpg" rel="lightbox-banksy" title="Banksy 3"><img src="data/banksy-03.jpg" alt="" width="100" /></a></li>
+            <li><a href="data/banksy-04.jpg" rel="lightbox-banksy" title="Banksy 4"><img src="data/banksy-04.jpg" alt="" width="100" /></a></li>
+        </ul>
+    </body>
+</html>
+

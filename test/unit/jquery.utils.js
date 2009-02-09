@@ -73,6 +73,7 @@ $(function(){
         ok(typeof jQuery.repeat             == 'function', 'jQuery.repeat is defined')
         ok(typeof jQuery.UTF8encode         == 'function', 'jQuery.UTF8encode is defined')
         ok(typeof jQuery.UTF8decode         == 'function', 'jQuery.UTF8decode is defined')
+        ok(typeof jQuery.slimbox            == 'function', 'jQuery.slimbox is defined')
         ok(typeof jQuery.strConversion      == 'object',   'jQuery.strConversion is defined')
         ok(typeof jQuery.fn.mousewheel      == 'function', 'jQuery.fn.mousewheel is defined')
         ok(typeof jQuery.fn.youtubeLinksToEmbed == 'function', 'jQuery.fn.youtubeLinksToEmbed is defined')

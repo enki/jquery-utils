@@ -16,6 +16,7 @@ modules:
       - src: src/jquery.flash.js
       - src: src/jquery.i18n.js
       - src: src/jquery.mousewheel.js
+      - src: src/jquery.slimbox.js
       - src: src/jquery.strings.js
       - src: src/jquery.timeago.js
       - src: src/jquery.youtubeLinksToEmbed.js
@@ -35,6 +36,7 @@ modules:
       - src: src/jquery.flash.js
       - src: src/jquery.i18n.js
       - src: src/jquery.mousewheel.js
+      - src: src/jquery.slimbox.js
       - src: src/jquery.strings.js
       - src: src/jquery.timeago.js
       - src: src/jquery.youtubeLinksToEmbed.js
