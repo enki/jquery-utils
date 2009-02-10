@@ -15,7 +15,7 @@
 (function($){
     $.tpl('flickrshow.wrapper',  '<div class="ui-flickrshow" />');
     $.tpl('flickrshow.titlebar', '<div class="ui-flickrshow-titlebar"><a href="{href:s}" title="{title:s}">{title:s}</a></div>');
-    $.tpl('flickrshow.image',    '<a href="{href:s}" title="{title:s}"><img src="{src:s}" class="ui-flickrshow-image" alt="{alt:s}" border="{border:d}" /></a>');
+    $.tpl('flickrshow.image',    '<a href="{href:s}" title="{title:s}" rel="flickr-show"><img src="{src:s}" class="ui-flickrshow-image" alt="{alt:s}" border="{border:d}" /></a>');
     $.tpl('flickrshow.toolbar',  [
         '<div class="ui-flickrshow-toolbar">',
             '<a id="ui-flickrshow-prev"></a>',
@@ -31,7 +31,8 @@
                 imgBorder: 0, 
                 toolbar:   true,
                 titlebar:  true,
-                browseTarget: '_self'}, options);
+                browseTarget: '_self',
+                slimbox: $.slimbox || false }, options);
 
             $.getJSON(opt.url, function(data, textStatus){ 
                 var tpl = ['<div class="ui-flickrshow-body ui-content">'];
@@ -42,6 +43,7 @@
                         href:   data.items[i].link,
                         title:  data.items[i].title,
                         src:    data.items[i].media.m,
+                        alt:    '',
                         border: opt.imgBorder
                     }, true));
                 }
@@ -68,6 +70,13 @@
 
                 wrapper.append($(tpl.join('')))
                     .find('.ui-flickrshow-body').cycle(opt.cycle);
+
+                if (opt.slimbox && $.slimbox) {
+                    $("a[href^='http://www.flickr.com/photos/'] > img:first-child[src]", wrapper.find('.ui-flickrshow-body')).parent().slimbox({}, function(el) {
+                        return [el.firstChild.src.replace(/_[mts]\.(\w+)$/, ".$1"),
+                                (el.title || el.firstChild.alt) + '<br /><a href="' + el.href + '">Flickr page</a>'];
+                    });                    
+                }
             });
             return $(el);
 		}
