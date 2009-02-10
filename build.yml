@@ -7,6 +7,7 @@ modules:
     name: "utils"
     depends:
       - src: src/jquery.utils.js
+      - src: src/jquery.strings.js
       - src: src/jquery.anchorHandler.js
       - src: src/jquery.arrayUtils.js
       - src: src/jquery.cookie.js
@@ -14,10 +15,10 @@ modules:
       - src: src/jquery.cycle.js
       - src: src/jquery.delayedObserver.js
       - src: src/jquery.flash.js
+      - src: src/jquery.flickrshow.js
       - src: src/jquery.i18n.js
       - src: src/jquery.mousewheel.js
       - src: src/jquery.slimbox.js
-      - src: src/jquery.strings.js
       - src: src/jquery.timeago.js
       - src: src/jquery.youtubeLinksToEmbed.js
 
@@ -27,6 +28,7 @@ modules:
     destfile: jquery.utils.ui.js
     depends:
       - src: src/jquery.utils.js
+      - src: src/jquery.strings.js
       - src: src/jquery.anchorHandler.js
       - src: src/jquery.arrayUtils.js
       - src: src/jquery.cookie.js
@@ -34,10 +36,10 @@ modules:
       - src: src/jquery.cycle.js
       - src: src/jquery.delayedObserver.js
       - src: src/jquery.flash.js
+      - src: src/jquery.flickrshow.js
       - src: src/jquery.i18n.js
       - src: src/jquery.mousewheel.js
       - src: src/jquery.slimbox.js
-      - src: src/jquery.strings.js
       - src: src/jquery.timeago.js
       - src: src/jquery.youtubeLinksToEmbed.js
       - src: src/ui.dropslide.js
