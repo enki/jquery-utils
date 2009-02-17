@@ -19,7 +19,7 @@
     var templates = {
         'ui.icon':     '<span class="ui-icon ui-icon-{icon:s}" />',
         'ui.input':    '<input type="{type:s}" class="ui-input ui-input-{type:s} ui-corner-{corner:s}" />',
-        'ui.option':   '<option value="{value:s}" class="ui-input ui-input-option" selected="{selected:s}">{label:s}</option>',
+        'ui.option':   '<option value="{value:s}" class="ui-input-option" selected="{selected:s}">{label:s}</option>',
         'ui.button':   '<a class="ui-state-default ui-corner-{corner:s} ui-button" href="#">{label:s}</a>',
         'ui.toolbar':  '<div class="ui-toolbar ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-{corner:s}" />',
         'ui.tabTitle': '<li class="ui-state-default ui-corner-{titleCorner:s}"><a href="#tabs-{id:s}">{title:s}</a></li>',

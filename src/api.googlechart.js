@@ -17,15 +17,72 @@
 */
 
 (function($){
+    // experimental
+    $.component = function() {
+        if (!this.components) { this.components = []; }
+        if (arguments.length == 1) {
+            var ns = 'component.'+ arguments[0].name;
+            this.components[ns] = arguments[0];
+            $.tpl(ns, arguments[0].tpl);
+        }
+        else {
+            var ns  = 'component.'+ arguments[0];
+            var opt = $.extend(this.components[ns], arguments[1]);
+            var tpl = $.tpl(ns, opt);
+            if (opt.events) {
+                for (k in opt.events) {
+                    var e = opt.events[k];
+                    var inst = e.selector && tpl.find(e.selector).bind(e.type, e.callback) 
+                                          || tpl.bind(e.type, e.callback);
+                    if (opt.init) {
+                        opt.init.apply(inst);
+                    }
+                }
+            }
+            return tpl;
+        }
+        
+    };
 
-    $.tpl('googlechart.panelOptionsColor', [
-        '<ul class="ui-form ui-helper-reset" style="float:left;">',
-            '<li><label for="api-gc-bgcolor">Background:</label> <span class="preview">&nbsp;</span><input id="api-gc-bgcolor" type="text" /></li>',
-            '<li><label for="api-gc-fgcolor">Foreground:</label> <span class="preview">&nbsp;</span><input id="api-gc-fgcolor" type="text" /></li>',
-        '</ul>',
-        '<ul class="ui-form ui-helper-reset" style="margin-left:120px;padding-left:20px;">',
-            '<li><label for="api-gc-size">Size:</label><select id="api-gc-size"></select></li>',
-        '</ul>',
+    $.component({
+        name:   'selectsize',
+        tpl:    '<span class="ui-component"><label for="{id:s}">{label:s}:</label><select id="{id:s}"></select></span>',
+        init: function() {
+            $(this).val(chart.options.chs)
+                .append($.map(chart.options.sizes, function(v){
+                    return $.ui.builder.option({value: v, label: v}, true);
+                }).join(''));
+        },
+        defaults: { id: '' },
+        events: [
+            {type: 'change', selector: 'select', callback: function(){
+                chart.options.chs = $(this).val();
+                chart._refresh(chart.options); 
+            }}
+        ]
+    });
+
+    $.component({
+        name:   'colorpicker',
+        tpl:    ['<span class="ui-component">',
+                    '<label for="{id:s}">{label:s}:</label> ',
+                    '<span class="preview">&nbsp;</span>',
+                    '<input id="{id:s}" type="text" maxlength="7" />',
+                '</span>'],
+        defaults: { id: '' },
+        events: [
+            {type: 'updatePreview', selector: 'input', callback: function(){ $(this).prev().css('background-color', $(this).val()); }},
+            {type: 'keyup',         selector: 'input', callback: function(){ $(this).trigger('updatePreview'); }}
+        ]
+    });
+
+    $.tpl('googlechart.panelGeneral', [
+        '<ul class="ui-form ui-helper-reset" style="float:left;" />',
+        '<ul class="ui-form ui-helper-reset" style="margin-left:120px;padding-left:20px;" />',
+        '<div style="clear:both;" />'
+    ]);
+    $.tpl('googlechart.panelGradient', [
+        '<ul class="ui-form ui-helper-reset" style="float:left;" />',
         '<div style="clear:both;" />'
     ]);
 
@@ -46,45 +103,44 @@
         _width:  function() { var s = this.options.chs.split('x'); return parseInt(s[0], 10); },
         _height: function() { var s = this.options.chs.split('x'); return parseInt(s[1], 10); },
 
-        _bindEvents: function() {
-            var widget = this;
-            $.each(this._events, function(node, events){
-                $.each(events, function(eventName, callback) {
-                    try {
-                        $(widget._ui[node]).bind(eventName, function(e) {
-                            callback.apply(this, [e, widget]);
-                        });
-                        // not sure why, but I must trigger them manually
-                        if (['load', 'ready'].indexOf(eventName) > -1) {
-                            $(widget._ui[node]).trigger(eventName);
-                        }
-                    } catch(e) {};
-                });
-            });
-        },
-
         _ui: {
             wrapper:    $('<div class="api-gc-wrapper" />'),
             viewport:   $('<div class="api-gc-viewport" />'),
             rightpanel: $('<div class="api-gc-panel" />'),
             toolbar:    $.ui.builder.toolbar().attr('id', 'api-gc-toolbar'),
-            label:      $('<span id="api-gc-map-title">World</span>'),
-            link:       $('<div id="api-gc-map-link" class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="display:none;"><input type="text" value="" class=" ui-corner-all" /></div>'),
-            options:    $('<div id="api-gc-map-options" class="ui-helper-reset ui-widget-content ui-corner-all" style="display:none;" />')
+            label:      $('<span id="api-gc-chart-label" />'),
+            link:       $('<div id="api-gc-chart-link" class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="display:none;"><input type="text" value="" class=" ui-corner-all" /></div>'),
+            options:    $('<div id="api-gc-chart-options" class="ui-helper-reset ui-widget-content ui-corner-all" style="display:none;" />')
         },
 
         _refresh: function(opt) {
             var url = this._get_url(opt || this.options, this.params);
-            var css = $.format('#ddd url({0:s}) no-repeat 0 0', url);
             this._ui.link.find('input[type=text]').val(url);
             this._ui.toolbar.width(this._width());
             this._ui.options.width(this._width() - 10);
             this._ui.rightpanel.css('margin-left', this._width() + 10);
             this._ui.viewport
                 .width(this._width()).height(this._height())
-                .css('background', css);
+                .css({backgroundImage: $.format('url({0:s})', url),
+                      backgroundRepeat: 'no-repeat'});
         },
 
+        _set_bg_color: function(color) {
+            console.log('bg,s,'+ color.replace('#',''));
+            if (color) {
+                chart.options.chf = 'bg,s,'+ color.replace('#','');
+            }
+        },
+
+        _set_fg_color: function(color, idx) {
+            var chco  = chart.options.chco.split(',');
+            chco[idx] = color.replace('#','');
+            chart.options.chco = chco.join(',');
+        },
+
+        _set_label: function(label){
+            this._ui.label.text(label);
+        },
         
         _get_area_list: function() {
             var o = ['<ul class="api-gc-area-list ui-reset">'];
@@ -125,7 +181,6 @@
             for (k in $.ui.googleChart.plugins) {
                 var plugin = $.ui.googleChart.plugins[k];
                 if (plugin[method]) {
-                    //console.log(plugin, k, method, plugin[method]);
                     plugin[method].apply(this, args || []);
                 }
             }
@@ -143,7 +198,6 @@
 
     $.extend($.ui.googleChart, {
         charts: {},
-        version: '0.0.1',
         plugins: {},
         defaults: {
             url: 'http://chart.apis.google.com/chart',
@@ -153,17 +207,8 @@
             options: true
         },
         areas: {'africa':"Africa", 'asia':"Asia", 'europe':"Europe", 'middle_east':"Middle Eeast", 'south_america':"South America", 'usa':"USA", 'world':"World"},
-        areasCountries: {
-            'usa': 'AL,AK,AZ,AR,CA,CO,CT,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY'.split(','),
-            'africa': 'AF,DZ,AO,AR,BD,BJ,BO,BW,BR,BF,BI,CM,CF,TD,CN,CG,CD,CI,DJ,EG,ER,ET,GA,GH,GR,GN,GW,GY,IN,ID,IR,IQ,IL,IT,JO,KE,LA,LB,LR,LY,MG,MW,MY,ML,MR,MA,MZ,MM,NA,NE,NG,OM,'+
-                      'PK,PY,PT,RW,SA,SN,SL,SO,ZA,ES,LK,SD,SR,SY,TJ,TZ,TH,TG,TN,TR,TM,UG,AE,UY,UZ,VE,EH,YE,ZM,ZW'.split(','),
-            'asia': 'AF,AM,AU,AZ,BD,BY,BT,BG,BF,BI,KH,CN,EG,ER,ET,GE,IN,ID,IR,IQ,JP,JO,KZ,KE,KP,KR,KW,KG,LA,MW,MY,MD,MN,MZ,MM,NP,OM,PK,PG,PH,RO,RU,RW,SA,SO,LK,SD,SY,TW,TJ,TZ,TH,'+
-                    'TR,TM,UG,UA,AE,UZ,VN,YE,ZM'.split(','),
-            'europe': 'AL,AM,AT,AZ,BY,BE,BA,HR,CZ,DK,EE,FI,FR,GE,DE,GR,GL,GD,HU,IR,IQ,IE,IT,KZ,LV,LB,LT,LU,MK,MD,MA,NL,NO,PL,PT,RO,RU,SK,SI,SB,ES,SE,CH,SY,TN,TR,TM,UA,GB,UZ'.split(','),
-            'middle_east': 'AF,AL,DZ,AM,BJ,BA,BG,BF,CM,TD,CN,HR,DJ,EG,ER,ET,FR,GE,GR,HU,IN,IR,IQ,IL,IT,JO,KZ,KW,KG,LB,LY,MK,ML,NP,NE,NG,OM,PK,QA,RO,RU,SA,SN,SO,ES,SD,CH,SY,',
-                           'TJ,TO,TN,TR,TM,UAAE,UZ,YE'.split(','),
-            'south_america': 'AO,AR,BJ,BO,BW,BV,BR,BF,CM,CF,TD,CL,CO,CG,CD,CR,CI,EC,GQ,FK,GF,GA,GH,GN,GW,GY,LR,ML,NA,NI,NE,NG,PA,PY,PE,SN,SL,ZA,SR,TG,UY,VE'.split(',')
-        },
+        areasCountries: { 'usa': 'AL,AK,AZ,AR,CA,CO,CT,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY'.split(','),
+'africa': 'AF,DZ,AO,AR,BD,BJ,BO,BW,BR,BF,BI,CM,CF,TD,CN,CG,CD,CI,DJ,EG,ER,ET,GA,GH,GR,GN,GW,GY,IN,ID,IR,IQ,IL,IT,JO,KE,LA,LB,LR,LY,MG,MW,MY,ML,MR,MA,MZ,MM,NA,NE,NG,OM,PK,PY,PT,RW,SA,SN,SL,SO,ZA,ES,LK,SD,SR,SY,TJ,TZ,TH,TG,TN,TR,TM,UG,AE,UY,UZ,VE,EH,YE,ZM,ZW'.split(','), 'asia': 'AF,AM,AU,AZ,BD,BY,BT,BG,BF,BI,KH,CN,EG,ER,ET,GE,IN,ID,IR,IQ,JP,JO,KZ,KE,KP,KR,KW,KG,LA,MW,MY,MD,MN,MZ,MM,NP,OM,PK,PG,PH,RO,RU,RW,SA,SO,LK,SD,SY,TW,TJ,TZ,TH,TR,TM,UG,UA,AE,UZ,VN,YE,ZM'.split(','), 'europe': 'AL,AM,AT,AZ,BY,BE,BA,HR,CZ,DK,EE,FI,FR,GE,DE,GR,GL,GD,HU,IR,IQ,IE,IT,KZ,LV,LB,LT,LU,MK,MD,MA,NL,NO,PL,PT,RO,RU,SK,SI,SB,ES,SE,CH,SY,TN,TR,TM,UA,GB,UZ'.split(','), 'middle_east': 'AF,AL,DZ,AM,BJ,BA,BG,BF,CM,TD,CN,HR,DJ,EG,ER,ET,FR,GE,GR,HU,IN,IR,IQ,IL,IT,JO,KZ,KW,KG,LB,LY,MK,ML,NP,NE,NG,OM,PK,QA,RO,RU,SA,SN,SO,ES,SD,CH,SY,TJ,TO,TN,TR,TM,UAAE,UZ,YE'.split(','), 'south_america': 'AO,AR,BJ,BO,BW,BV,BR,BF,CM,CF,TD,CL,CO,CG,CD,CR,CI,EC,GQ,FK,GF,GA,GH,GN,GW,GY,LR,ML,NA,NI,NE,NG,PA,PY,PE,SN,SL,ZA,SR,TG,UY,VE'.split(',') },
         countries: { 
             'AF':"Afghanistan",'AX':"Aland islands",'AL':"Albania",'DZ':"Algeria",'AS':"American samoa",'AD':"Andorra",'AO':"Angola",'AI':"Anguilla",'AQ':"Antarctica",'AG':"Antigua and Barbuda",
             'AR':"Argentina",'AM':"Armenia",'AW':"Aruba",'AU':"Australia",'AT':"Austria",'AZ':"Azerbaijan",'BS':"Bahamas",'BH':"Bahrain",'BD':"Bangladesh",'BB':"Barbados",'BY':"Belarus",
@@ -203,20 +248,20 @@
     $.extend($.ui.googleChart.charts, {
         // map
         t: function() {
-            widget = this;
+            chart = this;
             this.params  = ['chs', 'cht', 'chd', 'chtm', 'chld', 'chco', 'chf'];
             this.options = $.extend({
-                cht:       't',
-                chd:       's:_',
+                cht:       't',     // chart type (map)
+                chd:       's:_',   // chart data
                 chtm:      'world', // area
                 chld:      '',      // country(ies)
-                chco:      'eeeeee,DFB5B5,DFDBB5,B7DFB5',
-                chf:       'bg,s,cccccc',
-                areas:     true,
-                countries: true,
+                chco:      'eeeeee,DFB5B5,DFDBB5,B7DFB5', // colors
+                chf:       'bg,s,cccccc', // background (water masses)
+                areas:     true, // show areas
+                countries: true, // show contries (areas must be true)
                 sizes:     ['440x220', '400x200', '380x190', '360x180', '340x170', '320x160']
             }, this.options);
-            
+
             if (this.options.areas) {
                 this._ui.areaList = this._get_area_list()
                     .appendTo(this._ui.rightpanel)
@@ -225,13 +270,13 @@
                             var chtm = $(this).attr('id');
                             var lbl  = $(this).text();
                             var id   = $.format('#area-country-{0:s}', chtm);
-                            widget.options.chtm = chtm;
+                            chart.options.chtm = chtm;
 
-                            widget._ui.label.fadeOut(1000, function(){
+                            chart._ui.label.fadeOut(1000, function(){
                                 $(this).text(lbl).fadeIn(); 
                             });
 
-                            widget._refresh();
+                            chart._refresh();
 
                             if ($('.api-gc-countries select:visible').length == 0) {
                                 $('.api-gc-countries select').filter(id).show('slide', {direction: 'left'});
@@ -251,68 +296,97 @@
                         .find('option')
                             .mouseup(function(e){
                                 var chld = $(this).parent().val();
-                                widget.options.chld = chld.join('');
-                                widget.options.chd  = $.format('t:{0:s}', $.map($.range(0, 100, 100 / chld.length), $.iterators.parseInt).join(',')),
-                                widget._refresh();
+                                chart.options.chld = chld.join('');
+                                chart.options.chd  = $.format('t:{0:s}', $.map($.range(0, 100, 100 / chld.length), $.iterators.parseInt).join(',')),
+                                chart._refresh();
                             });
                 }
             }
 
+            // Option panel
             if (this.options.options) {
-                this._ui.colorsTab = $.ui.builder.tab(this._ui.options, {title: 'General'});
-                $.ui.builder.tab(this._ui.options, {title: 'Gradient'})
+                // General options tab
+                this._ui.panelGeneral = $.ui.builder.tab(this._ui.options, {title: 'General'})
+                                            .append($.tpl('googlechart.panelGeneral'));
+
+                $.component('colorpicker', { label: 'Foreground', id: 'api-gc-fgcolor'})
+                    .appendTo($('<li />')).parent()
+                    .appendTo(this._ui.panelGeneral.find('ul:eq(0)'))
+                    .find('input').bind('blur', function(){
+                        chart._set_fg_color($(this).val());
+                        chart._refresh();
+                    });
+
+                $.component('colorpicker', { label: 'Background', id: 'api-gc-bgcolor'})
+                    .appendTo($('<li />')).parent()
+                    .appendTo(this._ui.panelGeneral.find('ul:eq(0)'))
+                    .find('input').bind('blur', function(){
+                        chart._set_bg_color($(this).val());
+                        chart._refresh();
+                    });
+
+                $.component('selectsize', { label: 'Sizes', id: 'api-gc-size'})
+                    .appendTo($('<li />')).parent()
+                    .appendTo(this._ui.panelGeneral.find('ul:eq(1)'));
+
+                // Gradient options tab
+                this._ui.panelGradient = $.ui.builder.tab(this._ui.options, {title: 'Gradient'})
+                                            .append($.tpl('googlechart.panelGradient'));
+
+                $.component('colorpicker', { label: 'Start', id: 'api-gc-gradient-start'})
+                    .appendTo($('<li />')).parent()
+                    .appendTo(this._ui.panelGradient.find('ul:eq(0)'))
+                    .find('input')
+                        .val('#'+chart.options.chco.split(',')[1])
+                        .trigger('component.updatePreview')
+                        .bind('blur', function(){
+                            chart._set_fg_color($(this).val(), 1);
+                            chart._refresh(); });
                 
-                this._ui.options.sizes = $($.map(this.options.sizes, function(v){
-                    return $.ui.builder.option({value: v, label: v}, true);
-                }).join(''));
-                $.tpl('googlechart.panelOptionsColor')
-                    .appendTo(this._ui.colorsTab)
-                    .find('#api-gc-size')
-                        .append(this._ui.options.sizes)
-                        .val(this.options.chs)
-                        .change(function(){
-                            //console.log($(this).val());
-                            widget.options.chs = $(this).val();
-                            widget._refresh(widget.options);
-                        })
-                    .end()
-                    .find('#api-gc-bgcolor')
-                        .bind('previewRefresh.googleChart', function(){
-                            $(this).prev().css('background-color', $(this).val());
-                        })
-                        .bind('mapRefresh.googleChart', function(){
-                            widget.options.chf = 'bg,s,'+ $(this).val().replace('#','');
-                            $(this).trigger('previewRefresh.googleChart');
-                            widget._refresh();
-                        })
-                        .bind('keyup', function(){ $(this).trigger('previewRefresh.googleChart'); })
-                        .bind('blur',  function(){ $(this).trigger('mapRefresh.googleChart'); })
-                        .val('#'+ widget.options.chf.split(',')[2])
-                        .end()
-                    .find('#api-gc-fgcolor')
-                        .bind('previewRefresh.googleChart', function(){
-                            $(this).prev().css('background-color', $(this).val());
-                        })
-                        .bind('mapRefresh.googleChart', function(){
-                            var chco = widget.options.chco.split(',');
-                            chco[0] = $(this).val().replace('#','');
-                            widget.options.chco = chco.join(',');
-                            $(this).trigger('previewRefresh.googleChart');
-                            widget._refresh();
-                        })
-                        .bind('keyup', function(){ $(this).trigger('previewRefresh.googleChart'); })
-                        .bind('blur', function(){ $(this).trigger('mapRefresh.googleChart'); })
-                        .val('#'+widget.options.chco.split(',')[0]);
+                $.component('colorpicker', { label: 'Mid', id: 'api-gc-gradient-mid'})
+                    .appendTo($('<li />')).parent()
+                    .appendTo(this._ui.panelGradient.find('ul:eq(0)'))
+                    .find('input')
+                        .val('#'+chart.options.chco.split(',')[2])
+                        .trigger('component.updatePreview')
+                        .bind('blur', function(){
+                            chart._set_fg_color($(this).val(), 2);
+                            chart._refresh(); });
+                
+                $.component('colorpicker', { label: 'End', id: 'api-gc-gradient-end'})
+                    .appendTo($('<li />')).parent()
+                    .appendTo(this._ui.panelGradient.find('ul:eq(0)'))
+                    .find('input')
+                        .val('#'+chart.options.chco.split(',')[3])
+                        .trigger('component.updatePreview')
+                        .bind('blur', function(){
+                            chart._set_fg_color($(this).val(), 3);
+                            chart._refresh(); });
             }
-            
+            chart._set_label(this.options.chtm);
             this._refresh(); // initial load
         }
     });
 
 
-    $.extend($.ui.googleChart.cht, {
+    $.extend($.ui.googleChart.charts, {
         lc: function() {
-            console.log('building line chart');
+            chart = this;
+            this.params  = ['chs', 'cht', 'chd', 'chtm', 'chld', 'chco', 'chf'];
+            this.options = $.extend({
+                cht:       'lc',
+                chd:       't:40,60,60,45,47,75,70,72',
+                sizes:     ['440x220', '400x200', '380x190', '360x180', '340x170', '320x160']
+            }, this.options);
+            chart._set_label('Line chart');
+            this._ui.viewport.css({backgroundPosition: '-2px 2px', backgroundColor:'#fff'}); // removes left and bottom line of the image.
+
+            if (this.options.options) {
+                this._ui.colorsTab = $.ui.builder.tab(this._ui.options, {title: 'General'}).append(this._widget('resize'));
+            }
+           
+
+            this._refresh();
         },
         ls: function() {
             console.log('building line chart');
@@ -330,7 +404,7 @@
                     this._ui.options.hide().appendTo(this._ui.wrapper);
                     $.ui.builder.button({label: 'Options', icon: 'gear'})
                         .bind('click.googlechart', function(e){
-                            widget._ui.options.toggle();
+                            chart._ui.options.toggle();
                         })
                         .appendTo(this._ui.toolbar);
                 }
@@ -347,7 +421,7 @@
                     this._ui.link.appendTo(this._ui.wrapper);
                     $.ui.builder.button({label: 'Link', icon: 'link'})
                         .bind('click.googlechart', function(e){
-                            widget._ui.link.toggle();
+                            chart._ui.link.toggle();
                         })
                         .appendTo(this._ui.toolbar);
                 }
