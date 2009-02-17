@@ -21,19 +21,19 @@
     $.component = function() {
         if (!this.components) { this.components = []; }
         if (arguments.length == 1) {
-            var ns = 'component.'+ arguments[0].name;
+            var ns = arguments[0].name + '.component';
             this.components[ns] = arguments[0];
             $.tpl(ns, arguments[0].tpl);
         }
         else {
-            var ns  = 'component.'+ arguments[0];
+            var ns  = arguments[0] + '.component';
             var opt = $.extend(this.components[ns], arguments[1]);
             var tpl = $.tpl(ns, opt);
             if (opt.events) {
                 for (k in opt.events) {
                     var e = opt.events[k];
-                    var inst = e.selector && tpl.find(e.selector).bind(e.type, e.callback) 
-                                          || tpl.bind(e.type, e.callback);
+                    var inst = e.selector && tpl.find(e.selector).bind(e.type +'.component', e.callback) 
+                                          || tpl.bind(e.type +'.component', e.callback);
                     if (opt.init) {
                         opt.init.apply(inst);
                     }
@@ -46,14 +46,13 @@
 
     $.component({
         name:   'selectsize',
-        tpl:    '<span class="ui-component"><label for="{id:s}">{label:s}:</label><select id="{id:s}"></select></span>',
+        tpl:    '<span class="ui-component"><label>{label:s}:</label><select></select></span>',
         init: function() {
             $(this).val(chart.options.chs)
                 .append($.map(chart.options.sizes, function(v){
                     return $.ui.builder.option({value: v, label: v}, true);
                 }).join(''));
         },
-        defaults: { id: '' },
         events: [
             {type: 'change', selector: 'select', callback: function(){
                 chart.options.chs = $(this).val();
@@ -64,15 +63,16 @@
 
     $.component({
         name:   'colorpicker',
-        tpl:    ['<span class="ui-component">',
-                    '<label for="{id:s}">{label:s}:</label> ',
-                    '<span class="preview">&nbsp;</span>',
-                    '<input id="{id:s}" type="text" maxlength="7" />',
+        tpl:    ['<span class="ui-component api-gc-colorpicker">',
+                    '<label>{label:s}:</label><span class="preview">&nbsp;</span><input type="text" maxlength="7" />',
                 '</span>'],
-        defaults: { id: '' },
         events: [
-            {type: 'updatePreview', selector: 'input', callback: function(){ $(this).prev().css('background-color', $(this).val()); }},
-            {type: 'keyup',         selector: 'input', callback: function(){ $(this).trigger('updatePreview'); }}
+            {type: 'updatePreview', selector: 'input', callback: function() { $(this).prev().css('background-color', $(this).val()); }},
+            {type: 'refreshMap',    selector: 'input', callback: function() { chart._refresh(); }},
+            {type: 'blur',          selector: 'input', callback: function(e){ $(this).trigger('refreshMap.component'); }},
+            {type: 'keyup',         selector: 'input', callback: function(e){ 
+                $(this).trigger($.keyIs('enter', e) && 'refreshMap.component' || 'updatePreview.component');
+            }}
         ]
     });
 
@@ -107,10 +107,10 @@
             wrapper:    $('<div class="api-gc-wrapper" />'),
             viewport:   $('<div class="api-gc-viewport" />'),
             rightpanel: $('<div class="api-gc-panel" />'),
-            toolbar:    $.ui.builder.toolbar().attr('id', 'api-gc-toolbar'),
-            label:      $('<span id="api-gc-chart-label" />'),
-            link:       $('<div id="api-gc-chart-link" class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="display:none;"><input type="text" value="" class=" ui-corner-all" /></div>'),
-            options:    $('<div id="api-gc-chart-options" class="ui-helper-reset ui-widget-content ui-corner-all" style="display:none;" />')
+            toolbar:    $.ui.builder.toolbar().addClass('api-gc-toolbar'),
+            label:      $('<span class="api-gc-chart-label" />'),
+            link:       $('<div class="api-gc-chart-link ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all ui-hidden"><input type="text" value="" class=" ui-corner-all" /></div>'),
+            options:    $('<div class="api-gc-chart-options ui-helper-reset ui-widget-content ui-corner-all ui-hidden" />')
         },
 
         _refresh: function(opt) {
@@ -126,15 +126,12 @@
         },
 
         _set_bg_color: function(color) {
-            console.log('bg,s,'+ color.replace('#',''));
-            if (color) {
-                chart.options.chf = 'bg,s,'+ color.replace('#','');
-            }
+            if (color) { chart.options.chf = 'bg,s,'+ color.replace('#',''); }
         },
 
         _set_fg_color: function(color, idx) {
             var chco  = chart.options.chco.split(',');
-            chco[idx] = color.replace('#','');
+            chco[idx||0] = color.replace('#','');
             chart.options.chco = chco.join(',');
         },
 
@@ -309,23 +306,23 @@
                 this._ui.panelGeneral = $.ui.builder.tab(this._ui.options, {title: 'General'})
                                             .append($.tpl('googlechart.panelGeneral'));
 
-                $.component('colorpicker', { label: 'Foreground', id: 'api-gc-fgcolor'})
+                $.component('colorpicker', { label: 'Foreground'})
                     .appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGeneral.find('ul:eq(0)'))
-                    .find('input').bind('blur', function(){
-                        chart._set_fg_color($(this).val());
-                        chart._refresh();
-                    });
+                    .find('input').val('#'+ chart.options.chco.split(',')[0])
+                        .trigger('updatePreview.component')
+                        .bind('refreshMap.component', function(){
+                            chart._set_fg_color($(this).val()); });
 
-                $.component('colorpicker', { label: 'Background', id: 'api-gc-bgcolor'})
+                $.component('colorpicker', { label: 'Background'})
                     .appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGeneral.find('ul:eq(0)'))
-                    .find('input').bind('blur', function(){
-                        chart._set_bg_color($(this).val());
-                        chart._refresh();
-                    });
+                    .find('input').val('#'+ chart.options.chf.slice(-6))
+                        .trigger('updatePreview.component')
+                        .bind('refreshMap.component', function(){
+                            chart._set_bg_color($(this).val()); });
 
-                $.component('selectsize', { label: 'Sizes', id: 'api-gc-size'})
+                $.component('selectsize', { label: 'Sizes'})
                     .appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGeneral.find('ul:eq(1)'));
 
@@ -333,35 +330,29 @@
                 this._ui.panelGradient = $.ui.builder.tab(this._ui.options, {title: 'Gradient'})
                                             .append($.tpl('googlechart.panelGradient'));
 
-                $.component('colorpicker', { label: 'Start', id: 'api-gc-gradient-start'})
+                $.component('colorpicker', { label: 'Start'})
                     .appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGradient.find('ul:eq(0)'))
-                    .find('input')
-                        .val('#'+chart.options.chco.split(',')[1])
-                        .trigger('component.updatePreview')
-                        .bind('blur', function(){
-                            chart._set_fg_color($(this).val(), 1);
-                            chart._refresh(); });
+                    .find('input').val('#'+chart.options.chco.split(',')[1])
+                        .trigger('updatePreview.component')
+                        .bind('refreshMap.component', function(){
+                            chart._set_fg_color($(this).val(), 1); });
                 
-                $.component('colorpicker', { label: 'Mid', id: 'api-gc-gradient-mid'})
+                $.component('colorpicker', { label: 'Mid'})
                     .appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGradient.find('ul:eq(0)'))
-                    .find('input')
-                        .val('#'+chart.options.chco.split(',')[2])
-                        .trigger('component.updatePreview')
-                        .bind('blur', function(){
-                            chart._set_fg_color($(this).val(), 2);
-                            chart._refresh(); });
+                    .find('input').val('#'+chart.options.chco.split(',')[2])
+                        .trigger('updatePreview.component')
+                        .bind('refreshMap.component', function(){
+                            chart._set_fg_color($(this).val(), 2); });
                 
-                $.component('colorpicker', { label: 'End', id: 'api-gc-gradient-end'})
+                $.component('colorpicker', { label: 'End'})
                     .appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGradient.find('ul:eq(0)'))
-                    .find('input')
-                        .val('#'+chart.options.chco.split(',')[3])
-                        .trigger('component.updatePreview')
-                        .bind('blur', function(){
-                            chart._set_fg_color($(this).val(), 3);
-                            chart._refresh(); });
+                    .find('input').val('#'+chart.options.chco.split(',')[3])
+                        .trigger('updatePreview.component')
+                        .bind('refreshMap.component', function(){
+                            chart._set_fg_color($(this).val(), 3); });
             }
             chart._set_label(this.options.chtm);
             this._refresh(); // initial load
@@ -400,7 +391,7 @@
         options: {
             _init: function(){
                 if (this.options.options) {
-                    this._ui.options   = $.ui.builder.tabs().attr('id', 'api-gc-options');
+                    this._ui.options   = $.ui.builder.tabs().addClass('api-gc-options');
                     this._ui.options.hide().appendTo(this._ui.wrapper);
                     $.ui.builder.button({label: 'Options', icon: 'gear'})
                         .bind('click.googlechart', function(e){
