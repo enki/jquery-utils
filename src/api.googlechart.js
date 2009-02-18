@@ -1,5 +1,5 @@
 /*
-  jQuery api.googlechart - 0.1
+  jQuery api.googlechart - 0.2
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -20,71 +20,100 @@
     // experimental
     $.component = function() {
         if (!this.components) { this.components = []; }
-        if (arguments.length == 1) {
+        if (arguments.length == 1 && $.isObject(arguments[0])) {
             var ns = arguments[0].name + '.component';
             this.components[ns] = arguments[0];
             $.tpl(ns, arguments[0].tpl);
         }
         else {
             var ns  = arguments[0] + '.component';
-            var opt = $.extend(this.components[ns], arguments[1]);
+            var opt = $.extend(this.components[ns], arguments[1] || {});
             var tpl = $.tpl(ns, opt);
             if (opt.events) {
                 for (k in opt.events) {
                     var e = opt.events[k];
-                    var inst = e.selector && tpl.find(e.selector).bind(e.type +'.component', e.callback) 
-                                          || tpl.bind(e.type +'.component', e.callback);
-                    if (opt.init) {
-                        opt.init.apply(inst);
-                    }
+                    e.selector && tpl.find(e.selector).bind(e.type +'.component', e.callback) 
+                               || tpl.bind(e.type +'.component', e.callback);
                 }
             }
+            if (opt.init) { opt.init.apply(tpl); }
             return tpl;
         }
-        
     };
 
     $.component({
-        name:   'selectsize',
-        tpl:    '<span class="ui-component"><label>{label:s}:</label><select></select></span>',
+        name: 'countrylist',
+        tpl:  '<div class="api-gc-countries ui-reset ui-clearfix" />',
         init: function() {
-            $(this).val(chart.options.chs)
-                .append($.map(chart.options.sizes, function(v){
-                    return $.ui.builder.option({value: v, label: v}, true);
-                }).join(''));
+            var o = ['<select class="api-gc-country-list ui-helper-hidden" multiple="true">'];
+            for (cc in $.ui.googleChart.countries) {
+                o.push($.format('<option value="{0:s}">{1:s}</option>', cc, $.ui.googleChart.countries[cc]));
+            }
+            o.push('</select><select class="api-gc-usa-state-list ui-helper-hidden" multiple="true">');
+            for (cs in $.ui.googleChart.usStates) {
+                o.push($.format('<option value="{0:s}">{1:s}</option>', cs, $.ui.googleChart.usStates[cs]));
+            }
+            o.push('</select>');
+            $(this).append(o.join(''));
+        }
+    });
+
+    $.component({
+        name: 'arealist',
+        tpl:  '<ul class="api-gc-area-list ui-reset" />',
+        init: function() {
+            var o = [];
+            var tpl = '<li class="ui-reset"><a href="#{0:s}" class="ui-state-default"><span class="ui-icon ui-icon-triangle-1-e"></span>{1:s}</a></li>';
+            for (k in $.ui.googleChart.areas) {
+                $(this).append($.format(tpl, k, $.ui.googleChart.areas[k]));
+            }
+            $(this).append('<li class="label ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-bottom">Area</li></ul>')
+                   .height(chart._height());
         },
         events: [
-            {type: 'change', selector: 'select', callback: function(){
-                chart.options.chs = $(this).val();
+            {type: 'refreshMap', callback: function() { 
+                var chtm = $('li.selected a', this).attr('href').replace('#','');
+                var lbl  = $('li.selected a', this).text();
+                chart.options.chtm = chtm;
+                chart._ui.label.fadeOut(1000, function(){
+                    $(this).text(lbl).fadeIn(); 
+                });
+                chart._refresh();
+            }}
+        ]
+    });
+
+    $.component({
+        name: 'selectsize',
+        tpl:  '<span class="ui-component"><label>{label:s}:</label><select></select></span>',
+        init: function() {
+            $(this).find('select').append($.map(chart.options.sizes, function(v){
+                return $.ui.builder.option({value: v, label: v}, true);
+            }).join('')).val(chart.options.chs);
+        },
+        events: [
+            {type: 'change', callback: function(){
+                chart.options.chs = $(this).find('select').val();
                 chart._refresh(chart.options); 
             }}
         ]
     });
 
     $.component({
-        name:   'colorpicker',
-        tpl:    ['<span class="ui-component api-gc-colorpicker">',
-                    '<label>{label:s}:</label><span class="preview">&nbsp;</span><input type="text" maxlength="7" />',
-                '</span>'],
+        name: 'colorpicker',
+        tpl:  '<span class="ui-component api-gc-colorpicker"><label>{label:s}:</label><span class="preview">&nbsp;</span><input type="text" maxlength="7" /></span>',
         events: [
-            {type: 'updatePreview', selector: 'input', callback: function() { $(this).prev().css('background-color', $(this).val()); }},
-            {type: 'refreshMap',    selector: 'input', callback: function() { chart._refresh(); }},
-            {type: 'blur',          selector: 'input', callback: function(e){ $(this).trigger('refreshMap.component'); }},
-            {type: 'keyup',         selector: 'input', callback: function(e){ 
-                $(this).trigger($.keyIs('enter', e) && 'refreshMap.component' || 'updatePreview.component');
+            {type: 'updatePreview', callback: function() { $(this).find('span').css('background-color', $('input', this).val()); }},
+            //{type: 'refreshMap',    callback: function() { $(this).trigger('updatePreview.component'); }},
+            {type: 'blur',  selector: 'input', callback: function(e){ $(this).parent().trigger('refreshMap.component'); }},
+            {type: 'keyup', selector: 'input', callback: function(e){ 
+                $(this).parent().trigger($.keyIs('enter', e) && 'refreshMap.component' || 'updatePreview.component');
             }}
         ]
     });
 
-    $.tpl('googlechart.panelGeneral', [
-        '<ul class="ui-form ui-helper-reset" style="float:left;" />',
-        '<ul class="ui-form ui-helper-reset" style="margin-left:120px;padding-left:20px;" />',
-        '<div style="clear:both;" />'
-    ]);
-    $.tpl('googlechart.panelGradient', [
-        '<ul class="ui-form ui-helper-reset" style="float:left;" />',
-        '<div style="clear:both;" />'
-    ]);
+    $.tpl('googlechart.panelGeneral',  '<ul class="ui-form ui-helper-reset ui-helper-clearfix" style="float:left;" /><ul class="ui-form ui-helper-reset" style="margin-left:120px;padding-left:20px;" /><div style="clear:both;" />');
+    $.tpl('googlechart.panelGradient', '<ul class="ui-form ui-helper-reset" style="float:left;" /><div style="clear:both;" />');
 
     $.widget('ui.googleChart', {
         _init: function(){
@@ -109,8 +138,8 @@
             rightpanel: $('<div class="api-gc-panel" />'),
             toolbar:    $.ui.builder.toolbar().addClass('api-gc-toolbar'),
             label:      $('<span class="api-gc-chart-label" />'),
-            link:       $('<div class="api-gc-chart-link ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all ui-hidden"><input type="text" value="" class=" ui-corner-all" /></div>'),
-            options:    $('<div class="api-gc-chart-options ui-helper-reset ui-widget-content ui-corner-all ui-hidden" />')
+            link:       $('<div class="api-gc-chart-link ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all ui-helper-hidden"><input type="text" value="" class=" ui-corner-all" /></div>'),
+            options:    $('<div class="api-gc-chart-options ui-helper-reset ui-widget-content ui-corner-all ui-helper-hidden" />')
         },
 
         _refresh: function(opt) {
@@ -123,55 +152,30 @@
                 .width(this._width()).height(this._height())
                 .css({backgroundImage: $.format('url({0:s})', url),
                       backgroundRepeat: 'no-repeat'});
+            return this;
+        },
+
+        _size: function(size) {
+            if (!size) { return chart.options.chs; }
+            chart.options.chs = size;
+            return this;
         },
 
         _set_bg_color: function(color) {
             if (color) { chart.options.chf = 'bg,s,'+ color.replace('#',''); }
+            return this;
         },
 
         _set_fg_color: function(color, idx) {
             var chco  = chart.options.chco.split(',');
             chco[idx||0] = color.replace('#','');
             chart.options.chco = chco.join(',');
+            return this;
         },
 
         _set_label: function(label){
             this._ui.label.text(label);
-        },
-        
-        _get_area_list: function() {
-            var o = ['<ul class="api-gc-area-list ui-reset">'];
-            for (k in $.ui.googleChart.areas) {
-                o.push($.format('<li id="{0:s}" class="ui-reset"><a href="#" class="ui-state-default"><span class="ui-icon ui-icon-triangle-1-e"></span>{1:s}</a></li>', k, $.ui.googleChart.areas[k]));
-            }
-            o.push('<li class="label ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-bottom">Area</li></ul>');
-            return $(o.join('')).height(this._height());
-        },
-
-        _get_country_list: function() {
-            var o = ['<div class="api-gc-countries ui-reset ui-clearfix">'];
-            for (k in $.ui.googleChart.areasCountries) {
-                o.push($.format('<select id="area-country-{0:s}" class="api-gc-country-list ui-reset" style="display:none;" multiple="true">', k));
-                for (i in $.ui.googleChart.areasCountries[k]) {
-                    var cc = $.ui.googleChart.areasCountries[k][i];
-                    var label = (k == 'usa') ? $.ui.googleChart.usStates[cc]: $.ui.googleChart.countries[cc];
-                    o.push($.format('<option value="{0:s}" class="ui-reset">{1:s}</option>', cc, label, cc));
-                }
-                o.push('</select>');
-            }
-            o.push(this._get_world_country_list());
-            o.push('</div>');
-            return o.join('');
-        },
-
-        _get_world_country_list: function() {
-            var o = ['<select id="area-country-world" class="api-gc-country-list ui-reset" style="display:none;" multiple="true">'];
-            for (k in $.ui.googleChart.countries) {
-                var label = $.ui.googleChart.countries[k];
-                o.push($.format('<option value="{0:s}" class="ui-reset">{1:s}</option>', k, label, k));
-            }
-            o.push('</select>');
-            return o.join('');
+            return this;
         },
 
         _plugin_call: function(method, args) {
@@ -181,12 +185,12 @@
                     plugin[method].apply(this, args || []);
                 }
             }
+            return this;
         },
 
         _get_url: function(options, params) {
             var o = [];
             for (k in params) {
-                //console.log(params[k], options[params[k]]);
                 if (options[params[k]]) { o.push(params[k] +'='+ options[params[k]]); }
             }
             return options.url +'?'+ o.join('&');
@@ -246,8 +250,8 @@
         // map
         t: function() {
             chart = this;
-            this.params  = ['chs', 'cht', 'chd', 'chtm', 'chld', 'chco', 'chf'];
-            this.options = $.extend({
+            chart.params  = ['chs', 'cht', 'chd', 'chtm', 'chld', 'chco', 'chf'];
+            chart.options = $.extend({
                 cht:       't',     // chart type (map)
                 chd:       's:_',   // chart data
                 chtm:      'world', // area
@@ -257,46 +261,41 @@
                 areas:     true, // show areas
                 countries: true, // show contries (areas must be true)
                 sizes:     ['440x220', '400x200', '380x190', '360x180', '340x170', '320x160']
-            }, this.options);
+            }, chart.options);
 
-            if (this.options.areas) {
-                this._ui.areaList = this._get_area_list()
-                    .appendTo(this._ui.rightpanel)
-                    .find('li')
+            if (chart.options.areas) {
+                chart._ui.arealist = $.component('arealist')
+                    .appendTo(chart._ui.rightpanel)
+                    .find('li a')
                         .click(function(e){
-                            var chtm = $(this).attr('id');
-                            var lbl  = $(this).text();
-                            var id   = $.format('#area-country-{0:s}', chtm);
-                            chart.options.chtm = chtm;
-
-                            chart._ui.label.fadeOut(1000, function(){
-                                $(this).text(lbl).fadeIn(); 
-                            });
-
-                            chart._refresh();
-
-                            if ($('.api-gc-countries select:visible').length == 0) {
-                                $('.api-gc-countries select').filter(id).show('slide', {direction: 'left'});
+                            var area = $(this).attr('href').replace('#','');
+                            $(this).parent().addClass('selected').siblings().removeClass('selected');
+                            chart._ui.arealist.trigger('refreshMap.component');
+                            if (area != 'usa') {
+                                chart._ui.contrylist.find('select')
+                                    .filter('.api-gc-usa-state-list:visible').hide('slide', {direction: 'left'}).end()
+                                    .filter('.api-gc-country-list:hidden')
+                                        
+                                        .show('slide', {direction: 'left'}).end();
                             }
-                            else if ($(id).not(':visible')) {
-                                $('.api-gc-countries select')
-                                    .filter(':visible').hide('slide', {direction: 'left'}, 1000).end()
-                                    .delay(1000)
-                                    .filter(id).show('slide', {direction: 'left'});
+                            else {
+                                chart._ui.contrylist.find('select')
+                                    .filter('.api-gc-country-list:visible').hide('slide', {direction: 'left'}).end()
+                                    .filter('.api-gc-usa-state-list:hidden').show('slide', {direction: 'left'}).end();
                             }
-                        });
+                        }).end();
 
-                if (this.options.countries) {
-                    this._ui.countryList = $(this._get_country_list())
-                        .height(this._height())
-                        .appendTo(this._ui.rightpanel)
+                if (chart.options.countries) {
+                    chart._ui.contrylist = $.component('countrylist')
+                        .height(chart._height())
+                        .appendTo(chart._ui.rightpanel)
                         .find('option')
                             .mouseup(function(e){
                                 var chld = $(this).parent().val();
                                 chart.options.chld = chld.join('');
                                 chart.options.chd  = $.format('t:{0:s}', $.map($.range(0, 100, 100 / chld.length), $.iterators.parseInt).join(',')),
                                 chart._refresh();
-                            });
+                            }).end();
                 }
             }
 
@@ -309,21 +308,20 @@
                 $.component('colorpicker', { label: 'Foreground'})
                     .appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGeneral.find('ul:eq(0)'))
-                    .find('input').val('#'+ chart.options.chco.split(',')[0])
-                        .trigger('updatePreview.component')
-                        .bind('refreshMap.component', function(){
-                            chart._set_fg_color($(this).val()); });
+                    .find('input').val('#'+ chart.options.chco.split(',')[0]).end()
+                    .trigger('updatePreview.component')
+                    .bind('refreshMap.component', function(){
+                        chart._set_fg_color($('input', this).val())._refresh(); });
 
                 $.component('colorpicker', { label: 'Background'})
                     .appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGeneral.find('ul:eq(0)'))
-                    .find('input').val('#'+ chart.options.chf.slice(-6))
-                        .trigger('updatePreview.component')
-                        .bind('refreshMap.component', function(){
-                            chart._set_bg_color($(this).val()); });
+                    .find('input').val('#'+ chart.options.chf.slice(-6)).end()
+                    .trigger('updatePreview.component')
+                    .bind('refreshMap.component', function(){
+                        chart._set_bg_color($('input', this).val())._refresh(); });
 
-                $.component('selectsize', { label: 'Sizes'})
-                    .appendTo($('<li />')).parent()
+                $.component('selectsize', { label: 'Sizes'}).appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGeneral.find('ul:eq(1)'));
 
                 // Gradient options tab
@@ -333,32 +331,31 @@
                 $.component('colorpicker', { label: 'Start'})
                     .appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGradient.find('ul:eq(0)'))
-                    .find('input').val('#'+chart.options.chco.split(',')[1])
-                        .trigger('updatePreview.component')
-                        .bind('refreshMap.component', function(){
-                            chart._set_fg_color($(this).val(), 1); });
+                    .find('input').val('#'+chart.options.chco.split(',')[1]).end()
+                    .trigger('updatePreview.component')
+                    .bind('refreshMap.component', function(){
+                        chart._set_fg_color($('input', this).val(), 1)._refresh(); });
                 
                 $.component('colorpicker', { label: 'Mid'})
                     .appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGradient.find('ul:eq(0)'))
-                    .find('input').val('#'+chart.options.chco.split(',')[2])
-                        .trigger('updatePreview.component')
-                        .bind('refreshMap.component', function(){
-                            chart._set_fg_color($(this).val(), 2); });
+                    .find('input').val('#'+chart.options.chco.split(',')[2]).end()
+                    .trigger('updatePreview.component')
+                    .bind('refreshMap.component', function(){
+                        chart._set_fg_color($('input', this).val(), 2)._refresh(); });
                 
                 $.component('colorpicker', { label: 'End'})
                     .appendTo($('<li />')).parent()
                     .appendTo(this._ui.panelGradient.find('ul:eq(0)'))
-                    .find('input').val('#'+chart.options.chco.split(',')[3])
-                        .trigger('updatePreview.component')
-                        .bind('refreshMap.component', function(){
-                            chart._set_fg_color($(this).val(), 3); });
+                    .find('input').val('#'+chart.options.chco.split(',')[3]).end()
+                    .trigger('updatePreview.component')
+                    .bind('refreshMap.component', function(){
+                        chart._set_fg_color($('input', this).val(), 3)._refresh(); });
             }
             chart._set_label(this.options.chtm);
             this._refresh(); // initial load
         }
     });
-
 
     $.extend($.ui.googleChart.charts, {
         lc: function() {
@@ -375,8 +372,6 @@
             if (this.options.options) {
                 this._ui.colorsTab = $.ui.builder.tab(this._ui.options, {title: 'General'}).append(this._widget('resize'));
             }
-           
-
             this._refresh();
         },
         ls: function() {
