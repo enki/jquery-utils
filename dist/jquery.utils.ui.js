@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.7.0
+  jQuery utils - 0.8.0
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -30,6 +30,10 @@
             NUMPAD_ADD: 107, NUMPAD_DECIMAL: 110, NUMPAD_DIVIDE: 111, NUMPAD_ENTER: 108, 
             NUMPAD_MULTIPLY: 106, NUMPAD_SUBTRACT: 109, PAGE_DOWN: 34, PAGE_UP: 33, 
             PERIOD: 190, RIGHT: 39, SHIFT: 16, SPACE: 32, TAB: 9, UP: 38
+        },
+        
+        keyIs: function(k, e) {
+            return parseInt($.keyCode[k.toUpperCase()], 10) == parseInt((typeof(e) == 'number' )? e: e.keyCode, 10);
         },
 
         // Redirect to a specified url
@@ -2858,7 +2862,7 @@ $(document).ready(function(){
     $('body').youtubeLinksToEmbed();
 });
 /*
-  jQuery utils - 0.7.0
+  jQuery utils - 0.8.0
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -2889,6 +2893,10 @@ $(document).ready(function(){
             NUMPAD_ADD: 107, NUMPAD_DECIMAL: 110, NUMPAD_DIVIDE: 111, NUMPAD_ENTER: 108, 
             NUMPAD_MULTIPLY: 106, NUMPAD_SUBTRACT: 109, PAGE_DOWN: 34, PAGE_UP: 33, 
             PERIOD: 190, RIGHT: 39, SHIFT: 16, SPACE: 32, TAB: 9, UP: 38
+        },
+        
+        keyIs: function(k, e) {
+            return parseInt($.keyCode[k.toUpperCase()], 10) == parseInt((typeof(e) == 'number' )? e: e.keyCode, 10);
         },
 
         // Redirect to a specified url
@@ -3079,7 +3087,7 @@ $(document).ready(function(){
 	});
 })(jQuery);
 /*
-  jQuery utils - 0.7.0
+  jQuery utils - 0.8.0
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -3110,6 +3118,10 @@ $(document).ready(function(){
             NUMPAD_ADD: 107, NUMPAD_DECIMAL: 110, NUMPAD_DIVIDE: 111, NUMPAD_ENTER: 108, 
             NUMPAD_MULTIPLY: 106, NUMPAD_SUBTRACT: 109, PAGE_DOWN: 34, PAGE_UP: 33, 
             PERIOD: 190, RIGHT: 39, SHIFT: 16, SPACE: 32, TAB: 9, UP: 38
+        },
+        
+        keyIs: function(k, e) {
+            return parseInt($.keyCode[k.toUpperCase()], 10) == parseInt((typeof(e) == 'number' )? e: e.keyCode, 10);
         },
 
         // Redirect to a specified url
@@ -6077,7 +6089,7 @@ $(document).ready(function(){
     };
 })(jQuery);
 /*
-  jQuery ui.timepickr - 0.7.0
+  jQuery ui.timepickr - 0.8.0
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -6651,7 +6663,7 @@ $.ui.toaster.defaults = {
 	};
 })(jQuery);
 /*
-  jQuery utils - 0.7.0
+  jQuery utils - 0.8.0
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -6682,6 +6694,10 @@ $.ui.toaster.defaults = {
             NUMPAD_ADD: 107, NUMPAD_DECIMAL: 110, NUMPAD_DIVIDE: 111, NUMPAD_ENTER: 108, 
             NUMPAD_MULTIPLY: 106, NUMPAD_SUBTRACT: 109, PAGE_DOWN: 34, PAGE_UP: 33, 
             PERIOD: 190, RIGHT: 39, SHIFT: 16, SPACE: 32, TAB: 9, UP: 38
+        },
+        
+        keyIs: function(k, e) {
+            return parseInt($.keyCode[k.toUpperCase()], 10) == parseInt((typeof(e) == 'number' )? e: e.keyCode, 10);
         },
 
         // Redirect to a specified url
