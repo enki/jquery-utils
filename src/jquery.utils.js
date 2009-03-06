@@ -91,7 +91,7 @@
         // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
             if (!o) { return false; }
-            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
+            return o.constructor && Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
 		},
 
         isObject: function(o) {
