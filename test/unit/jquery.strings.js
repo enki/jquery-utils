@@ -11,6 +11,10 @@ function test_format(a) {
 module('jquery.strings.js');
 test('Replacement and conversions', function() {
     test_format([
+
+        // Bug #12: http://code.google.com/p/jquery-utils/issues/detail?id=12
+        ['My name is {0} :-{{}}',  'Fred', 'My name is Fred :-{}', 'Brace escaping (bug #12)'],
+        ['My name is {0} :-{{abc}}',  'Fred', 'My name is Fred :-{abc}', 'Brace escaping (bug #12)'],
         ['{a}bc',       {a:'A'},     'Abc',       'Basic string replacement: Single character replacement (start)'],
         ['a{b}c',       {b:'B'},     'aBc',       'Basic string replacement: Single character replacement (middle)'],
         ['ab{c}',       {c:'C'},     'abC',       'Basic string replacement: Single character replacement (end)'],
