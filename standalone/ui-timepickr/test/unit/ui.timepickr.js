@@ -1,6 +1,45 @@
 $(function(){
     $('#main').hide().html($('<input id="timepickr-test12" type="text"><input id="timepickr-test24" type="text">'));
+
+    function setup(opt) {
+        return $('<input type="text">').appendTo('#main').timepickr(opt);
+    }
+
+    module('ui.timepickr.js');
+
+    test('initialization', function(){
+        expect(9);
+        var tp = setup();
+        ok(tp.next().is(':hidden'),               'wrapper is hidden OK');
+        ok(tp.next().hasClass('ui-helper-reset'), 'wrapper has class ui-helper-reset OK');
+        ok(tp.next().hasClass('ui-widget'),       'wrapper has class ui-widget OK');
+        ok(tp.next().hasClass('ui-timepickr'),    'wrapper has class ui-timepickr OK');
+        equals(tp.next().find('ol').length, 3,    'ol length OK')
+        equals(tp.next().find('ol:eq(0) li').length, 2,  'ol:eq(0) > li length OK')
+        equals(tp.next().find('ol:eq(1) li').length, 24, 'ol:eq(1) > li length OK')
+        equals(tp.next().find('ol:eq(2) li').length, 4,  'ol:eq(2) > li length OK')
+        equals(tp.next().text(), 'ampm00010203040506070809101112131415161718192021222300153045', 'Data integrity OK');
+    });
+
+    test('initialization', function(){
+        expect(9);
+        stop();
+        var tp = setup();
+        tp12.focus();
+
+        // Hours
+        setTimeout(function(){
+            var range = $.range(0,12);
+            for (var i in range) {
+                var time = $.format('{0:02.d}:00:00 am', (range[i] + 1));
+                var msg  = $.format('span.ui-dropslide > ol:eq(0) li:eq({0:d}):hover', i);
+                ds12.find('ol:eq(0) li:eq('+ range[i] +')').mouseover();
+                equals(tp12.val(), time, msg);
+            }
+        }, to());
+    });
     
+    /*
     var tp12 = $('#timepickr-test12').timepickr({
         convention:12, 
         seconds: true, 
@@ -19,7 +58,6 @@ $(function(){
         this._to = this._to && this._to +10 || 50;
         return this._to;
     };
-
     module('ui.timepickr.js');
     test('12h: Picker inputs', function(){
         expect(23); stop();
@@ -82,7 +120,6 @@ $(function(){
         }, to());
 
     });
-    /*
 
     test('24h: Picker inputs', function(){
         expect(35); stop();

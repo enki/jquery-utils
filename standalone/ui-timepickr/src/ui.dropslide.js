@@ -14,15 +14,12 @@
         getter: 'showLevel showNextLevel getSelection',
         _init: function() {
             var widget   = this;
-            var next     = this.element.next();
-            this.wrapper = next.hasClass('ui-dropslide') && next || this.options.tree;
+            this.wrapper = this.element.next();
 
             this.element.bind(this.options.trigger +'.dropslide', function(){
                 widget.show();
             });
-
             this.wrapper
-                .addClass('ui-reset ui-component')
                 .data('dropslide', this)
                 .css({width:this.options.width})
                 .find('li, li ol li')

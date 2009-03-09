@@ -562,15 +562,15 @@
             });
 
             this.wrapper
-                .addClass('ui-reset ui-component')
+                .addClass('ui-helper-reset ui-widget')
                 .data('dropslide', this)
                 .css({width:this.options.width})
                 .find('li, li ol li')
                     .bind('mouseover.dropslide', function(e){
                         $(this).siblings().removeClass('hover')
                             .find('ol').hide().end()
-                            .find('span').removeClass('ui-hover-state').end();
-                        $(this).find('ol').show().end().addClass('hover').children(0).addClass('ui-hover-state');
+                            .find('span').removeClass('ui-state-hover').end();
+                        $(this).find('ol').show().end().addClass('hover').children(0).addClass('ui-state-hover');
                         widget.showNextLevel();
                     })
                    .bind('click.dropslide', function(e){
@@ -611,8 +611,8 @@
 
         getSelection: function(level) {
             return level 
-                    && this.wrapper.find('ol').eq(level).find('li span.ui-hover-state')
-                    || $.makeArray(this.wrapper.find('span.ui-hover-state').map($.iterators.getText));
+                    && this.wrapper.find('ol').eq(level).find('li span.ui-state-hover')
+                    || $.makeArray(this.wrapper.find('span.ui-state-hover').map($.iterators.getText));
         },
 
         // essentially reposition each ol
@@ -743,9 +743,9 @@
                 });
             }
 
-            var hrs = menu.find('ol:eq(1)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
-            var min = menu.find('ol:eq(2)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
-            var sec = menu.find('ol:eq(3)').find('li:first').addClass('hover').find('span').addClass('ui-hover-state').end().end();
+            var hrs = menu.find('ol:eq(1)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
+            var min = menu.find('ol:eq(2)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
+            var sec = menu.find('ol:eq(3)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
 
             if (this.options.convention === 24) {
                 var day        = menu.find('ol:eq(0) li:eq(0)');
@@ -755,8 +755,8 @@
                 var index      = 0;
                 var selectHr   = function(id) {
                     hrs.find('li').removeClass('hover');
-                    hrs.find('span').removeClass('ui-hover-state');
-                    hrs.find('li').eq(id).addClass('hover').find('span').addClass('ui-hover-state')
+                    hrs.find('span').removeClass('ui-state-hover');
+                    hrs.find('li').eq(id).addClass('hover').find('span').addClass('ui-state-hover')
                 };
 
                 day.mouseover(function() {

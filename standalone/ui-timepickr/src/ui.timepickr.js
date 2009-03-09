@@ -181,7 +181,7 @@
         },
 
         _buildMenu: function() {
-            var menu   = $('<span class="ui-reset ui-dropslide ui-component" />');
+            var menu   = $('<span class="ui-helper-reset ui-dropslide ui-timepickr ui-widget" />');
             var ranges = this.options.convention === 24 
                          && this._getRanges24() || this._getRanges12();
 
