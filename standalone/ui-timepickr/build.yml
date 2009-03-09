@@ -1,31 +1,32 @@
 title: jquery.timepickr
-version: 0.6.5
+version: 0.6.6
 svnrev: true
 dest: standalone/ui-timepickr/dist/
 modules:
-  - file: src/ui.timepickr.js
+  - file: standalone/ui-timepickr/src/ui.timepickr.js
     name: "timepickr"
     destfile: jquery.timepickr.js
     depends:
       - src: src/jquery.utils.js
       - src: src/jquery.strings.js
-      - src: src/jquery.arrayUtils.js
       # src: src/jquery.i18n.js
-      - src: src/ui.dropslide.js
+      - src: standalone/ui-timepickr/src/ui.dropslide.js
 
 copy: 
   - src: demo/themes/default/images/*.png
     dest: standalone/ui-timepickr/dist/themes/default/images/
   - src: demo/themes/default/*.css
     dest: standalone/ui-timepickr/dist/themes/default/
-  - dest: standalone/ui-timepickr/page/jquery.ui.all.js
-    src: src/jquery.ui.all.js
+  - src: src/jquery.ui.all.js
+    dest: standalone/ui-timepickr/page/jquery.ui.all.js
+  - src: src/jquery.utils.js
+    dest: standalone/ui-hygrid/page/jquery.utils.js
 
 merge:
   - dest: standalone/ui-timepickr/dist/themes/default/ui.timepickr.css
     files:
-      - src: src/css/ui.dropslide.css
-      - src: src/css/ui.timepickr.css
+      - src: standalone/ui-timepickr/src/css/ui.dropslide.css
+      - src: standalone/ui-timepickr/src/css/ui.timepickr.css
 zip:
   - dest: standalone/ui-timepickr/downloads/jquery.timepickr-%v-standalone.zip
     src: standalone/ui-timepickr/
