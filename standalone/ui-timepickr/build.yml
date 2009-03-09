@@ -20,7 +20,9 @@ copy:
   - src: src/jquery.ui.all.js
     dest: standalone/ui-timepickr/page/jquery.ui.all.js
   - src: src/jquery.utils.js
-    dest: standalone/ui-hygrid/page/jquery.utils.js
+    dest: standalone/ui-timepickr/page/jquery.utils.js
+  - src: src/jquery.anchorHandler.js
+    dest: standalone/ui-timepickr/page/jquery.anchorHandler.js
 
 merge:
   - dest: standalone/ui-timepickr/dist/themes/default/ui.timepickr.css

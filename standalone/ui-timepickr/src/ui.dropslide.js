@@ -29,8 +29,8 @@
                     .bind('mouseover.dropslide', function(e){
                         $(this).siblings().removeClass('hover')
                             .find('ol').hide().end()
-                            .find('span').removeClass('ui-hover-state').end();
-                        $(this).find('ol').show().end().addClass('hover').children(0).addClass('ui-hover-state');
+                            .find('span').removeClass('ui-state-hover').end();
+                        $(this).find('ol').show().end().addClass('hover').children(0).addClass('ui-state-hover');
                         widget.showNextLevel();
                     })
                    .bind('click.dropslide', function(e){
@@ -71,8 +71,8 @@
 
         getSelection: function(level) {
             return level 
-                    && this.wrapper.find('ol').eq(level).find('li span.ui-hover-state')
-                    || $.makeArray(this.wrapper.find('span.ui-hover-state').map($.iterators.getText));
+                    && this.wrapper.find('ol').eq(level).find('li span.ui-state-hover')
+                    || $.makeArray(this.wrapper.find('span.ui-state-hover').map($.iterators.getText));
         },
 
         // essentially reposition each ol
