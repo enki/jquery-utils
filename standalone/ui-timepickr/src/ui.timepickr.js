@@ -28,42 +28,43 @@
 (function($) {
     $.widget('ui.timepickr', {
         _init: function() {
-            var menu    = this._buildMenu();
-            var element = this.element;
+            var ui = this;
+            var menu = ui._buildMenu();
+            var element = ui.element;
             element.data('timepickr.initialValue', element.val());
-            menu.insertAfter(this.element);
+            menu.insertAfter(ui.element);
             element
                 .addClass('ui-timepickr')
-                .dropslide(this.options.dropslide)
-                .bind('select', this.select);
+                .dropslide(ui.options.dropslide)
+                .bind('select', ui.select);
             
             element.blur(function(e) {
                 $(this).dropslide('hide');
-                $(this).val($(this).data('timepickr.initialValue'));
+                if (ui.options.resetOnBlur) {
+                    $(this).val($(this).data('timepickr.initialValue'));
+                }
             });
 
-            if (this.options.val) {
+            if (ui.options.val) {
                 element.val(this.options.val);
             }
 
-            if (this.options.handle) {
+            if (ui.options.handle) {
                 $(this.options.handle).click(function() {
                     $(element).dropslide('show');
                 });
             }
 
-            if (this.options.resetOnBlur) {
+            if (ui.options.resetOnBlur) {
                 menu.find('li > span').bind('mousedown.timepickr', function(){
                     $(element).data('timepickr.initialValue', $(element).val()); 
                 });
             }
-
-            if (this.options.updateLive) {
+            if (ui.options.updateLive) {
                 menu.find('li').bind('mouseover.timepickr', function() {
                     $(element).timepickr('update'); 
                 });
             }
-
             var hrs = menu.find('ol:eq(1)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
             var min = menu.find('ol:eq(2)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
             var sec = menu.find('ol:eq(3)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
@@ -192,22 +193,28 @@
         }
     });
 
-    $.ui.timepickr.defaults = {
-        convention:  24, // 24, 12
-        dropslide:   { trigger: 'focus' },
-        format12:    '{h:02.d}:{m:02.d} {suffix:s}',
-        format24:    '{h:02.d}:{m:02.d}',
-        handle:      false,
-        hours:       true,
-        minutes:     true,
-        seconds:     false,
-        prefix:      ['am', 'pm'],
-        suffix:      ['am', 'pm'],
-        rangeMin:    ['00', '15', '30', '45'],
-        rangeSec:    ['00', '15', '30', '45'],
-        updateLive:  true,
-        resetOnBlur: true,
-        val:         false
-    };
+    // These properties are shared accross every instances of timepickr 
+    $.extend($.ui.timepickr, {
+        version:     '@VERSION',
+        eventPrefix: '',
+        getter:      '',
+        defaults:    {
+            convention:  24, // 24, 12
+            dropslide:   { trigger: 'focus' },
+            format12:    '{h:02.d}:{m:02.d} {suffix:s}',
+            format24:    '{h:02.d}:{m:02.d}',
+            handle:      false,
+            hours:       true,
+            minutes:     true,
+            seconds:     false,
+            prefix:      ['am', 'pm'],
+            suffix:      ['am', 'pm'],
+            rangeMin:    $.range(0, 60, 15),
+            rangeSec:    $.range(0, 60, 15),
+            updateLive:  true,
+            resetOnBlur: true,
+            val:         false
+        },
+    });
 
 })(jQuery);

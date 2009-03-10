@@ -14,173 +14,141 @@ $(function(){
         ok(tp.next().hasClass('ui-helper-reset'), 'wrapper has class ui-helper-reset OK');
         ok(tp.next().hasClass('ui-widget'),       'wrapper has class ui-widget OK');
         ok(tp.next().hasClass('ui-timepickr'),    'wrapper has class ui-timepickr OK');
-        equals(tp.next().find('ol').length, 3,    'ol length OK')
-        equals(tp.next().find('ol:eq(0) li').length, 2,  'ol:eq(0) > li length OK')
-        equals(tp.next().find('ol:eq(1) li').length, 24, 'ol:eq(1) > li length OK')
-        equals(tp.next().find('ol:eq(2) li').length, 4,  'ol:eq(2) > li length OK')
+        equals(tp.next().find('ol').length, 3,    'ol length OK');
+        equals(tp.next().find('ol:eq(0) li').length, 2,  'ol:eq(0) > li length OK');
+        equals(tp.next().find('ol:eq(1) li').length, 24, 'ol:eq(1) > li length OK');
+        equals(tp.next().find('ol:eq(2) li').length, 4,  'ol:eq(2) > li length OK');
         equals(tp.next().text(), 'ampm00010203040506070809101112131415161718192021222300153045', 'Data integrity OK');
+        tp.remove();
     });
 
-    test('initialization', function(){
-        expect(9);
-        stop();
-        var tp = setup();
-        tp12.focus();
+    test('options.convention', function(){
+        expect(5);
+        var tp = setup({convention: 12});
+        equals(tp.next().find('ol').length, 3,    'ol length OK');
+        equals(tp.next().find('ol:eq(0) li').length, 12,  'ol:eq(0) > li length OK');
+        equals(tp.next().find('ol:eq(1) li').length, 4, 'ol:eq(1) > li length OK');
+        equals(tp.next().find('ol:eq(2) li').length, 2,  'ol:eq(2) > li length OK');
+        equals(tp.next().text(), '01020304050607080910111200153045ampm', 'Data integrity OK');
+        tp.remove();
+    });
 
-        // Hours
-        setTimeout(function(){
-            var range = $.range(0,12);
-            for (var i in range) {
-                var time = $.format('{0:02.d}:00:00 am', (range[i] + 1));
-                var msg  = $.format('span.ui-dropslide > ol:eq(0) li:eq({0:d}):hover', i);
-                ds12.find('ol:eq(0) li:eq('+ range[i] +')').mouseover();
-                equals(tp12.val(), time, msg);
-            }
-        }, to());
+    test('options.val', function(){
+        expect(1);
+        var tp = setup({val: '04:20'});
+        equals(tp.val(), '04:20', 'val OK');
+        tp.remove();
     });
     
-    /*
-    var tp12 = $('#timepickr-test12').timepickr({
-        convention:12, 
-        seconds: true, 
-        format12: '{h:02.d}:{m:02.d}:{s:02.d} {suffix:s}'
-    }).focus();
-    var ds12 = tp12.next();
-
-    var tp24 = $('#timepickr-test24').timepickr('destroy').timepickr({
-        convention:24, 
-        seconds: true, 
-        format24: '{h:02.d}:{m:02.d}:{s:02.d}'
-    }).focus();
-    var ds24 = tp24.next();
-
-    var to = function(){ // incremental delay
-        this._to = this._to && this._to +10 || 50;
-        return this._to;
-    };
-    module('ui.timepickr.js');
-    test('12h: Picker inputs', function(){
-        expect(23); stop();
-        tp12.focus();
-
-        // Hours
-        setTimeout(function(){
-            var range = $.range(0,12);
-            for (var i in range) {
-                var time = $.format('{0:02.d}:00:00 am', (range[i] + 1));
-                var msg  = $.format('span.ui-dropslide > ol:eq(0) li:eq({0:d}):hover', i);
-                ds12.find('ol:eq(0) li:eq('+ range[i] +')').mouseover();
-                equals(tp12.val(), time, msg);
-            }
-        }, to());
+    test('options.resetOnBlur', function(){
+        expect(4);
+        var tp = setup({resetOnBlur: true});
+        var val = tp.val();
+        tp.focus();
+        tp.next().find('ol > li:eq(4)').mouseover();
+        ok(tp.val() != val, 'val changed OK');
+        tp.blur();
+        equals(tp.val(), val, 'val reseted OK');
+        tp.remove();
         
-        // Minutes
-        setTimeout(function(){
-            var range = $.ui.timepickr.defaults.rangeMin;
-            ds12.find('ol:eq(0) li:first').mouseover();
-            for (var i in range) {
-                var time = $.format('01:{0:02.d}:00 am', range[i]);
-                var msg  = $.format('span.ui-dropslide > ol:eq(1) li:eq({0:d}):hover', i);
-                ds12.find('ol:eq(1) li:eq('+ i +')').mouseover();
-                equals(tp12.val(), time, msg);
-            }
-        }, to());
+        var tp = setup({resetOnBlur: false});
+        var val = tp.val();
+        tp.focus();
+        tp.next().find('ol > li:eq(4)').mouseover();
+        ok(tp.val() != val, 'val changed OK');
+        tp.blur();
+        ok(tp.val() != val, 'val not reseted OK');
+        tp.remove();
+    });
+    
+    test('options.updateLive', function(){
+        expect(4);
+        var tp = setup({updateLive: true});
+        var val = tp.val();
+        tp.focus();
+        tp.next().find('ol > li:eq(4)').mouseover();
+        ok(tp.val() != val, 'val changed OK');
+        tp.blur();
+        equals(tp.val(), val, 'val reseted OK');
+        tp.remove();
         
-        // Seconds 
-        setTimeout(function(){
-            var range = $.ui.timepickr.defaults.rangeMin;
-            ds12.find('ol:eq(0) li:first').mouseover();
-            ds12.find('ol:eq(1) li:first').mouseover();
-            for (var i in range) {
-                var time = $.format('01:00:{0:02.d} am', range[i]);
-                var msg  = $.format('span.ui-dropslide > ol:eq(1) li:eq({0:d}):hover', i);
-                ds12.find('ol:eq(2) li:eq('+ i +')').mouseover();
-                equals(tp12.val(), time, msg);
-            }
-        }, to());
-        
-        // apm/pm 
-        setTimeout(function(){
-            var range = $.ui.timepickr.defaults.suffix;
-            ds12.find('ol:eq(0) li:first').mouseover();
-            ds12.find('ol:eq(1) li:first').mouseover();
-            ds12.find('ol:eq(2) li:first').mouseover();
-            for (var i in range) {
-                var time = $.format('01:00:00 {0:s}', range[i]);
-                var msg  = $.format('span.ui-dropslide > ol:eq(1) li:eq({0:d}):hover', i);
-                ds12.find('ol:eq(3) li:eq('+ i +')').mouseover();
-                equals(tp12.val(), time, msg);
-            }
-        }, to());
-
-        setTimeout(function(){
-            equals(tp12.val(), '01:00:00 pm', 'value stick after blur');
-            start();
-            tp12.blur();
-        }, to());
-
+        var tp = setup({updateLive: false});
+        var val = tp.val();
+        tp.focus();
+        tp.next().find('ol > li:eq(4)').mouseover();
+        equals(tp.val(), val, 'val not changed OK');
+        tp.blur();
+        equals(tp.val(), val, 'val not changed OK');
+        tp.remove();
     });
 
-    test('24h: Picker inputs', function(){
-        expect(35); stop();
-        tp24.focus();
-
-        // apm / pm
-        setTimeout(function(){
-            var range = $.ui.timepickr.defaults.prefix;
-            for (var i in range) {
-                var time = '00:00:00';
-                var msg  = $.format('span.ui-dropslide > ol:eq(0) li:eq({0:d}):hover', i);
-                ds24.find('ol:eq(0) li:eq('+ i +')').mouseover();
-                equals(tp24.val(), time, msg);
-            }
-        }, to());
-
-        // Hours
-        setTimeout(function(){
-            var range = $.range(0,24);
-            for (var i in range) {
-                var time = $.format('{0:02.d}:00:00', range[i]);
-                var msg  = $.format('span.ui-dropslide > ol:eq(1) li:eq({0:d}):hover', i);
-                ds24.find('ol:eq(1) li:eq('+ range[i] +')').mouseover();
-                equals(tp24.val(), time, msg);
-            }
-        }, to());
-
-        // Minutes
-        setTimeout(function(){
-            var range = $.ui.timepickr.defaults.rangeMin;
-            ds24.find('ol:eq(0) li:first').mouseover();
-            ds24.find('ol:eq(1) li:first').mouseover();
-            for (var i in range) {
-                var time = $.format('00:{0:02.d}:00', range[i]);
-                var msg  = $.format('span.ui-dropslide > ol:eq(2) li:eq({0:d}):hover', i);
-                ds24.find('ol:eq(2) li:eq('+ i +')').mouseover();
-                equals(tp24.val(), time, msg);
-            }
-        }, to());
-
-        // Seconds 
-        setTimeout(function(){
-            var range = $.ui.timepickr.defaults.rangeMin;
-            ds24.find('ol:eq(0) li:first').mouseover();
-            ds24.find('ol:eq(1) li:first').mouseover();
-            ds24.find('ol:eq(2) li:first').mouseover();
-            for (var i in range) {
-                var time = $.format('00:00:{0:02.d}', range[i]);
-                var msg  = $.format('span.ui-dropslide > ol:eq(3) li:eq({0:d}):hover', i);
-                ds24.find('ol:eq(3) li:eq('+ i +')').mouseover();
-                equals(tp24.val(), time, msg);
-            }
-        }, to());
-        
-        setTimeout(function(){
-            equals(tp24.val(), '00:00:45', 'value stick after blur');
-            start();
-            tp24.blur();
-            start();
-        }, to());
-
+    test('options.rangeMin', function(){
+        expect(2);
+        var tp = setup();
+        equals(tp.next().find('ol:eq(2) > li').text(), '00153045', 'defaults OK');
+        tp.remove();
+        var tp = setup({rangeMin: $.range(0, 60, 30)});
+        equals(tp.next().find('ol:eq(2) > li').text(), '0030', 'custom OK');
+        tp.remove();
     });
-    */
+
+    test('options.rangeSec', function(){
+        expect(2);
+        var tp = setup({seconds: true});
+        equals(tp.next().find('ol:eq(3) > li').text(), '00153045', 'defaults OK');
+        tp.remove();
+        var tp = setup({rangeSec: $.range(0, 60, 30), seconds: true});
+        equals(tp.next().find('ol:eq(3) > li').text(), '0030', 'custom OK');
+        tp.remove();
+    });
+    
+    test('options.seconds', function(){
+        expect(2);
+        var tp = setup({seconds: true});
+        equals(tp.next().find('ol').length, 4, 'ol OK')
+        tp.remove();
+        var tp = setup({seconds: false});
+        equals(tp.next().find('ol').length, 3, 'ol OK')
+        tp.remove();
+    });
+    
+    test('options.minutes', function(){
+        expect(2);
+        var tp = setup({minutes: true});
+        equals(tp.next().find('ol').length, 3, 'ol OK')
+        tp.remove();
+        var tp = setup({minutes: false});
+        equals(tp.next().find('ol').length, 2, 'ol OK')
+        tp.remove();
+    });
+    
+    test('options.hours', function(){
+        expect(2);
+        var tp = setup({hours: true});
+        equals(tp.next().find('ol').length, 3, 'ol OK')
+        tp.remove();
+        var tp = setup({hours: false});
+        equals(tp.next().find('ol').length, 2, 'ol OK')
+        tp.remove();
+    });
+
+    test('options.prefix', function(){
+        expect(2);
+        var tp = setup();
+        equals(tp.next().find('ol:eq(0) > li').text(), 'ampm', 'defaults OK');
+        tp.remove();
+        var tp = setup({prefix: ['day','night']});
+        equals(tp.next().find('ol:eq(0) > li').text(), 'daynight', 'custom OK');
+        tp.remove();
+    });
+
+    test('options.suffix', function(){
+        expect(2);
+        var tp = setup({convention: 12});
+        equals(tp.next().find('ol:eq(2) > li').text(), 'ampm', 'defaults OK');
+        tp.remove();
+        var tp = setup({convention: 12, suffix: ['day','night']});
+        equals(tp.next().find('ol:eq(2) > li').text(), 'daynight', 'custom OK');
+        tp.remove();
+    });
 });
