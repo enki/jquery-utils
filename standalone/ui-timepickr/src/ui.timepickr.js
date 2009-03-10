@@ -13,15 +13,8 @@
   ------------
   - jquery.utils.js
   - jquery.strings.js
-  - jquery.arrayUtils.js
   - jquery.ui.js
   - ui.dropslide.js
-
-  // Could do something interesting with this..
-  U+25F4  ◴  White circle with upper left quadrant
-  U+25F5  ◵  White circle with lower left quadrant
-  U+25F6  ◶  White circle with lower right quadrant
-  U+25F7  ◷  White circle with upper right quadrant
   
 */
 
