@@ -254,7 +254,7 @@
 	});
 })(jQuery);
 /*
-  jQuery strings - 0.2
+  jQuery strings - 0.3
   http://code.google.com/p/jquery-utils/
   
   (c) Maxime Haineault <haineault@gmail.com>
@@ -417,7 +417,13 @@
                 if (tmp[start] == '{' && tmp[start+1] !='{') {
                     end   = str.indexOf('}', start);
                     token = tmp.slice(start+1, end).join('');
-                    buffer.push(strings.strConversion.__formatToken(token, (typeof arguments[1] != 'object')? arguments2Array(arguments, 2): args || []));
+                    if (tmp[start-1] != '{' && tmp[end+1] != '}') {
+                        var tokenArgs = (typeof arguments[1] != 'object')? arguments2Array(arguments, 2): args || [];
+                        buffer.push(strings.strConversion.__formatToken(token, tokenArgs));
+                    }
+                    else {
+                        buffer.push(token);
+                    }
                 }
                 else if (start > end || buffer.length < 1) { buffer.push(tmp[start]); }
             }
@@ -473,7 +479,7 @@
                     : $($.format(this[arguments[0]], arguments[1]));
             }
         }
-};
+    };
 
     var Argument = function(arg, args) {
         this.__arg  = arg;
@@ -535,7 +541,6 @@
         for (l=args.length, x=(shift || 0)-1; x<l;x++) { o.push(args[x]); }
         return o;
     };
-
     $.extend(strings);
 })(jQuery);
 /*

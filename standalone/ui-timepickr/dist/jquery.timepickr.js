@@ -631,14 +631,10 @@
             // reposition each ol
             ols.each(function(i) {
                 prevOL = $(this).prevAll('ol:visible:first');
-                // without the try/catch I often get a 
-                // Error: "Could not convert JavaScript argument arg 0 ..."
-                try {
-                    if (prevOL.get(0)) {
-                        prevLI = prevOL.find('li.hover, li:first').eq(0);
-                        $(this).css('margin-left', prevLI.position().left);
-                    }
-                } catch(e) {};
+                if (prevOL.get(0)) {
+                    prevLI = prevOL.find('li.hover').get(0) && prevOL.find('li.hover') || prevOL.find('li:first');
+                    $(this).css('margin-left', prevLI.position().left);
+                }
             });
         },
 
@@ -888,7 +884,7 @@
             updateLive:  true,
             resetOnBlur: true,
             val:         false
-        },
+        }
     });
 
 })(jQuery);
@@ -2044,14 +2040,10 @@ $.ui.mouse.defaults = {
             // reposition each ol
             ols.each(function(i) {
                 prevOL = $(this).prevAll('ol:visible:first');
-                // without the try/catch I often get a 
-                // Error: "Could not convert JavaScript argument arg 0 ..."
-                try {
-                    if (prevOL.get(0)) {
-                        prevLI = prevOL.find('li.hover, li:first').eq(0);
-                        $(this).css('margin-left', prevLI.position().left);
-                    }
-                } catch(e) {};
+                if (prevOL.get(0)) {
+                    prevLI = prevOL.find('li.hover').get(0) && prevOL.find('li.hover') || prevOL.find('li:first');
+                    $(this).css('margin-left', prevLI.position().left);
+                }
             });
         },
 
@@ -2301,7 +2293,7 @@ $.ui.mouse.defaults = {
             updateLive:  true,
             resetOnBlur: true,
             val:         false
-        },
+        }
     });
 
 })(jQuery);

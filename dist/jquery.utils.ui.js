@@ -254,7 +254,7 @@
 	});
 })(jQuery);
 /*
-  jQuery strings - 0.2
+  jQuery strings - 0.3
   http://code.google.com/p/jquery-utils/
   
   (c) Maxime Haineault <haineault@gmail.com>
@@ -417,7 +417,13 @@
                 if (tmp[start] == '{' && tmp[start+1] !='{') {
                     end   = str.indexOf('}', start);
                     token = tmp.slice(start+1, end).join('');
-                    buffer.push(strings.strConversion.__formatToken(token, (typeof arguments[1] != 'object')? arguments2Array(arguments, 2): args || []));
+                    if (tmp[start-1] != '{' && tmp[end+1] != '}') {
+                        var tokenArgs = (typeof arguments[1] != 'object')? arguments2Array(arguments, 2): args || [];
+                        buffer.push(strings.strConversion.__formatToken(token, tokenArgs));
+                    }
+                    else {
+                        buffer.push(token);
+                    }
                 }
                 else if (start > end || buffer.length < 1) { buffer.push(tmp[start]); }
             }
@@ -473,7 +479,7 @@
                     : $($.format(this[arguments[0]], arguments[1]));
             }
         }
-};
+    };
 
     var Argument = function(arg, args) {
         this.__arg  = arg;
@@ -535,7 +541,6 @@
         for (l=args.length, x=(shift || 0)-1; x<l;x++) { o.push(args[x]); }
         return o;
     };
-
     $.extend(strings);
 })(jQuery);
 /*
@@ -3372,7 +3377,7 @@ $(document).ready(function(){
 	});
 })(jQuery);
 /*
-  jQuery strings - 0.2
+  jQuery strings - 0.3
   http://code.google.com/p/jquery-utils/
   
   (c) Maxime Haineault <haineault@gmail.com>
@@ -3535,7 +3540,13 @@ $(document).ready(function(){
                 if (tmp[start] == '{' && tmp[start+1] !='{') {
                     end   = str.indexOf('}', start);
                     token = tmp.slice(start+1, end).join('');
-                    buffer.push(strings.strConversion.__formatToken(token, (typeof arguments[1] != 'object')? arguments2Array(arguments, 2): args || []));
+                    if (tmp[start-1] != '{' && tmp[end+1] != '}') {
+                        var tokenArgs = (typeof arguments[1] != 'object')? arguments2Array(arguments, 2): args || [];
+                        buffer.push(strings.strConversion.__formatToken(token, tokenArgs));
+                    }
+                    else {
+                        buffer.push(token);
+                    }
                 }
                 else if (start > end || buffer.length < 1) { buffer.push(tmp[start]); }
             }
@@ -3591,7 +3602,7 @@ $(document).ready(function(){
                     : $($.format(this[arguments[0]], arguments[1]));
             }
         }
-};
+    };
 
     var Argument = function(arg, args) {
         this.__arg  = arg;
@@ -3653,7 +3664,6 @@ $(document).ready(function(){
         for (l=args.length, x=(shift || 0)-1; x<l;x++) { o.push(args[x]); }
         return o;
     };
-
     $.extend(strings);
 })(jQuery);
 /*
@@ -5995,15 +6005,12 @@ $(document).ready(function(){
         getter: 'showLevel showNextLevel getSelection',
         _init: function() {
             var widget   = this;
-            var next     = this.element.next();
-            this.wrapper = next.hasClass('ui-dropslide') && next || this.options.tree;
+            this.wrapper = this.element.next();
 
             this.element.bind(this.options.trigger +'.dropslide', function(){
                 widget.show();
             });
-
             this.wrapper
-                .addClass('ui-helper-reset ui-widget')
                 .data('dropslide', this)
                 .css({width:this.options.width})
                 .find('li, li ol li')
@@ -6070,14 +6077,10 @@ $(document).ready(function(){
             // reposition each ol
             ols.each(function(i) {
                 prevOL = $(this).prevAll('ol:visible:first');
-                // without the try/catch I often get a 
-                // Error: "Could not convert JavaScript argument arg 0 ..."
-                try {
-                    if (prevOL.get(0)) {
-                        prevLI = prevOL.find('li.hover, li:first').eq(0);
-                        $(this).css('margin-left', prevLI.position().left);
-                    }
-                } catch(e) {};
+                if (prevOL.get(0)) {
+                    prevLI = prevOL.find('li.hover').get(0) && prevOL.find('li.hover') || prevOL.find('li:first');
+                    $(this).css('margin-left', prevLI.position().left);
+                }
             });
         },
 
@@ -6133,57 +6136,51 @@ $(document).ready(function(){
   ------------
   - jquery.utils.js
   - jquery.strings.js
-  - jquery.arrayUtils.js
   - jquery.ui.js
   - ui.dropslide.js
-
-  // Could do something interesting with this..
-  U+25F4  ◴  White circle with upper left quadrant
-  U+25F5  ◵  White circle with lower left quadrant
-  U+25F6  ◶  White circle with lower right quadrant
-  U+25F7  ◷  White circle with upper right quadrant
   
 */
 
 (function($) {
     $.widget('ui.timepickr', {
         _init: function() {
-            var menu    = this._buildMenu();
-            var element = this.element;
+            var ui = this;
+            var menu = ui._buildMenu();
+            var element = ui.element;
             element.data('timepickr.initialValue', element.val());
-            menu.insertAfter(this.element);
+            menu.insertAfter(ui.element);
             element
                 .addClass('ui-timepickr')
-                .dropslide(this.options.dropslide)
-                .bind('select', this.select);
+                .dropslide(ui.options.dropslide)
+                .bind('select', ui.select);
             
             element.blur(function(e) {
                 $(this).dropslide('hide');
-                $(this).val($(this).data('timepickr.initialValue'));
+                if (ui.options.resetOnBlur) {
+                    $(this).val($(this).data('timepickr.initialValue'));
+                }
             });
 
-            if (this.options.val) {
+            if (ui.options.val) {
                 element.val(this.options.val);
             }
 
-            if (this.options.handle) {
+            if (ui.options.handle) {
                 $(this.options.handle).click(function() {
                     $(element).dropslide('show');
                 });
             }
 
-            if (this.options.resetOnBlur) {
+            if (ui.options.resetOnBlur) {
                 menu.find('li > span').bind('mousedown.timepickr', function(){
                     $(element).data('timepickr.initialValue', $(element).val()); 
                 });
             }
-
-            if (this.options.updateLive) {
+            if (ui.options.updateLive) {
                 menu.find('li').bind('mouseover.timepickr', function() {
                     $(element).timepickr('update'); 
                 });
             }
-
             var hrs = menu.find('ol:eq(1)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
             var min = menu.find('ol:eq(2)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
             var sec = menu.find('ol:eq(3)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
@@ -6301,7 +6298,7 @@ $(document).ready(function(){
         },
 
         _buildMenu: function() {
-            var menu   = $('<span class="ui-reset ui-dropslide ui-component" />');
+            var menu   = $('<span class="ui-helper-reset ui-dropslide ui-timepickr ui-widget" />');
             var ranges = this.options.convention === 24 
                          && this._getRanges24() || this._getRanges12();
 
@@ -6312,23 +6309,29 @@ $(document).ready(function(){
         }
     });
 
-    $.ui.timepickr.defaults = {
-        convention:  24, // 24, 12
-        dropslide:   { trigger: 'focus' },
-        format12:    '{h:02.d}:{m:02.d} {suffix:s}',
-        format24:    '{h:02.d}:{m:02.d}',
-        handle:      false,
-        hours:       true,
-        minutes:     true,
-        seconds:     false,
-        prefix:      ['am', 'pm'],
-        suffix:      ['am', 'pm'],
-        rangeMin:    ['00', '15', '30', '45'],
-        rangeSec:    ['00', '15', '30', '45'],
-        updateLive:  true,
-        resetOnBlur: true,
-        val:         false
-    };
+    // These properties are shared accross every instances of timepickr 
+    $.extend($.ui.timepickr, {
+        version:     '0.8.0',
+        eventPrefix: '',
+        getter:      '',
+        defaults:    {
+            convention:  24, // 24, 12
+            dropslide:   { trigger: 'focus' },
+            format12:    '{h:02.d}:{m:02.d} {suffix:s}',
+            format24:    '{h:02.d}:{m:02.d}',
+            handle:      false,
+            hours:       true,
+            minutes:     true,
+            seconds:     false,
+            prefix:      ['am', 'pm'],
+            suffix:      ['am', 'pm'],
+            rangeMin:    $.range(0, 60, 15),
+            rangeSec:    $.range(0, 60, 15),
+            updateLive:  true,
+            resetOnBlur: true,
+            val:         false
+        }
+    });
 
 })(jQuery);
 /* jQuery ui.toaster.js - 0.2
