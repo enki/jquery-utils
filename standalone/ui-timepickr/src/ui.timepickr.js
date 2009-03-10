@@ -207,7 +207,7 @@
             updateLive:  true,
             resetOnBlur: true,
             val:         false
-        },
+        }
     });
 
 })(jQuery);
