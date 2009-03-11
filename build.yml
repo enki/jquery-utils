@@ -17,6 +17,7 @@ modules:
       - src: src/jquery.flash.js
       - src: src/jquery.flickrshow.js
       - src: src/jquery.i18n.js
+      - src: src/jquery.masked.js
       - src: src/jquery.mousewheel.js
       - src: src/jquery.slimbox.js
       - src: src/jquery.timeago.js
@@ -38,6 +39,7 @@ modules:
       - src: src/jquery.flash.js
       - src: src/jquery.flickrshow.js
       - src: src/jquery.i18n.js
+      - src: src/jquery.masked.js
       - src: src/jquery.mousewheel.js
       - src: src/jquery.slimbox.js
       - src: src/jquery.timeago.js
@@ -45,7 +47,6 @@ modules:
       - src: standalone/ui-timepickr/src/ui.dropslide.js
       - src: standalone/ui-timepickr/src/ui.timepickr.js
       - src: src/ui.toaster.js
-      - src: src/ui.masked.js
 merge:
   - dest: dist/jquery.utils.css
     files:
