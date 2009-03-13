@@ -6646,6 +6646,10 @@ $(document).ready(function(){
 */
 
 (function($) {
+    $.tpl('timepickr.menu',   '<span class="ui-helper-reset ui-dropslide ui-timepickr ui-widget" />');
+    $.tpl('timepickr.row',    '<ol class="ui-timepickr" />');
+    $.tpl('timepickr.button', '<li class="{className:s}"><span>{label:s}</span></li>');
+
     $.widget('ui.timepickr', {
         _init: function() {
             var ui = this;
@@ -6770,11 +6774,11 @@ $(document).ready(function(){
         _createButton: function(i, format, className) {
             var o  = format && $.format(format, i) || i;
             var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
-            return $('<li />').addClass(cn).data('id', i).append($('<span />').text(o));
+            return $.tpl('timepickr.button', {className: cn, label: o}).data('id', i);
         },
 
         _createRow: function(range, format, className) {
-            var row = $('<ol class="ui-timepickr" />');
+            var row = $.tpl('timepickr.row');
             var button = this._createButton;
             // Thanks to Christoph Müller-Spengler for the bug report
             $.each(range, function(idx, val){
@@ -6802,7 +6806,7 @@ $(document).ready(function(){
         },
 
         _buildMenu: function() {
-            var menu   = $('<span class="ui-helper-reset ui-dropslide ui-timepickr ui-widget" />');
+            var menu   = $.tpl('timepickr.menu');
             var ranges = this.options.convention === 24 
                          && this._getRanges24() || this._getRanges12();
 

@@ -148,7 +148,6 @@
             var o  = format && $.format(format, i) || i;
             var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
             return $.tpl('timepickr.button', {className: cn, label: o}).data('id', i);
-            //return $('<li />').addClass(cn).data('id', i).append($('<span />').text(o));
         },
 
         _createRow: function(range, format, className) {

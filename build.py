@@ -196,28 +196,30 @@ def make(build, options):
     if build['modules']:
         o = []
         for module in build['modules']:
-            destPath    = os.path.join(build['dest'], get_dest_filename(module))
+            #print module['name']
+            if len(options.modules) == 0 or module['name'] in options.modules:
+                destPath    = os.path.join(build['dest'], get_dest_filename(module))
 
-            if module.has_key('title'):
-                title = module['title']
-            else:
-                title = build['title']
+                if module.has_key('title'):
+                    title = module['title']
+                else:
+                    title = build['title']
 
-            log("%s %s -> %s" % (title, version, destPath), 'build')
-            o.append(get_dependencies(module['depends']))
-            o.append(glob(module['file']))
+                log("%s %s -> %s" % (title, version, destPath), 'build')
+                o.append(get_dependencies(module['depends']))
+                o.append(glob(module['file']))
 
-            f = open(destPath, 'w+')
-            buff = ''.join(o)
+                f = open(destPath, 'w+')
+                buff = ''.join(o)
 
-            if build.has_key('version'):
-                buff = buff.replace('@VERSION', '%s' % build['version'])
+                if build.has_key('version'):
+                    buff = buff.replace('@VERSION', '%s' % build['version'])
 
-            f.write(buff)
-            f.close()
+                f.write(buff)
+                f.close()
 
-            if options.minify:
-                minify(destPath, destPath.replace('.js', '.min.js'))
+                if options.minify:
+                    minify(destPath, destPath.replace('.js', '.min.js'))
     
     if build.has_key('zip'):
         for z in build['zip']:
@@ -238,7 +240,7 @@ if __name__ == '__main__':
 
     parser.add_option('-o', '--modules', dest='modules',
                       help='Build only specified modules',
-                      action='store_true', default=False)
+                      action='append', default=[])
     parser.add_option('-m', '--minify', dest='minify',
                       help='Minify',
                       action='store_true', default=False)
