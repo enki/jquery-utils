@@ -301,6 +301,7 @@ input.demo:focus {
     font-size:100%;
     font-weight:bold;
     color:#ccc!important;
+    border-color:#333 #555 #555 #444;
 }
 .dark li.ui-timepickr.hover span {
     background:#3679AE url('btn-hover.png') repeat-x!important;
