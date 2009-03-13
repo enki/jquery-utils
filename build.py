@@ -138,12 +138,20 @@ def get_dependencies(obj, path=''):
     """
     Returns a string containing dependencies
     """
-    o = []
+    o = ''
+
     for dependency in obj:
-        p = os.path.join(path, dependency['src'])
-        log(p, 'dependency')
-        o.append(glob(p))
-    return ''.join(o)
+        if dependency['src'] != 'src/ui.core.js':
+            p = os.path.join(path, dependency['src'])
+            log(p, 'dependency')
+            o = o + glob(p)
+
+    for dependency in obj:
+        if dependency['src'] == 'src/ui.core.js':
+            p = os.path.join(path, dependency['src'])
+            log(p, 'dependency')
+            o += glob(p) + o
+    return o
 
 def get_dest_filename(module):
     if module.has_key('destfile'):

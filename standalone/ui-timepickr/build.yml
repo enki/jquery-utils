@@ -34,6 +34,13 @@ copy:
     dest: standalone/ui-timepickr/page/jquery.strings.js
 
 merge:
+  - dest: standalone/ui-timepickr/dist/jquery.timepickr.css
+    files:
+      - src: standalone/ui-timepickr/dist/themes/default/ui.core.css
+      - src: standalone/ui-timepickr/src/css/ui.dropslide.css
+      - src: standalone/ui-timepickr/src/css/ui.timepickr.css
+
+merge:
   - dest: standalone/ui-timepickr/dist/themes/default/ui.timepickr.css
     files:
       - src: standalone/ui-timepickr/src/css/ui.dropslide.css
