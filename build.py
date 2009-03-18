@@ -5,8 +5,15 @@
     Experimental build system
 """
 
-import os, yaml
 from optparse import OptionParser
+from glob import glob
+import jsmin
+import os
+import shutil
+import sys
+import tarfile
+import yaml
+import zipfile
 
 BUILD_DIR = 'build/'
 LOG = True
@@ -25,17 +32,12 @@ LOGS = {
     'error':        'Error: %s',
 }
 
-def log(i, type=False):
-    global LOG
-    if LOG or type in ['error', 'debug']:
-        try:
-            print LOGS[type] % i
-        except:
-            print i
+def log(msg, log_type=False):
+    print LOGS.get(log_type, '%s') % msg
 
 def legend():
     for k in LOGS:
-        if k not in ['list', 'error']:
+        if k not in ('list', 'error'):
             print LOGS[k] % k
 
 def get_svn_rev(path=''):
@@ -43,96 +45,104 @@ def get_svn_rev(path=''):
     Probably not the most reliable way to get
     the SVN revision of the cwd, but it works..
     """
-    global SVNREV
     if not SVNREV:
         rs = os.popen('svn info %s' % path)
         o  = rs.readlines()
     return o[4][10:-1]
 
 def get_builds():
-    out    = []
-    rs     = os.popen("find . -iname 'build.yml'");
-    builds = rs.readlines()
+    def find_build_files(flist, dirname, fnames):
+        if '.svn' not in dirname:
+            flist += [os.path.join(dirname, fname) for fname in fnames
+                      if fname == 'build.yml']
 
-    rs.close()
+    builds = []
+    os.path.walk('.', find_build_files, builds)
+
     for build in builds:
-        f  = build[2:].replace("\n", '')
-        rs = file(f, 'r')
         try:
-            buff = yaml.load(rs)
-        except yaml.YAMLError, exc:
-            log("YAML - cannot read file: %s" % f, 'error')
-
-        rs.close()
-        out.append([f, buff])
-    return out
+            fd = open(build)
+            buf = yaml.load(fd)
+            yield (build, buf)
+        except:
+            log("YAML - cannot read file: %s" % build, 'error')
+        finally:
+            fd.close()
 
 def create_dir_if_not_exists(path):
-    if not os.path.isdir(path):
+    if not os.path.exists(path):
         log("creating directory: %s/" % path, 'list')
         os.mkdir(path)
     return path
 
-def minify(src, dest):
-    global JAR
-    global BUILD_DIR
-    log('%s -> %s' % (src, dest), 'minify')
-    rs = os.popen('%s %s %s %s' % (JAR, 
-        os.path.join(BUILD_DIR, 'build/min.js'),
-        src, dest))
-    buff = rs.readlines()
-    rs.close()
-    if len(buff) > 0:
-        log(''.join(buff), 'error')
-        return False
-    else:
-        return True
+
+def minify(src, dst):
+    log('%s -> %s' % (src, dst), 'minify')
+    try:
+        fin = open(src)
+        fout = open(dst, 'w')
+        jsm = jsmin.JavascriptMinify()
+        jsm.minify(fin, fout)
+    except:
+        log('Cannot minify %s -> %s' % (src, dst), 'error')
+    finally:
+        fin.close()
+        fout.close()
 
 def cp(src, dest):
     create_dir_if_not_exists(os.path.dirname(dest))
     log('%s -> %s' % (src, dest), 'copy')
-    rs = os.popen('cp -rf %s %s' % (src, dest))
-    buff = rs.readlines()
-    rs.close()
-    if len(buff) > 0:
-        log(''.join(buff), 'error')
-        return False
-    else:
-        return True
+    try:
+        for f in glob(src):
+            shutil.copy(f, dest)
+    except (IOError, OSError):
+        log('Cannot copy %s to %s' % (src, dest), 'error')
 
 
+def rec_listdir(dirname):
+    for directory, subdirs, files in os.walk(dirname):
+        for f in files:
+            yield os.path.join(directory, f)
 
-def create_gzip(src, dest, exclude):
-    create_dir_if_not_exists(os.path.dirname(dest))
-    log('%s -> %s' % (src, dest), 'gzip')
-    cmd = ["tar -czf %s %s" % (dest, src)]
+def create_gzip(src, dst, exclusions):
+    create_dir_if_not_exists(os.path.dirname(dst))
+    log('%s -> %s' % (src, dst), 'gzip')
+    try:
+        tar = tarfile.open(dst, 'w:gz')
+        for f in rec_listdir(src):
+            if not any(ex in f for ex in exclusions):
+                tar.add(f)
+    except:
+        log('Cannot gzip %s -> %s' % (src, dst), 'error')
+    finally:
+        tar.close()
 
-    for ex in exclude:
-        cmd.append("--exclude='%s'" % ex) 
+def create_zip(src, dst, exclusions):
+    create_dir_if_not_exists(os.path.dirname(dst))
+    log('%s -> %s' % (src, dst), 'zip')
+    try:
+        archive = zipfile.ZipFile(dst, 'w', zipfile.ZIP_DEFLATED)
+        for f in rec_listdir(src):
+            if not any(ex in f for ex in exclusions):
+                archive.write(f)
+    except:
+        log('Cannot zip %s -> %s' % (src, dst), 'error')
+    finally:
+        archive.close()
 
-    rs = os.popen(' '.join(cmd))
-    rs.close()
-
-def create_zip(src, dest, exclude):
-    create_dir_if_not_exists(os.path.dirname(dest))
-    log('%s -> %s' % (src, dest), 'zip')
-    cmd = ["zip -rq %s %s" % (dest, src)]
-
-    cmd.append("-x") 
-    for ex in exclude:
-        cmd.append(" \*%s\*" % ex) 
-
-    rs = os.popen(' '.join(cmd))
-    rs.close()
-
-def glob(f):
+def slurp(f):
     """
     Returns file content as string
     """
-    rs = file(f, 'r')
-    buff = rs.readlines()
-    rs.close()
-    return ''.join(buff)
+    try:
+        fd = open(f)
+        buf = fd.readlines()
+        fd.close()
+        return ''.join(buf)
+    except:
+        return ''
+    finally:
+        fd.close()
 
 def get_dependencies(obj, path=''):
     """
@@ -142,7 +152,7 @@ def get_dependencies(obj, path=''):
     for dependency in obj:
         p = os.path.join(path, dependency['src'])
         log(p, 'dependency')
-        o.append(glob(p))
+        o.append(slurp(p))
     return ''.join(o)
 
 def get_dest_filename(module):
@@ -157,7 +167,6 @@ def get_dest_dir(build):
 
 def make(build, options):
     global LOG
-
     o     = []
     file  = build[0]
     build = build[1]
@@ -188,9 +197,8 @@ def make(build, options):
     if build['modules']:
         o = []
         for module in build['modules']:
-            #print module['name']
             if len(options.modules) == 0 or module['name'] in options.modules:
-                destPath    = os.path.join(build['dest'], get_dest_filename(module))
+                destPath = os.path.join(build['dest'], get_dest_filename(module))
 
                 if module.has_key('title'):
                     title = module['title']
@@ -199,7 +207,7 @@ def make(build, options):
 
                 log("%s %s -> %s" % (title, version, destPath), 'build')
                 o.append(get_dependencies(module['depends']))
-                o.append(glob(module['file']))
+                o.append(slurp(module['file']))
 
                 f = open(destPath, 'w+')
                 buff = ''.join(o)
@@ -212,7 +220,7 @@ def make(build, options):
 
                 if options.minify:
                     minify(destPath, destPath.replace('.js', '.min.js'))
-    
+
     if build.has_key('zip'):
         for z in build['zip']:
             destZip = os.path.join(z['dest'].replace('%v', build['version']))
@@ -222,11 +230,10 @@ def make(build, options):
         for g in build['gzip']:
             destGzip = os.path.join(g['dest'].replace('%v', build['version']))
             create_gzip(g['src'], destGzip, g['exclude'])
-    
+
 
 if __name__ == '__main__':
     usage = "usage: %prog [options] <module>"
-    builds = get_builds()
 
     parser = OptionParser(usage=usage)
 
@@ -242,13 +249,15 @@ if __name__ == '__main__':
     parser.add_option('-l', '--legend', dest='legend',
                       help='Print legend',
                       action='store_true', default=False)
-    
+
     (options, args) = parser.parse_args()
+
+
 
     if options.legend:
         legend()
     else:
-        for build in builds:
+        for build in get_builds():
             make(build, options)
 
         print '\n Done.\n'
