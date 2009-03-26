@@ -66,7 +66,3 @@
         $(this).youtubeLinksToEmbed(options);
     };
 })(jQuery);
-
-$(document).ready(function(){
-    $('body').youtubeLinksToEmbed();
-});
