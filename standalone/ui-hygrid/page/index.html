@@ -1,0 +1,415 @@
+<html>
+    <head>
+        <title>ui.hygrid.js</title>
+        <link rel="Stylesheet" media="screen" href="reset.css" />
+        <link rel="Stylesheet" media="screen" href="styles.css" />
+        <link rel="Stylesheet" media="screen" href="../dist/themes/default/ui.all.css" />
+        <link rel="Stylesheet" media="screen" href="../dist/themes/default/ui.hygrid.css" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="jquery.ui.all.js"></script>
+        <script type="text/javascript" src="jquery.utils.js"></script>
+        <script type="text/javascript" src="jquery.anchorHandler.js"></script>
+        <script type="text/javascript" src="../src/jquery.strings.js"></script>
+        <script type="text/javascript" src="../src/jquery.delayedObserver.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.ledger.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.colhider.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.sortable.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.selectable.js"></script>
+
+        <script type="text/javascript">
+            $(function(){
+                $('#d-demo-wrapper-1').hygrid({
+                    url: 'simple-test.json',
+                    width: 700,
+                    selectable: 2,
+                    cols: [
+                        {label: 'ISO',  name: 'iso',  width: 40, sortable: false, align: 'center'},
+                        {label: 'Name', name: 'name', width: 190, sortable: true, align: 'left'},
+                        {label: 'Printable Name', name: 'printable_name', width: 150, sortable : true, align: 'left'},
+                        {label: 'ISO3', name: 'iso3', width: 40, sortable: true, align: 'left'},
+                        {label: 'Number Code', name: 'numcode', sortable: true, align: 'left'}
+                    ]
+                });
+            });
+        </script>
+    </head>
+    <body id="themeroller">
+        <div id="hd">
+            <div id="version">version <em>0.0.1</em></div>
+            <ul id="nv">
+                <li><a href="#s-intro">Introduction</a></li>
+                <li><a href="#s-documentation">Documentation</a></li>
+                <li><a href="#s-downloads">Downloads</a></li>
+                <li style="border-right:1px solid #333;"><a href="#s-about">About</a></li>
+            </ul>
+        </div>
+        <h2 id="title"><img src="logo.png" alt="ui.hygrid" border="0"></h2>
+        <div id="splash">
+            <div id="demo">
+                <h2>Demo</h2>
+                <div id="d-demo-wrapper-1" class="demo-wrapper"></div>
+            </div>
+        </div>
+        <div id="bd">
+            <div id="s-intro" class="subsection">
+                <h2><a name="intro">Introduction</a></h2>
+                <p>
+                <em>jquery.hygrid</em> is, you guessed it, yet another jQuery grid plugin. It was inspired by other great grids plugins like <a href="http://www.flexigrid.info/">flexigrid</a> and <a href="http://www.trirand.com/jqgrid/jqgrid.html">jqGrid</a>.
+                </p>
+                <h4>What's the diffrence ?</h4>
+                <h5>jQuery UI widget</h5>
+                <p>
+                Being developped in a jQuery UI widet, it makes it easy to manipulate and extend while taking full advantage of the jQuery UI framework.
+                </p>
+                <p>
+                The widget also provide support for events, making it useless to provide callbacks in options. For example;
+                </p>
+                <code>// instead of
+$('#demo').hygrid({
+    refresh: function(){
+        // do stuff ..
+    }
+});
+
+// you can do
+$('#demo').bind('refresh', function(e, widget){
+    // do stuff ..
+});</code>
+                <h5>Flexible plugin architecture</h5>
+                <p>
+                The grid's core is barely 150 lines of code. Pretty much every features available are plugins, making it very easy to customize or extend.
+                </p>
+                <h5>Themeroller compatible</h5>
+                <p>
+                    The grid is themable with jQuery themeroller.
+                </p>
+                <p style="margin-top:20px;"><img src="themeroller_ready_black_200px.gif" alt="jQuery UI ThemeRoller *Ready*" border="0" /></p>
+                <h5>Transitional</h5>
+                <p>
+                    This grid wasn't created to be an official jQuery UI plugin nor to replace the <a href="http://jqueryui.pbwiki.com/GridTable">jQuery UI GridTable plugin</a> currently under developement.
+                    These are to different plugin with different goals. The author(s) of the GridTable plugin wants to do things <em>right</em>, which means
+                    their grid isn't a priority, so it won't be available anytime soon in the official release.
+                </p>
+                <p>
+                    I will favorize simplicity and stability over complexity and features. That's in part for this reason that I dropped the virtual scrolling functionality and IE support.
+                    However, I'm sure that the plugin architecture makes these issues addresable.
+                </p>
+                <h5>Documented</h5>
+                <p>
+                    Most of the grid I've tried are well documented (save for flexigrid), but if you wish to change something in the grid you have to modify the grid's code.. which is rarely documented.
+                    Being plugin oriented, I'll try to keep the API as well documented as I can to make it easy for developpers to extend the functionalities of this grid in a non-intrusive manner.
+                </p>
+                <h5>Domain specific</h5>
+                <p>
+                    At this time, the grid doesn't support IE. However it works in all other browsers I've tested so far (Firefox, Opera, Epiphany, Chrome).
+                    I don't plan to work much on IE support as I don't need it. But the grid's plugin architecture makes it really easy to change mostly all
+                    aspects of the grid, so it's possible that eventually someone will be willing to make a IE compatibility plugin. Don't hesitate to ask
+                    me questions if you need help in your quest to fix this grid for IE, but don't count on me to do it myself. It's not something I need 
+                    and I've lost enought time of my life fixing IE.
+                </p>
+                <h5>Uses a single table element</h5>
+                <p>
+                Because of virtual scrolling, most grids uses multiple tables to render the grid body along with the grid header/footer. 
+                Since this grid has no support virtual scrolling, I was able to use a single table element and keep things somewhat semantically sane.
+                </p>
+                <p>
+                In other words, I won't trade stability and consistency for bells and whistles. My goal is to make something lightweight and usable <em>now</em>, not to try to perfectly mimic desktop-like grids.
+                </p>
+                <h5>Backends</h5>
+                <p>
+                    Incorporation of generic backends is planned in the developpment roadmap. Every other grid systems lets up you to job of creating your own backend. I've already coded a somewhat generic flexigrid backend for Django and I plan to port it to this grid. If I can make it flexible enough to support more than one grid system, I will try to do so. I will also most likely have to make a PHP backend soon for the demos and tests.
+                </p>
+                <h4>Is it for me ?</h4>
+                <p>
+                    Only you can tell. If you like it and understand its limitations and goals, well it's for you. If you really need features like virtual scrolling or flawless IE support, I'd advise you to use another grid system.
+                </p>
+                <h4>Alternative grids</h4>
+                There is other grid solutions available, I've made this little survey to save you some testing, it's far from exhaustive, so if you have details or correction to make don't hesitate to email me.
+                <table cellspacing="0" cellpadding="0" summary="" class="features">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>hygrid</th>
+                            <th><a href="http://reconstrukt.com/ingrid/">ingrid</a></th>
+                            <th><a href="http://flexigrid.info/">flexigrid</a></th>
+                            <th><a href="http://www.trirand.com/blog/">jqGrid</a></th>
+                            <th><a href="http://tablesorter.com/docs/">tablesorter</a></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>IE support</th>
+                            <td>-</td><td>x</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Scrolling</th>
+                            <td>-</td><td>x</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Create from static table</th>
+                            <td>~</td><td>x</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Subgrid</th>
+                            <td>~</td><td>-</td><td>-</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Toolbar</th>
+                            <td>~</td><td>x</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Search</th>
+                            <td>~</td><td>x</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Resizable h/w</th>
+                            <td>~</td><td>x</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Hidable cols</th>
+                            <td>x</td><td>x</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Pager</th>
+                            <td>x</td><td>x</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Sortable cols</th>
+                            <td>-</td><td>-</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Sortable rows</th>
+                            <td>x</td><td>x</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Row editing</th>
+                            <td>-</td><td>-</td><td>-</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Select row</th>
+                            <td>x</td><td>x</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Select multiple rows</th>
+                            <td>x</td><td>x</td><td>x</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Save state (cookie)</th>
+                            <td>~</td><td>x</td><td>-</td><td>x</td>
+                        </tr>
+                        <tr>
+                            <th>Ajax</th>
+                            <td>x</td><td>-</td><td>-</td><td>-</td>
+                        </tr>
+                        <tr>
+                            <th>Themeroller</th>
+                            <td>x</td><td>-</td><td>-</td><td>-</td>
+                        </tr>
+                        <tr>
+                            <th>UI Widget</th>
+                            <td>x</td><td>-</td><td>-</td><td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ul class="small">
+                    <li><b>x</b>: Supported</li>
+                    <li><b>-</b>: Unsupported</li>
+                    <li><b>~</b>: Unsupported but planned</li>
+                </ul>
+            </div>
+            <div id="s-downloads" class="subsection">
+                <h2><a name="downloads">Downloads</a></h2>
+                <h3>Google Code</h3>
+                <ul id="downloads-list">
+                    <li><a class="glass" href="http://code.google.com/p/jquery-utils/downloads/list"><img src="package.png" alt="Package" align="absmiddle">Download packages</a></li>
+                    <li><a class="glass" href="http://code.google.com/p/jquery-utils/source/browse/#svn/trunk/standalone/ui-hygrid/dist"><img src="script_code.png" alt="Package" align="absmiddle">Browse source code</a></li>
+                </ul>
+                <h3>Subversion</h3>
+                <pre>svn co http://jquery-utils.googlecode.com/svn/trunk/standalone/ui-hygrid/ ui-hygrid</pre>
+                <h3>Known issues</h3>
+                <ul>
+                    <li>Fail in IE</li>
+                </ul>
+                <h3>Report a bug</h3>
+                <p>
+                    Please use <a href="http://code.google.com/p/jquery-utils/issues/list">the project's bug tracker</a> to report bugs, also check if the bug is not already reported.
+                </p>
+                <p>
+                To report a bug, click on <a href="http://code.google.com/p/jquery-utils/issues/list">New issue</a> and fill up the form. Don't forget to specify your OS and Browser (vendor and version). Finally, add <em>ui-hygrid</em> in labels.
+                </p>
+            </div>
+            <div id="s-documentation" class="subsection">
+                <h2><a name="documentation">Documentation</a></h2>
+                <h3>Basic usage</h3>
+<code>$(function(){
+    $('#grid').hygrid({
+        url: 'hygrid-test.json',
+        cols: [
+            {label: 'ISO',  name: 'iso',  width: 40, sortable: false, align: 'center'},
+            {label: 'Name', name: 'name', width: 40, sortable: true, align: 'left', hide: true},
+            {label: 'Printable Name', name: 'printable_name', width: 40, sortable : true, align: 'left'},
+            {label: 'ISO3', name: 'iso3', width: 40, sortable: true, align: 'left', hide: true},
+            {label: 'Number Code', name: 'numcode', width: 40, sortable: true, align: 'left'}
+        ]
+    });
+});</pre>
+                <h3>Complete reference</h3>
+                <p>
+                    Documentation and the complete list of options is available
+                    on the <a href="http://code.google.com/p/jquery-utils/wiki/Uihygrid">project's wiki page</a> on Google code.
+                </p>
+            </div>
+            <div id="s-about" class="subsection">
+                <h2><a name="about">About</a></h2>
+                <h3>Author</h3>
+                <p>
+                My name is <a href="http://haineault.com">Maxime Haineault</a>, I work as project manager at <a href="http://centdessin.com/">Centdessin Design</a> where I manage a small web development department.
+                </p>
+                <p>
+                    I'm mostly developping this plugin in my spare times, so don't expect bugs to be fixed over night. If you want to help me improve
+                    this plugin, any kind of help would be greatly appreciated (bug fixing, documentation, new features, etc). 
+                </p>
+                <p>
+                    For that matter, if you really want a bug to be fixed quickly you can speed up the process by sending me your patches, I'll be 
+                    glad to merge them into trunk if the code looks decent and doesn't break the unit tests.
+                </p>
+                <p>
+                   <a href="mailto:haineault@gmail.com?subject=jquery.ui.hygrid" title="Contact me">Contact me</a>
+                </p>
+                <h3>Development roadmap</h3>
+                <table cellpadding="0" cellspacing="0" summary="Development milestones" class="milestones">
+                    <thead>
+                        <tr>
+                            <th>Release</th><th>Milestone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="major">
+                            <th>0.0.1</th>
+                            <td>
+                                <ul>
+                                    <li class="done">Preview release</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="minor">
+                            <th>0.0.2</th>
+                            <td>
+                                <ul>
+                                    <li>Toolbar</li>
+                                    <li>Pager</li>
+                                    <li>Full sortable support</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="minor">
+                            <th>0.0.3</th>
+                            <td>
+                                <ul>
+                                    <li>Unit tests</li>
+                                    <li>Search</li>
+                                    <li>Create from existing table</li>
+                                    <li>At least one backend (PHP or Python)</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="minor">
+                            <th>0.0.4</th>
+                            <td>
+                                <ul>
+                                    <li>Pager</li>
+                                    <li>Search</li>
+                                    <li>Toolbar</li>
+                                    <li>At least one backend (PHP or Python)</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="minor">
+                            <th>0.0.5</th>
+                            <td>
+                                <ul>
+                                    <li>Resizable table &amp; cols</li>
+                                    <li>All plugins unit tested</li>
+                                    <li>API freeze</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="minor">
+                            <th>0.0.6</th>
+                            <td>
+                                <ul>
+                                    <li>Resizable table &amp; cols</li>
+                                    <li>All plugins unit tested</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="minor">
+                            <th>0.0.7</th>
+                            <td>
+                                <ul>
+                                    <li>Features freeze, maintenance releases until 1.0</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="major">
+                            <th>0.1.0</th>
+                            <td>
+                                <ul>
+                                    <li class="done">First official release</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="minor">
+                            <th>1.1.1</th>
+                            <td>
+                                <ul>
+                                    <li>Inline row editing</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="copyright">Copyright (c) 2009 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
+        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <div class="google-adsense"></div>
+        <script type="text/javascript">
+        $(function(){
+            // demos
+            $('div.demo-wrapper:not(:eq(0))').hide();
+            $.anchorHandler
+                .add(/#d\-.*/, function(){
+                    var node = $(this.hash);
+                    $('div.demo-wrapper').queue(function(){
+                        $(this).filter(':visible').fadeOut();
+                        $(this).dequeue();
+                    });
+                    setTimeout(function(){
+                        $(node).fadeIn();
+                        var match = node.attr('id').match(/\d+/);
+                        if (match) {
+                            $('#demo-'+ match[0]).focus().next().find('ol').show().find('li:eq(2)').mouseover();
+                        }
+                    }, 1000);
+                    window.scrollTo(0,0);
+                    return false; }, true);
+        });
+        </script>
+<div class="google-adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-3794135775449727";
+/* 728x90, date de création 09/10/08 (test) */
+google_ad_slot = "2799933858";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+</div>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script><script type="text/javascript">if(window.location.href.match(/http\:\/\/haineault.com/)) {_uacct="UA-409568-21";urchinTracker();}</script>
+    </body>
+</html>
+

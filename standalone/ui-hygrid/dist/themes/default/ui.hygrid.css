@@ -1,0 +1,136 @@
+.ui-hygrid {
+    background:#ddd;
+    border:1px solid #ccc;
+}
+.ui-hygrid-caption {
+    border:0 none;
+    font-size:60%;
+    padding:8px 6px;
+    text-align:left;
+}
+.ui-hygrid table {
+    margin:0;padding:0;
+    background:#ddd;
+}
+.ui-hygrid table thead th {
+    font-size:70%;
+    font-weight:normal;
+    white-space:nowrap;
+    text-align:left;
+    color:#555;
+    background-color:#ddd;
+    border-width:1px;
+    border-color:#f4f4f4 #fff #bbb #ccc;
+    border-style:solid;
+    padding:4px;
+    overflow-x:hidden;
+    cursor:default;
+}
+.ui-hygrid table thead th:last-child {
+    border-right:0;
+}
+
+.ui-hygrid table thead th.ui-sortable {
+    cursor:pointer;
+}
+.ui-hygrid table thead th.ui-sortable div {
+    margin-right:16px; /* We don't want cols label to overlap the sort button */
+}
+.ui-hygrid table thead th .ui-icon {
+    float:right;
+    height:15px;
+    width:15px;
+}
+/*.ui-icon .ui-icon-triangle-2-n-s {}*/
+.ui-clickable {
+    cursor:pointer;
+}
+.ui-hygrid table tbody.ui-selectable {}
+.ui-hygrid table tbody tr {}
+.ui-hygrid table tbody tr td {
+    background-color:#f6f6f6;
+    font-size:80%;
+    font-weight:normal;
+    color:#333;
+    border:0;
+    border-right:1px solid #e5e5e5;
+    padding:4px;
+}
+.ui-hygrid table tbody tr.odd td {
+    background-color:#f0f0f0;
+}
+.ui-hygrid table tbody tr.ui-selected td {
+    background-color:#def;
+}
+.ui-hygrid table tbody tr.ui-highlight td {
+    background-color:#ffc;
+}
+.ui-hygrid table tfoot td {
+    border-top:1px solid #bbb;
+    font-size:12px;
+    padding:4px;
+}
+.ui-hygrid-p-colhider {
+}
+.ui-hygrid-p-colhider .ui-icon-gridmenu {
+    width:10px;
+    height:10px;
+    display:block;
+    background:transparent url(images/colhider.png) no-repeat 50% 50%;
+}
+.ui-hygrid-p-colhider-menu {
+    margin:0;padding:0;
+    position:absolute;
+    font-size:70%;
+    font-weight:normal;
+    border-width:1px;
+    border-style:solid;
+    padding:4px;
+    width:120px;
+}
+ul.ui-hygrid-p-colhider-menu li {
+    margin:0!important;
+    list-style:none!important;
+    list-style-type:none!important;
+}
+.ui-hygrid-p-colhider-menu li.ui-state-hover {
+}
+
+.ui-hygrid-p-colhider-menu li label {
+    display:block;
+    height:20px;
+    line-height:2.4em;
+}
+.ui-hygrid-p-colhider-menu li label input {
+    float:left;
+}
+
+.ui-hygrid table thead button,
+.ui-hygrid table tfoot button {
+    margin:0 4px 0 0;
+    padding:0 4px 3px;
+}
+.ui-hygrid table thead button[disabled],
+.ui-hygrid table tfoot button[disabled] {
+    color:#ccc;
+}
+
+.ui-hygrid-pager {
+    margin:0 10px;
+    font-size:80%;
+}
+.ui-hygrid-rppSelect {
+    font-size:80%!important;
+    margin:0 4px 0 0;
+}
+input.ui-hygrid-search {
+    background:#bbb;
+    border:1px solid #ccc;
+    color:#333;
+    font-size:100%;
+    height:18px;
+    padding:1px 2px;
+    position:relative;
+    top:2px;
+    margin:0 4px;
+}

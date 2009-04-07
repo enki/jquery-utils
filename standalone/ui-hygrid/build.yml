@@ -1,0 +1,57 @@
+title: jquery.hygrid
+version: 0.0.1
+svnrev: true
+dest: standalone/ui-hygrid/dist/
+modules:
+  - file: standalone/ui-hygrid/src/ui.hygrid.js
+    name: "hygrid"
+    destfile: ui.hygrid.all.js
+    depends:
+      - src: src/jquery.utils.js
+      - src: src/jquery.strings.js
+      - src: src/jquery.delayedObserver.js
+      - src: standalone/ui-hygrid/src/ui.hygrid.colhider.js
+      - src: standalone/ui-hygrid/src/ui.hygrid.ledger.js
+      - src: standalone/ui-hygrid/src/ui.hygrid.resizable.js
+      - src: standalone/ui-hygrid/src/ui.hygrid.selectable.js
+      - src: standalone/ui-hygrid/src/ui.hygrid.sortable.js
+  - file: standalone/ui-hygrid/src/ui.hygrid.js
+    name: "hygrid"
+    destfile: ui.hygrid.js
+    depends:
+      - src: src/jquery.utils.js
+      - src: src/jquery.strings.js
+      - src: src/jquery.delayedObserver.js
+
+copy: 
+  - src: demo/themes/default/images/*.png
+    dest: standalone/ui-hygrid/dist/themes/default/images/
+  - src: demo/themes/default/*.css
+    dest: standalone/ui-hygrid/dist/themes/default/
+  - src: standalone/ui-hygrid/src/img/*
+    dest: standalone/ui-hygrid/dist/themes/default/images/
+  - src: src/jquery.ui.all.js
+    dest: standalone/ui-hygrid/src/jquery.ui.all.js
+  - src: src/jquery.utils.js
+    dest: standalone/ui-hygrid/src/jquery.utils.js
+  - src: src/jquery.anchorHandler.js
+    dest: standalone/ui-hygrid/src/jquery.anchorHandler.js
+  - src: src/jquery.delayedObserver.js
+    dest: standalone/ui-hygrid/src/jquery.delayedObserver.js
+  - src: src/jquery.strings.js
+    dest: standalone/ui-hygrid/src/jquery.strings.js
+
+merge:
+  - dest: standalone/ui-hygrid/dist/themes/default/ui.hygrid.css
+    files:
+      - src: standalone/ui-hygrid/src/css/ui.hygrid.css
+zip:
+  - dest: standalone/ui-hygrid/downloads/ui.hygrid-%v-standalone.zip
+    src: standalone/ui-hygrid/
+    exclude: [".svn", "downloads", "build.yml", "demo"]
+
+gzip:
+  - dest: standalone/ui-hygrid/downloads/ui.hygrid-%v-standalone.tar.gz
+    src: standalone/ui-hygrid/
+    exclude: [".svn", "downloads", "build.yml", "demo"]
+
