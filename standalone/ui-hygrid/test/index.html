@@ -16,13 +16,24 @@
 	<script type="text/javascript" src="../src/ui.hygrid.htmltable.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.ajax.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.caption.js"></script>
-	<script type="text/javascript" src="../src/ui.hygrid.colhider.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.ledger.js"></script>
-	<script type="text/javascript" src="../src/ui.hygrid.pagination.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.selectable.js"></script>
-	<script type="text/javascript" src="../src/ui.hygrid.sortable.js"></script>
-	<script type="text/javascript" src="../src/ui.hygrid.search.js"></script>
-	<script type="text/javascript" src="../src/ui.hygrid.debug.js"></script>
+	<script type="text/javascript" src="../src/ui.hygrid.pagination.js"></script>
+    
+    <!-- still buggy or early dev -->
+	<script type="text/javascript" src="../src/ui.hygrid.colhider.js"></script>
+	<!--script type="text/javascript" src="../src/ui.hygrid.sortable.js"></script-->
+	<!--script type="text/javascript" src="../src/ui.hygrid.search.js"></script-->
+
+    <!-- to come -->
+	<!--script type="text/javascript" src="../src/ui.hygrid.editable.js"></script-->
+	<!--script type="text/javascript" src="../src/ui.hygrid.colapsable.js"></script-->
+	<!--script type="text/javascript" src="../src/ui.hygrid.resizable.js"></script-->
+	<!--script type="text/javascript" src="../src/ui.hygrid.throbber.js"></script-->
+	<!--script type="text/javascript" src="../src/ui.hygrid.anchorHandler.js"></script-->
+	<!--script type="text/javascript" src="../src/ui.hygrid.export.js"></script-->
+
+
     <script type="text/javascript">
 
     $(function(){
@@ -30,16 +41,17 @@
             caption:'Hello World', 
             colhider: true, 
             selectable: 2, 
-            debug: false, 
+            debug: true, 
+            trace: true, 
             width:1000,
             cols: [{sortable: true, width:100}, {width:200}]
         });
         $('#demo-2').hygrid({ 
-            url: '../src/backends/php/test.php?rpp=10&page=1',
+            url: '../src/backends/php/test.php',
             caption:'Bonjour Monde', 
             colhider: true, 
             selectable: true, 
-            debug: true, 
+            debug: false, 
             trace: true, 
             width:1000,
             cols: [{sortable: true, width:100, format: '{0:0.2f} $'}, {width:500}, {width:200}]
@@ -80,45 +92,45 @@
                     <th>Alpha Star</th>
             </thead>
             <tbody>
-                <tr><td>And</td><td>Andromeda</td><td>Andromeda</td><td>Alpheratz (Sirrah)</td><td> </td></tr>
-                <tr><td>Ant</td><td>Antlia</td><td>Air Pumpe</td><td/><td> </td></tr>
-                <tr><td>Aps</td><td>Apus</td><td>Bird of Paradise</td><td/><td> </td></tr>
-                <tr><td>Aqr</td><td>Aquarius</td><td>Water Carrier</td><td/><td> </td></tr>
-                <tr><td>Aql</td><td>Aquila</td><td>Eagle</td><td>Altair</td><td> </td></tr>
-                <tr><td>Ara</td><td>Ara</td><td>Altar</td><td/><td> </td></tr>
-                <tr><td>Ari</td><td>Aries</td><td>Ram</td><td>Hamal</td><td> </td></tr>
-                <tr><td>Aur</td><td>Auriga</td><td>Charioteer</td><td>Capella</td><td> </td></tr>
-                <tr><td>Boo</td><td>Bootes</td><td>Bear Driver</td><td>Arcturus</td><td> </td></tr>
-                <tr><td>Cae</td><td>Caelum</td><td>Graving Tool</td><td/><td> </td></tr>
-                <tr><td>Cam</td><td>Camelopardalis</td><td>Giraffe</td><td/><td> </td></tr>
-                <tr><td>Cnc</td><td>Cancer</td><td>Crab</td><td/><td> </td></tr>
-                <tr><td>CVn</td><td>Canes Venatici</td><td>Hunting Dogs</td><td/><td> </td></tr>
-                <tr><td>CMa</td><td>Canis Major</td><td>Larger Dog</td><td>Sirius</td><td> </td></tr>
-                <tr><td>CMi</td><td>Canis Minor</td><td>Smaller Dog</td><td>Prokyon</td><td> </td></tr>
-                <tr><td>Cap</td><td>Capricornus</td><td>Sea Goat</td><td/><td> </td></tr>
-                <tr><td>Car</td><td>Carina</td><td>Keel</td><td>Canopus</td><td> </td></tr>
-                <tr><td>Cas</td><td>Cassiopeia</td><td>Cassiopeia</td><td>Schedir</td><td> </td></tr>
-                <tr><td>Cen</td><td>Centaurus</td><td>Centaur</td><td>Rigil Kent</td><td> </td></tr>
-                <tr><td>Cep</td><td>Cepheus</td><td>Cepheus</td><td>Alderamin</td><td> </td></tr>
-                <tr><td>Cet</td><td>Cetus</td><td>Whale</td><td>Menkar</td><td> </td></tr>
-                <tr><td>Cha</td><td>Chamaeleon</td><td>Chameleon</td><td/><td> </td></tr>
-                <tr><td>Cir</td><td>Circinus</td><td>Compasses</td><td/><td> </td></tr>
-                <tr><td>Col</td><td>Columba</td><td>Dove</td><td/><td> </td></tr>
-                <tr><td>Com</td><td>Coma Berenices</td><td>Berenice's Hair</td><td/><td> </td></tr>
-                <tr><td>CrA</td><td>Corona Australis</td><td>Southern Crown</td><td/><td> </td></tr>
-                <tr><td>CrB</td><td>Corona Borealis</td><td>Northern Crown</td><td>Alphecca (Gemma)</td><td> </td></tr>
-                <tr><td>Crv</td><td>Corvus</td><td>Crow</td><td>Alchiba</td><td> </td></tr>
-                <tr><td>Crt</td><td>Crater</td><td>Cup</td><td/><td> </td></tr>
-                <tr><td>Cru</td><td>Crux</td><td>Cross</td><td>Acrux</td><td> </td></tr>
-                <tr><td>Cyg</td><td>Cygnus</td><td>Swan</td><td>Deneb</td><td> </td></tr>
-                <tr><td>Del</td><td>Delphinus</td><td>Dolphin</td><td/><td> </td></tr>
-                <tr><td>Dor</td><td>Dorado</td><td>Goldfish</td><td/><td> </td></tr>
-                <tr><td>Dra</td><td>Draco</td><td>Dragon</td><td>Thuban</td><td> </td></tr>
-                <tr><td>Equ</td><td>Equuleus</td><td>Little Horse</td><td/><td> </td></tr>
-                <tr><td>Eri</td><td>Eridanus</td><td>River</td><td>Archernar</td><td> </td></tr>
-                <tr><td>For</td><td>Fornax</td><td>Furnace</td><td/><td> </td></tr>
-                <tr><td>Gem</td><td>Gemini</td><td>Twins</td><td>Castor</td><td> </td></tr>
-                <tr><td>Gru</td><td>Grus</td><td>Crane</td><td>Al Na'ir</td><td> </td></tr>
+                <tr><td>And</td><td>Andromeda</td><td>Andromeda</td><td>Alpheratz (Sirrah)</td></tr>
+                <tr><td>Ant</td><td>Antlia</td><td>Air Pumpe</td><td/></tr>
+                <tr><td>Aps</td><td>Apus</td><td>Bird of Paradise</td><td/></tr>
+                <tr><td>Aqr</td><td>Aquarius</td><td>Water Carrier</td><td/></tr>
+                <tr><td>Aql</td><td>Aquila</td><td>Eagle</td><td>Altair</td></tr>
+                <tr><td>Ara</td><td>Ara</td><td>Altar</td><td/></tr>
+                <tr><td>Ari</td><td>Aries</td><td>Ram</td><td>Hamal</td></tr>
+                <tr><td>Aur</td><td>Auriga</td><td>Charioteer</td><td>Capella</td></tr>
+                <tr><td>Boo</td><td>Bootes</td><td>Bear Driver</td><td>Arcturus</td></tr>
+                <tr><td>Cae</td><td>Caelum</td><td>Graving Tool</td><td/></tr>
+                <tr><td>Cam</td><td>Camelopardalis</td><td>Giraffe</td><td/></tr>
+                <tr><td>Cnc</td><td>Cancer</td><td>Crab</td><td/></tr>
+                <tr><td>CVn</td><td>Canes Venatici</td><td>Hunting Dogs</td><td/></tr>
+                <tr><td>CMa</td><td>Canis Major</td><td>Larger Dog</td><td>Sirius</td></tr>
+                <tr><td>CMi</td><td>Canis Minor</td><td>Smaller Dog</td><td>Prokyon</td></tr>
+                <tr><td>Cap</td><td>Capricornus</td><td>Sea Goat</td><td/></tr>
+                <tr><td>Car</td><td>Carina</td><td>Keel</td><td>Canopus</td></tr>
+                <tr><td>Cas</td><td>Cassiopeia</td><td>Cassiopeia</td><td>Schedir</td></tr>
+                <tr><td>Cen</td><td>Centaurus</td><td>Centaur</td><td>Rigil Kent</td></tr>
+                <tr><td>Cep</td><td>Cepheus</td><td>Cepheus</td><td>Alderamin</td></tr>
+                <tr><td>Cet</td><td>Cetus</td><td>Whale</td><td>Menkar</td></tr>
+                <tr><td>Cha</td><td>Chamaeleon</td><td>Chameleon</td><td/></tr>
+                <tr><td>Cir</td><td>Circinus</td><td>Compasses</td><td/></tr>
+                <tr><td>Col</td><td>Columba</td><td>Dove</td><td/></tr>
+                <tr><td>Com</td><td>Coma Berenices</td><td>Berenice's Hair</td><td/></tr>
+                <tr><td>CrA</td><td>Corona Australis</td><td>Southern Crown</td><td/></tr>
+                <tr><td>CrB</td><td>Corona Borealis</td><td>Northern Crown</td><td>Alphecca (Gemma)</td></tr>
+                <tr><td>Crv</td><td>Corvus</td><td>Crow</td><td>Alchiba</td></tr>
+                <tr><td>Crt</td><td>Crater</td><td>Cup</td><td/></tr>
+                <tr><td>Cru</td><td>Crux</td><td>Cross</td><td>Acrux</td></tr>
+                <tr><td>Cyg</td><td>Cygnus</td><td>Swan</td><td>Deneb</td></tr>
+                <tr><td>Del</td><td>Delphinus</td><td>Dolphin</td><td/></tr>
+                <tr><td>Dor</td><td>Dorado</td><td>Goldfish</td><td/></tr>
+                <tr><td>Dra</td><td>Draco</td><td>Dragon</td><td>Thuban</td></tr>
+                <tr><td>Equ</td><td>Equuleus</td><td>Little Horse</td><td/></tr>
+                <tr><td>Eri</td><td>Eridanus</td><td>River</td><td>Archernar</td></tr>
+                <tr><td>For</td><td>Fornax</td><td>Furnace</td><td/></tr>
+                <tr><td>Gem</td><td>Gemini</td><td>Twins</td><td>Castor</td></tr>
+                <tr><td>Gru</td><td>Grus</td><td>Crane</td><td>Al Na'ir</td></tr>
             </tbody>
         </table>
     </div>

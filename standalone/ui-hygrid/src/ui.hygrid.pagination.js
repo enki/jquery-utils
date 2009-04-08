@@ -77,6 +77,16 @@ $.ui.plugin.add('hygrid', 'pagination', {
         }
         initialized = true;
     },
+    
+    dataloaded: function(e, ui) {
+        ui._('pager.pager').text($.format(ui.options.pager, {
+            page: ui.options.page,
+            pagetotal: Math.max(ui.options.total/ui.options.rpp, 2),
+            start: (ui.options.page *  ui.options.rpp) - ui.options.rpp,
+            end: ui.options.page * ui.options.rpp,
+            total: ui.options.total
+        }));
+    },
 
     gridrefresh: function(e, ui) {
         if (initialized) {

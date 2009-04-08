@@ -13,6 +13,7 @@
 
 $.widget('ui.hygrid', {
     plugins:  {},
+    _fixCellInex: 1,
     _init: function() {
         this._trigger('initialize');
         this._trigger('initialized');
@@ -148,22 +149,28 @@ $.widget('ui.hygrid', {
     _trigger: function(type, e, ui) {
         var ui = ui || this;
         var ev = e  || $.Event(type);
-        if (ui.options.debug === true || ui.options.trace === true || ($.isArray(ui.options.debug) && ui.options.debug.indexOf(type) > -1)) {
+        $.ui.plugin.call(this, type, [ev, ui]);
+        if (ui.options.debug || ui.options.trace) {
+            ui._debug.apply(this, [type, ev, ui]);
+        }
+        return $.widget.prototype._trigger.call(this, type, [ev, ui]);
+    },
+
+    _debug: function(type, e, ui) {
+        var debug = ui.options.debug;
+        var trace = ui.options.trace;
+        if (debug == true ||( $.isArray(debug) && debug.indexOf(type) > -1)) {
             try {
                 console.groupCollapsed('hygrid: %s', type); 
-                console.log('Event: %o', ev); 
+                console.log('Event: %o', e); 
                 console.log('Widget: %o', ui); 
-                if (ui.options.trace) {
-                    console.group('Traceback'); 
-                    console.log(ui._trigger.caller.toString());
+                if (trace === true) {
+                    console.log('Traceback:', ui._trigger.caller.toString());
                     console.trace();
-                    console.groupEnd('Traceback'); 
                 }
                 console.groupEnd('hygrid: %s', type); 
             } catch(e) {};
         }
-        $.ui.plugin.call(this, type, [ev, ui]);
-        return $.widget.prototype._trigger.call(this, type, [ev, ui]);
     }
 });
 
@@ -175,6 +182,7 @@ $.extend($.ui.hygrid, {
     defaults: {
         width:   'auto', 
         params:  [],
+        cols:    [],
         debug:   false
     },
     cellModifiers: {},

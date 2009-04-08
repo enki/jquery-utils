@@ -30,6 +30,9 @@ $.ui.plugin.add('hygrid', 'htmltable', {
                 .disableSelection()
                 .addClass('ui-state-default ui-hygrid-header')
                 .each(function(x){
+                    if (!ui.options.cols[x]) {
+                        ui.options.cols[x] = {};
+                    }
                     if ($('div', this).length == 0) {
                         var th = $('<div />').text($(this).text());
                         $(this).html(th);

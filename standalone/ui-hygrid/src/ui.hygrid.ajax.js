@@ -45,7 +45,7 @@ $.ui.plugin.add('hygrid', 'ajax', {
         }
     },
     gridrefresh: function(e, ui){
-        if (ui.options.ajax) {
+        if (ui.options.ajax && !ui.preventAjaxRefresh) {
             ui._trigger('dataloading');
             $.ajax({
                 type:       ui.options.method,
@@ -69,6 +69,7 @@ $.ui.plugin.add('hygrid', 'ajax', {
             ui._('toolbarBottom').attr('colspan', cols);
         }
     },
+
     dataloaded: function(e, ui) {
         ui.options.total = parseInt(ui.recievedData.total, 10);
         ui.options.page  = parseInt(ui.recievedData.page, 10);

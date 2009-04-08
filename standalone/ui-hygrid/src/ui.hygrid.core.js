@@ -12,7 +12,7 @@
 $.extend($.ui.hygrid.defaults, {
     core: true,
     toolbar: true,
-    total: 0,
+    total: 0
 });
 
 $.tpl('hygrid.button',        '<button class="ui-state-default ui-corner-all">{label:s}</button>');
@@ -29,7 +29,7 @@ $.ui.plugin.add('hygrid', 'core', {
                 el.find('div').andSelf().css('text-align', cell.align); 
             },
             width: function(el, cell, type, col){ 
-                if (type == 'th' && (this.options.width == 'auto' || col < this.options.cols.length-1)) { 
+                if (type == 'th' && (this.options.width == 'auto' || col < this.options.cols.length - ui._fixCellInex)) { 
                     el.find('div').andSelf().width(cell.width);
                 }
             },
@@ -58,18 +58,18 @@ $.ui.plugin.add('hygrid', 'core', {
             ui._('toolbarBottom', $.tpl('hygrid.toolbarBottom').appendTo(ui._('table')).find('td:first').attr('colspan', cols));
         }
     },
-    resized: function(e, ui) {
-        ui._setGridWidth();
-    },
     gridrefresh: function(e, ui) {
         var thead = ui._('thead');
         thead.find('th.ui-hygrid-header')
             .each(function(x){
-                if (ui.options.cols && ui.options.cols[x]) {
-                    ui._applyCellModifiers(thead.find('.ui-hygrid-header').eq(x), ui.options.cols[x], x);
+                if (ui.options.cols[x]) {
+                    ui._applyCellModifiers(this, ui.options.cols[x], x);
+                    ui.col(x).each(function(){
+                        ui._applyCellModifiers(this, ui.options.cols[x], x);
+                    });
                 }
             });
-        ui._trigger('resized');
+        ui._setGridWidth();
     }
 });
 
