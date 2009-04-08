@@ -48,7 +48,6 @@ $.ui.plugin.add('hygrid', 'colhider', {
                     var index = $self.data('colindex');
                     var checked = $self.find('input').is(':checked');
                     ui.toggledCol = ui.col(index);
-                    console.log(index, 'hidden: ', !checked);
                     ui._setColOption(index, 'hide', !checked);
                     if (checked) {
                         ui.col(index).show();
