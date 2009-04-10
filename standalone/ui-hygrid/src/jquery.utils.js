@@ -22,6 +22,36 @@
 
 	$.extend({ 
 
+        // Returns a range object
+        // Author: Matthias Miller
+        // Site:   http://blog.outofhanwell.com/2006/03/29/javascript-range-function/
+        range:  function() {
+            if (!arguments.length) { return []; }
+            var min, max, step;
+            if (arguments.length == 1) {
+                min  = 0;
+                max  = arguments[0]-1;
+                step = 1;
+            }
+            else {
+                // default step to 1 if it's zero or undefined
+                min  = arguments[0];
+                max  = arguments[1]-1;
+                step = arguments[2] || 1;
+            }
+            // convert negative steps to positive and reverse min/max
+            if (step < 0 && min >= max) {
+                step *= -1;
+                var tmp = min;
+                min = max;
+                max = tmp;
+                min += ((max-min) % step);
+            }
+            var a = [];
+            for (var i = min; i <= max; i += step) { a.push(i); }
+            return a;
+        },
+
         // Taken from ui.core.js. 
         // Why are you keeping this gem for yourself guys ? :|
         keyCode: {
@@ -98,8 +128,7 @@
         // Returns true if an object is an array
         // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-            if (!o) { return false; }
-            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
+            return Object.prototype.toString.apply(o || false) === '[object Array]';
 		},
 
         isObject: function(o) {

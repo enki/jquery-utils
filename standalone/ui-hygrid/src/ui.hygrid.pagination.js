@@ -127,7 +127,6 @@ $.ui.plugin.add('hygrid', 'pagination', {
     coltoggled: function(e, ui) {
         var $ths = $('th:visible', ui._('thead'));
         $ths.eq($ths.length - 2).css('width', 'auto');
-        ui._trigger('gridrefresh');
     }
 });
 })(jQuery);

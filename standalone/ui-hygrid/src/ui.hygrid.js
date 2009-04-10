@@ -41,7 +41,13 @@ $.widget('ui.hygrid', {
     },
 
     cols: function(visible) {
-        var length = this._('tbody').find('tr:eq(0) td').length
+        // TODO: Got to find a more reliable/clean way to do this..
+        if (this.options.htmltable) {
+            var length = this._('tbody').find('tr:eq(0) td').length;
+        }
+        else {
+            var length = this._('thead').find('th.ui-hygrid-header').length;
+        }
         return this.options.cols > length && this.options.length || length;
     },
     
@@ -55,8 +61,7 @@ $.widget('ui.hygrid', {
     },
 
     row: function(i) {
-        return $.isArray(i) && this._createRow(i) 
-                            || this._('tbody').find('tr').eq(i);
+        return this._('tbody').find('tr').eq(i);
     },
 
     cell: function(x, y, visible) {

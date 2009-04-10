@@ -34,8 +34,9 @@ $.ui.plugin.add('hygrid', 'core', {
                 }
             },
             format:  function(el, cell, type){ 
-                if (type == 'td') {
-                    el.text($.format(cell.format, el.text())); 
+                var txt = el.text();
+                if (type == 'td' && txt != '') {
+                    el.text($.format(cell.format, txt)); 
                 }
             }
         });
@@ -70,6 +71,13 @@ $.ui.plugin.add('hygrid', 'core', {
                 }
             });
         ui._setGridWidth();
+        var cols = ui.options.colhider && ui.cols()+1 || ui.cols();
+        if (ui.options.toolbarTop) {
+            ui._('toolbarTop').find('td:first').attr('colspan', cols);
+        }
+        if (ui.options.toolbarBottom) {
+            ui._('toolbarBottom').find('td:first').attr('colspan', cols);
+        }
     }
 });
 

@@ -34,11 +34,19 @@ $.extend($.ui.hygrid.defaults, {
 $.ui.plugin.add('hygrid', 'ajax', {
     initialize: function(e, ui) {
         var table = ui._('table');
+        ui.preventAjaxRefresh = false;
         if (ui.options.url && ui.options.ajax) {
             ui.options.htmltable = false;
             ui._('thead', (table.find('thead').get(0) && table.find('thead') || $('<thead/>').prependTo(table)));
             ui._('tbody', (table.find('tbody').get(0) && table.find('tbody') || $('<tbody/>').appendTo(table)));
             ui._('thead').find('th').disableSelection().addClass('ui-state-default ui-hygrid-header');
+            if (ui._('tbody').find('td').length < 1) {
+                var range = $.range(0, ui.options.rpp);
+                var blank = (new Array(ui.cols())).join(',').split(','); // OK that's pretty fucking dirty.
+                for (x in range) {
+                    ui._createRow(blank);
+                }
+            }
         }
         else {
             ui.options.ajax = false;
@@ -70,7 +78,12 @@ $.ui.plugin.add('hygrid', 'ajax', {
         }
     },
 
+    dataloading: function(e, ui) {
+        ui.preventAjaxRefresh = true;
+    },
+
     dataloaded: function(e, ui) {
+        ui.preventAjaxRefresh = false;
         ui.options.total = parseInt(ui.recievedData.total, 10);
         ui.options.page  = parseInt(ui.recievedData.page, 10);
         ui._('tbody').empty();
@@ -84,6 +97,7 @@ $.ui.plugin.add('hygrid', 'ajax', {
                 total: ui.options.total
             }));
         }
+        //ui._trigger('gridrefresh');
     }
 });
 
