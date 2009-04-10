@@ -36,42 +36,22 @@
 
     <script type="text/javascript">
 
-    $(function(){
-        $('#demo-1').hygrid({
-            caption:'Hello World', 
-            colhider: true, 
-            selectable: 2, 
-            debug: false, 
-            trace: false, 
-            width:1000,
-            cols: [{sortable: true, width:100}, {width:200}]
-        });
-        $('#demo-2').hygrid({ 
-            url: '../src/backends/php/test.php',
-            caption:'Bonjour Monde', 
-            colhider: true, 
-            selectable: true, 
-            debug: false, 
-            trace: false, 
-            width:1000,
-            cols: [{sortable: true, width:100, format: '{0:0.2f} $'}, {width:500}, {width:200}]
-        });
-        /*
-        $('#demo-2').hygrid({
-            url: 'data/simple-test.json',
-            width: 700,
-            selectable: 2,
-            cols: [
-                {label: 'ISO',  name: 'iso',  width: 40, sortable: false, align: 'center'},
-                {label: 'Name', name: 'name', width: 190, sortable: true, align: 'left'},
-                {label: 'Printable Name', name: 'printable_name', width: 150, sortable : true, align: 'left'},
-                {label: 'ISO3', name: 'iso3', width: 40, sortable: true, align: 'left'},
-                {label: 'Number Code', name: 'numcode', sortable: true, align: 'left'}
-            ]
-            });
-            */
+    $(loadGrids);
 
-    });
+    function loadGrids(){
+        var o = {
+            caption: $('#hygrid-caption').is(':checked') && $('#hygrid-caption-val').val() || false,
+            width: $('#hygrid-width').is(':checked') && parseInt($('#hygrid-width-val').val(), 10) || false,
+            colhider: $('#hygrid-colhider').is(':checked'),
+            debug: $('#hygrid-debug').is(':checked'),
+            trace: $('#hygrid-trace').is(':checked'),
+            selectable: $('#hygrid-selectable').is(':checked') && $('#hygrid-selectable-val').val() || false,
+            cols: [{sortable: true, width:100}, {width:200}]
+        };
+        $('#demo-1').hygrid(o);
+        o.url = '../src/backends/php/test.php';
+        $('#demo-2').hygrid(o);
+    };
     </script>
 </head>
 
@@ -80,6 +60,51 @@
     <div class="copyright">Copyright (c) 2008-2009 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
     <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
     <a class="related-links experimental">Experimental code !</a>
+    <h2>Options</h2>
+    <div id="options-pane">
+        <fieldset>
+            <legend>Plugins</legend>
+            <table cellpadding="0" cellspacing="0" summary="">
+                <tr>
+                    <th>Caption</th>
+                    <td><input type="checkbox" checked="true" id="hygrid-caption" /></td>
+                    <td><input type="text" style="width:300px;" id="hygrid-caption-val" value="Hello world" /></td>
+                </tr>
+                <tr>
+                    <th>Width</th>
+                    <td><input type="checkbox" checked="true" id="hygrid-width" /></td>
+                    <td><input type="text" style="width:50px;" id="hygrid-width-val" value="1000" /></td>
+                </tr>
+                <tr>
+                    <th>Selectable</th>
+                    <td><input type="checkbox" checked="true" id="hygrid-width" /></td>
+                    <td>
+                        <select id="hygrid-selectable-val">
+                            <option value="false">None</option>
+                            <option value="1">Single row</option>
+                            <option value="2">Single row</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Colhider</th>
+                    <td><input type="checkbox" checked="true"id="hygrid-colhider" /></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th>Debug</th>
+                    <td><input type="checkbox" id="hygrid-debug" /></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th>Trace</th>
+                    <td><input type="checkbox" id="hygrid-trace" /></td>
+                    <td>&nbsp;</td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+
     <h2>Functional tests</h2>
     <h3>Test from static table</h3>
     <div class="demo">
