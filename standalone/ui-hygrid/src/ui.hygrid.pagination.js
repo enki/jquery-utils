@@ -114,7 +114,7 @@ $.ui.plugin.add('hygrid', 'pagination', {
             if (ui.options.pager) {
                 ui._('pager.pager').text($.format(ui.options.pager, {
                     page: ui.options.page,
-                    pagetotal: Math.max(ui.options.total/ui.options.rpp, 2) + 1,
+                    pagetotal: Math.max(ui.options.total/ui.options.rpp, 2),
                     start: start,
                     end: end,
                     total: ui.options.total
