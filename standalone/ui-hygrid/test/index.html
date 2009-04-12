@@ -35,24 +35,110 @@
 
 
     <script type="text/javascript">
+    $(function(){
+         function getCellModifiers(col) {
+            function getVal(s) {
+                var val = $(s).val();
+                if ($(s).hasClass('int')) { return parseInt(val, 10); }
+                if ($(s).is(':checkbox')) { return $(s).is(':checked'); }
+                if (val == '' || val == 'false' || typeof(val) == 'undefined') { return false; }
+                return val;
+            }
+            var o = {
+                align:  getVal('#hygrid-cm-align-col'+ col), 
+                label:  getVal('#hygrid-cm-label-col'+ col), 
+                format: getVal('#hygrid-cm-format-col'+ col), 
+                hide:   getVal('#hygrid-cm-hide-col'+ col), 
+                width:  getVal('#hygrid-cm-width-col'+ col)
+            };
+            return o;
+        }
+        console.log(getCellModifiers(1));
+        function loadGrids(){
+            var o = {
+                caption:    $('#hygrid-caption').is(':checked') && $('#hygrid-caption-val').val() || false,
+                width:      $('#hygrid-width').is(':checked') && parseInt($('#hygrid-width-val').val(), 10) || false,
+                colhider:   $('#hygrid-colhider').is(':checked'),
+                debug:      $('#hygrid-debug').is(':checked'),
+                trace:      $('#hygrid-trace').is(':checked'),
+                ledger:     $('#hygrid-ledger').is(':checked'),
+                pagination: $('#hygrid-pagination').is(':checked'),
+                selectable: $('#hygrid-selectable').is(':checked') && $('#hygrid-selectable-val').val() || false,
+                pager:      $('#hygrid-pager').is(':checked') && $('#hygrid-pager-val').val() || false,
+                rppSelect:  $('#hygrid-rppSelect').is(':checked') && $('#hygrid-rppSelect-val').val().split(',') || false,
+                rpp:        $('#hygrid-rpp').is(':checked') && $('#hygrid-rpp-val').val() || false,
+                page:       $('#hygrid-page').is(':checked') && $('#hygrid-page-val').val() || false,
+                cols:       [getCellModifiers(1), getCellModifiers(2), getCellModifiers(3)]
+            };
 
-    $(loadGrids);
-
-    function loadGrids(){
-        var o = {
-            caption: $('#hygrid-caption').is(':checked') && $('#hygrid-caption-val').val() || false,
-            width: $('#hygrid-width').is(':checked') && parseInt($('#hygrid-width-val').val(), 10) || false,
-            colhider: $('#hygrid-colhider').is(':checked'),
-            debug: $('#hygrid-debug').is(':checked'),
-            trace: $('#hygrid-trace').is(':checked'),
-            selectable: $('#hygrid-selectable').is(':checked') && $('#hygrid-selectable-val').val() || false,
-            cols: [{sortable: true, width:100}, {width:200}]
+            $('#demo-1').hygrid(o);
+            o.url = '../src/backends/php/test.php';
+            $('#demo-2').hygrid(o);
         };
-        $('#demo-1').hygrid(o);
-        o.url = '../src/backends/php/test.php';
-        $('#demo-2').hygrid(o);
-    };
+
+        $('table.plugins :checkbox').bind('refresh', function() {
+            try{
+                var tb = $(this).parent().next();
+                if (tb.length) {
+                    if (this.checked) {
+                        tb.find('input').removeAttr('disabled');
+                    }
+                    else {
+                        tb.find('input').attr('disabled', true);
+                    }
+                }
+            } catch(e) {};
+        }).click(function() { $(this).trigger('refresh'); })
+
+        $('table.plugins :checkbox').trigger('refresh');
+        loadGrids();
+    });
+
+
     </script>
+    <style>
+    fieldset {
+        margin:20px 40px;    
+        padding:20px;
+        border:1px solid #ccc;
+    }
+    fieldset legend {
+        font-size:80%;
+        color:#666;
+        padding:0 20px;
+    }
+    table.form {
+        border-collapse:collapse;
+    }
+    table.form table.form {
+        margin:0;
+        font-size:80%;
+    }
+    table.form thead th {
+        background:#d2d2d2;
+        color:#333;
+        text-align:center;
+        padding:4px 14px;
+        border:1px solid #eee;
+        vertical-align:middle;
+        font-size:80%;
+    }
+    table.form tbody th {
+        background:#ddd;
+        color:#333;
+        text-align:right;
+        padding:4px 14px;
+        border:1px solid #eee;
+        vertical-align:middle;
+        font-size:80%;
+    }
+    table.form td {
+        background:#f4f4f4;
+        border:1px solid #eee;
+        padding:4px 8px;
+        vertical-align:middle;
+    }
+    </style>
 </head>
 
 <body id="body">
@@ -60,11 +146,13 @@
     <div class="copyright">Copyright (c) 2008-2009 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
     <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
     <a class="related-links experimental">Experimental code !</a>
-    <h2>Options</h2>
+    <h2>Functional tests</h2>
+
+    <h3>Options</h3>
     <div id="options-pane">
-        <fieldset>
-            <legend>Plugins</legend>
-            <table cellpadding="0" cellspacing="0" summary="">
+        <h3>Plugins</h3>
+        <table class="form plugins" cellpadding="0" cellspacing="0" summary="">
+            <tbody>
                 <tr>
                     <th>Caption</th>
                     <td><input type="checkbox" checked="true" id="hygrid-caption" /></td>
@@ -80,15 +168,48 @@
                     <td><input type="checkbox" checked="true" id="hygrid-width" /></td>
                     <td>
                         <select id="hygrid-selectable-val">
-                            <option value="false">None</option>
-                            <option value="1">Single row</option>
-                            <option value="2">Single row</option>
+                            <option value="1" selected>Single</option>
+                            <option value="2">Multiple</option>
                         </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Pagination</th>
+                    <td><input type="checkbox" checked="true"id="hygrid-pagination" /></td>
+                    <td>
+                        
+                        <table class="form" cellpadding="0" cellspacing="0" summary="">
+                            <tr>
+                                <th>page</th>
+                                <td><input type="checkbox" checked="true" id="hygrid-page" /></td>
+                                <td><input type="text" checked="true" id="hygrid-page-val" value="1" style="width:40px;" /></td>
+                            </tr>
+                            <tr>
+                                <th><acronym title="row per page">rpp</acronym></th>
+                                <td><input type="checkbox" checked="true" id="hygrid-rpp" /></td>
+                                <td><input type="text" checked="true" id="hygrid-rpp-val" value="10" style="width:40px;" /></td>
+                            </tr>
+                            <tr>
+                                <th><acronym title="values for the row per page selector">rppSelect</acronym></th>
+                                <td><input type="checkbox" checked="true" id="hygrid-rppSelect" /></td>
+                                <td><input type="text" checked="true" id="hygrid-rppSelect-val" value="5, 10, 15, 20" style="width:100px;" /></td>
+                            </tr>
+                            <tr>
+                                <th>pager</th>
+                                <td><input type="checkbox" checked="true" id="hygrid-pager" /></td>
+                                <td><input type="text" checked="true" id="hygrid-pager-val" value="{start:d}-{end:d}/{total:d}, page: {page:d} of {pagetotal:d}" style="width:300px;" /></td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
                 <tr>
                     <th>Colhider</th>
                     <td><input type="checkbox" checked="true"id="hygrid-colhider" /></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th>Ledger</th>
+                    <td><input type="checkbox" checked="true"id="hygrid-ledger" /></td>
                     <td>&nbsp;</td>
                 </tr>
                 <tr>
@@ -101,62 +222,65 @@
                     <td><input type="checkbox" id="hygrid-trace" /></td>
                     <td>&nbsp;</td>
                 </tr>
-            </table>
-        </fieldset>
+            </tbody>
+        </table>
+    </div>
+    <div id="cols-pane">
+        <h3>Cell Modifiers</h3>
+        <table class="form" cellpadding="0" cellspacing="0" summary="">
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Col 1</th>
+                    <th>Col 2</th>
+                    <th>Col 3</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>align</th>
+<td><select id="hygrid-cm-align-col1"><option value="false">false</option><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></td>
+<td><select id="hygrid-cm-align-col2"><option value="false">false</option><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></td>
+<td><select id="hygrid-cm-align-col3"><option value="false">false</option><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></td>
+                </tr>
+                <tr>
+                    <th>label</th>
+                    <td><input id="hygrid-cm-label-col1" type="text" value="Id" style="width:50px;"></td>
+                    <td><input id="hygrid-cm-label-col2" type="text" value="" style="width:50px;"></td>
+                    <td><input id="hygrid-cm-label-col3" type="text" value="" style="width:50px;"></td>
+                </tr>
+                <tr>
+                    <th>format</th>
+                    <td><input id="hygrid-cm-format-col1" type="text" value="0.2f" style="width:50px;"></td>
+                    <td><input id="hygrid-cm-format-col2" type="text" value="" style="width:50px;"></td>
+                    <td><input id="hygrid-cm-format-col3" type="text" value="" style="width:50px;"></td>
+                </tr>
+                <tr>
+                    <th>width</th>
+                    <td><input id="hygrid-cm-width-col1" type="text" class="int" value="100" style="width:50px;"></td>
+                    <td><input id="hygrid-cm-width-col2" type="text" class="int" value="200" style="width:50px;"></td>
+                    <td><input id="hygrid-cm-width-col3" type="text" class="int" value="" style="width:50px;"></td>
+                </tr>
+                <tr>
+                    <th>hide</th>
+                    <td><input id="hygrid-cm-hide-col1" type="checkbox"></td>
+                    <td><input id="hygrid-cm-hide-col2" type="checkbox"></td>
+                    <td><input id="hygrid-cm-hide-col3" type="checkbox"></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <h2>Functional tests</h2>
     <h3>Test from static table</h3>
     <div class="demo">
         <table id="demo-1">
             <thead>
                 <tr>
-                    <th>Abbrev.</th>
+                    <th>Id</th>
+                    <th>Code</th>
                     <th>Name</th>
-                    <th>Eng. Name</th>
-                    <th>Alpha Star</th>
             </thead>
-            <tbody>
-                <tr><td>And</td><td>Andromeda</td><td>Andromeda</td><td>Alpheratz (Sirrah)</td></tr>
-                <tr><td>Ant</td><td>Antlia</td><td>Air Pumpe</td><td/></tr>
-                <tr><td>Aps</td><td>Apus</td><td>Bird of Paradise</td><td/></tr>
-                <tr><td>Aqr</td><td>Aquarius</td><td>Water Carrier</td><td/></tr>
-                <tr><td>Aql</td><td>Aquila</td><td>Eagle</td><td>Altair</td></tr>
-                <tr><td>Ara</td><td>Ara</td><td>Altar</td><td/></tr>
-                <tr><td>Ari</td><td>Aries</td><td>Ram</td><td>Hamal</td></tr>
-                <tr><td>Aur</td><td>Auriga</td><td>Charioteer</td><td>Capella</td></tr>
-                <tr><td>Boo</td><td>Bootes</td><td>Bear Driver</td><td>Arcturus</td></tr>
-                <tr><td>Cae</td><td>Caelum</td><td>Graving Tool</td><td/></tr>
-                <tr><td>Cam</td><td>Camelopardalis</td><td>Giraffe</td><td/></tr>
-                <tr><td>Cnc</td><td>Cancer</td><td>Crab</td><td/></tr>
-                <tr><td>CVn</td><td>Canes Venatici</td><td>Hunting Dogs</td><td/></tr>
-                <tr><td>CMa</td><td>Canis Major</td><td>Larger Dog</td><td>Sirius</td></tr>
-                <tr><td>CMi</td><td>Canis Minor</td><td>Smaller Dog</td><td>Prokyon</td></tr>
-                <tr><td>Cap</td><td>Capricornus</td><td>Sea Goat</td><td/></tr>
-                <tr><td>Car</td><td>Carina</td><td>Keel</td><td>Canopus</td></tr>
-                <tr><td>Cas</td><td>Cassiopeia</td><td>Cassiopeia</td><td>Schedir</td></tr>
-                <tr><td>Cen</td><td>Centaurus</td><td>Centaur</td><td>Rigil Kent</td></tr>
-                <tr><td>Cep</td><td>Cepheus</td><td>Cepheus</td><td>Alderamin</td></tr>
-                <tr><td>Cet</td><td>Cetus</td><td>Whale</td><td>Menkar</td></tr>
-                <tr><td>Cha</td><td>Chamaeleon</td><td>Chameleon</td><td/></tr>
-                <tr><td>Cir</td><td>Circinus</td><td>Compasses</td><td/></tr>
-                <tr><td>Col</td><td>Columba</td><td>Dove</td><td/></tr>
-                <tr><td>Com</td><td>Coma Berenices</td><td>Berenice's Hair</td><td/></tr>
-                <tr><td>CrA</td><td>Corona Australis</td><td>Southern Crown</td><td/></tr>
-                <tr><td>CrB</td><td>Corona Borealis</td><td>Northern Crown</td><td>Alphecca (Gemma)</td></tr>
-                <tr><td>Crv</td><td>Corvus</td><td>Crow</td><td>Alchiba</td></tr>
-                <tr><td>Crt</td><td>Crater</td><td>Cup</td><td/></tr>
-                <tr><td>Cru</td><td>Crux</td><td>Cross</td><td>Acrux</td></tr>
-                <tr><td>Cyg</td><td>Cygnus</td><td>Swan</td><td>Deneb</td></tr>
-                <tr><td>Del</td><td>Delphinus</td><td>Dolphin</td><td/></tr>
-                <tr><td>Dor</td><td>Dorado</td><td>Goldfish</td><td/></tr>
-                <tr><td>Dra</td><td>Draco</td><td>Dragon</td><td>Thuban</td></tr>
-                <tr><td>Equ</td><td>Equuleus</td><td>Little Horse</td><td/></tr>
-                <tr><td>Eri</td><td>Eridanus</td><td>River</td><td>Archernar</td></tr>
-                <tr><td>For</td><td>Fornax</td><td>Furnace</td><td/></tr>
-                <tr><td>Gem</td><td>Gemini</td><td>Twins</td><td>Castor</td></tr>
-                <tr><td>Gru</td><td>Grus</td><td>Crane</td><td>Al Na'ir</td></tr>
-            </tbody>
+            <tbody><tr><td>0</td><td>AD</td><td>Andorra</td></tr><tr><td>1</td><td>AE</td><td>United Arab Emirates</td></tr><tr><td>2</td><td>AF</td><td>Afghanistan</td></tr><tr><td>3</td><td>AG</td><td>Antigua & Barbuda</td></tr><tr><td>4</td><td>AI</td><td>Anguilla</td></tr><tr><td>5</td><td>AL</td><td>Albania</td></tr><tr><td>6</td><td>AM</td><td>Armenia</td></tr><tr><td>7</td><td>AN</td><td>Netherlands Antilles</td></tr><tr><td>8</td><td>AO</td><td>Angola</td></tr><tr><td>9</td><td>AQ</td><td>Antarctica</td></tr><tr><td>10</td><td>AR</td><td>Argentina</td></tr><tr><td>11</td><td>AS</td><td>American Samoa</td></tr><tr><td>12</td><td>AT</td><td>Austria</td></tr><tr><td>13</td><td>AU</td><td>Australia</td></tr><tr><td>14</td><td>AW</td><td>Aruba</td></tr><tr><td>15</td><td>AZ</td><td>Azerbaijan</td></tr><tr><td>16</td><td>BA</td><td>Bosnia and Herzegovina</td></tr><tr><td>17</td><td>BB</td><td>Barbados</td></tr><tr><td>18</td><td>BD</td><td>Bangladesh</td></tr><tr><td>19</td><td>BE</td><td>Belgium</td></tr><tr><td>20</td><td>BF</td><td>Burkina Faso</td></tr><tr><td>21</td><td>BG</td><td>Bulgaria</td></tr><tr><td>22</td><td>BH</td><td>Bahrain</td></tr><tr><td>23</td><td>BI</td><td>Burundi</td></tr><tr><td>24</td><td>BJ</td><td>Benin</td></tr><tr><td>25</td><td>BM</td><td>Bermuda</td></tr><tr><td>26</td><td>BN</td><td>Brunei Darussalam</td></tr><tr><td>27</td><td>BO</td><td>Bolivia</td></tr><tr><td>28</td><td>BR</td><td>Brazil</td></tr><tr><td>29</td><td>BS</td><td>Bahama</td></tr><tr><td>30</td><td>BT</td><td>Bhutan</td></tr><tr><td>31</td><td>BU</td><td>Burma (no longer exists)</td></tr><tr><td>32</td><td>BV</td><td>Bouvet Island</td></tr><tr><td>33</td><td>BW</td><td>Botswana</td></tr><tr><td>34</td><td>BY</td><td>Belarus</td></tr><tr><td>35</td><td>BZ</td><td>Belize</td></tr><tr><td>36</td><td>CA</td><td>Canada</td></tr><tr><td>37</td><td>CC</td><td>Cocos (Keeling) Islands</td></tr><tr><td>38</td><td>CF</td><td>Central African Republic</td></tr><tr><td>39</td><td>CG</td><td>Congo</td></tr><tr><td>40</td><td>CH</td><td>Switzerland</td></tr><tr><td>41</td><td>CI</td><td>Côte D'ivoire (Ivory Coast)</td></tr><tr><td>42</td><td>CK</td><td>Cook Iislands</td></tr><tr><td>43</td><td>CL</td><td>Chile</td></tr><tr><td>44</td><td>CM</td><td>Cameroon</td></tr><tr><td>45</td><td>CN</td><td>China</td></tr><tr><td>46</td><td>CO</td><td>Colombia</td></tr><tr><td>47</td><td>CR</td><td>Costa Rica</td></tr><tr><td>48</td><td>CS</td><td>Czechoslovakia (no longer exists)</td></tr><tr><td>49</td><td>CU</td><td>Cuba</td></tr><tr><td>50</td><td>CV</td><td>Cape Verde</td></tr><tr><td>51</td><td>CX</td><td>Christmas Island</td></tr><tr><td>52</td><td>CY</td><td>Cyprus</td></tr><tr><td>53</td><td>CZ</td><td>Czech Republic</td></tr><tr><td>54</td><td>DD</td><td>German Democratic Republic (no longer exists)</td></tr><tr><td>55</td><td>DE</td><td>Germany</td></tr><tr><td>56</td><td>DJ</td><td>Djibouti</td></tr><tr><td>57</td><td>DK</td><td>Denmark</td></tr><tr><td>58</td><td>DM</td><td>Dominica</td></tr><tr><td>59</td><td>DO</td><td>Dominican Republic</td></tr><tr><td>60</td><td>DZ</td><td>Algeria</td></tr><tr><td>61</td><td>EC</td><td>Ecuador</td></tr><tr><td>62</td><td>EE</td><td>Estonia</td></tr><tr><td>63</td><td>EG</td><td>Egypt</td></tr><tr><td>64</td><td>EH</td><td>Western Sahara</td></tr><tr><td>65</td><td>ER</td><td>Eritrea</td></tr><tr><td>66</td><td>ES</td><td>Spain</td></tr><tr><td>67</td><td>ET</td><td>Ethiopia</td></tr><tr><td>68</td><td>FI</td><td>Finland</td></tr><tr><td>69</td><td>FJ</td><td>Fiji</td></tr><tr><td>70</td><td>FK</td><td>Falkland Islands (Malvinas)</td></tr><tr><td>71</td><td>FM</td><td>Micronesia</td></tr><tr><td>72</td><td>FO</td><td>Faroe Islands</td></tr><tr><td>73</td><td>FR</td><td>France</td></tr><tr><td>74</td><td>FX</td><td>France</td></tr><tr><td>75</td><td>GA</td><td>Gabon</td></tr><tr><td>76</td><td>GB</td><td>United Kingdom (Great Britain)</td></tr><tr><td>77</td><td>GD</td><td>Grenada</td></tr><tr><td>78</td><td>GE</td><td>Georgia</td></tr><tr><td>79</td><td>GF</td><td>French Guiana</td></tr><tr><td>80</td><td>GH</td><td>Ghana</td></tr><tr><td>81</td><td>GI</td><td>Gibraltar</td></tr><tr><td>82</td><td>GL</td><td>Greenland</td></tr><tr><td>83</td><td>GM</td><td>Gambia</td></tr><tr><td>84</td><td>GN</td><td>Guinea</td></tr><tr><td>85</td><td>GP</td><td>Guadeloupe</td></tr><tr><td>86</td><td>GQ</td><td>Equatorial Guinea</td></tr><tr><td>87</td><td>GR</td><td>Greece</td></tr><tr><td>88</td><td>GS</td><td>South Georgia and the South Sandwich Islands</td></tr><tr><td>89</td><td>GT</td><td>Guatemala</td></tr><tr><td>90</td><td>GU</td><td>Guam</td></tr><tr><td>91</td><td>GW</td><td>Guinea-Bissau</td></tr><tr><td>92</td><td>GY</td><td>Guyana</td></tr><tr><td>93</td><td>HK</td><td>Hong Kong</td></tr><tr><td>94</td><td>HM</td><td>Heard & McDonald Islands</td></tr><tr><td>95</td><td>HN</td><td>Honduras</td></tr><tr><td>96</td><td>HR</td><td>Croatia</td></tr><tr><td>97</td><td>HT</td><td>Haiti</td></tr><tr><td>98</td><td>HU</td><td>Hungary</td></tr><tr><td>99</td><td>ID</td><td>Indonesia</td></tr><tr><td>100</td><td>IE</td><td>Ireland</td></tr><tr><td>101</td><td>IL</td><td>Israel</td></tr><tr><td>102</td><td>IN</td><td>India</td></tr><tr><td>103</td><td>IO</td><td>British Indian Ocean Territory</td></tr><tr><td>104</td><td>IQ</td><td>Iraq</td></tr><tr><td>105</td><td>IR</td><td>Islamic Republic of Iran</td></tr><tr><td>106</td><td>IS</td><td>Iceland</td></tr><tr><td>107</td><td>IT</td><td>Italy</td></tr><tr><td>108</td><td>JM</td><td>Jamaica</td></tr><tr><td>109</td><td>JO</td><td>Jordan</td></tr><tr><td>110</td><td>JP</td><td>Japan</td></tr><tr><td>111</td><td>KE</td><td>Kenya</td></tr><tr><td>112</td><td>KG</td><td>Kyrgyzstan</td></tr><tr><td>113</td><td>KH</td><td>Cambodia</td></tr><tr><td>114</td><td>KI</td><td>Kiribati</td></tr><tr><td>115</td><td>KM</td><td>Comoros</td></tr><tr><td>116</td><td>KN</td><td>St. Kitts and Nevis</td></tr><tr><td>117</td><td>KP</td><td>Korea</td></tr><tr><td>118</td><td>KR</td><td>Korea</td></tr><tr><td>119</td><td>KW</td><td>Kuwait</td></tr><tr><td>120</td><td>KY</td><td>Cayman Islands</td></tr><tr><td>121</td><td>KZ</td><td>Kazakhstan</td></tr><tr><td>122</td><td>LA</td><td>Lao People's Democratic Republic</td></tr><tr><td>123</td><td>LB</td><td>Lebanon</td></tr><tr><td>124</td><td>LC</td><td>Saint Lucia</td></tr><tr><td>125</td><td>LI</td><td>Liechtenstein</td></tr><tr><td>126</td><td>LK</td><td>Sri Lanka</td></tr><tr><td>127</td><td>LR</td><td>Liberia</td></tr><tr><td>128</td><td>LS</td><td>Lesotho</td></tr><tr><td>129</td><td>LT</td><td>Lithuania</td></tr><tr><td>130</td><td>LU</td><td>Luxembourg</td></tr><tr><td>131</td><td>LV</td><td>Latvia</td></tr><tr><td>132</td><td>LY</td><td>Libyan Arab Jamahiriya</td></tr><tr><td>133</td><td>MA</td><td>Morocco</td></tr><tr><td>134</td><td>MC</td><td>Monaco</td></tr><tr><td>135</td><td>MD</td><td>Moldova</td></tr><tr><td>136</td><td>MG</td><td>Madagascar</td></tr><tr><td>137</td><td>MH</td><td>Marshall Islands</td></tr><tr><td>138</td><td>ML</td><td>Mali</td></tr><tr><td>139</td><td>MN</td><td>Mongolia</td></tr><tr><td>140</td><td>MM</td><td>Myanmar</td></tr><tr><td>141</td><td>MO</td><td>Macau</td></tr><tr><td>142</td><td>MP</td><td>Northern Mariana Islands</td></tr><tr><td>143</td><td>MQ</td><td>Martinique</td></tr><tr><td>144</td><td>MR</td><td>Mauritania</td></tr><tr><td>145</td><td>MS</td><td>Monserrat</td></tr><tr><td>146</td><td>MT</td><td>Malta</td></tr><tr><td>147</td><td>MU</td><td>Mauritius</td></tr><tr><td>148</td><td>MV</td><td>Maldives</td></tr><tr><td>149</td><td>MW</td><td>Malawi</td></tr><tr><td>150</td><td>MX</td><td>Mexico</td></tr><tr><td>151</td><td>MY</td><td>Malaysia</td></tr><tr><td>152</td><td>MZ</td><td>Mozambique</td></tr><tr><td>153</td><td>NA</td><td>Namibia</td></tr><tr><td>154</td><td>NC</td><td>New Caledonia</td></tr><tr><td>155</td><td>NE</td><td>Niger</td></tr><tr><td>156</td><td>NF</td><td>Norfolk Island</td></tr><tr><td>157</td><td>NG</td><td>Nigeria</td></tr><tr><td>158</td><td>NI</td><td>Nicaragua</td></tr><tr><td>159</td><td>NL</td><td>Netherlands</td></tr><tr><td>160</td><td>NO</td><td>Norway</td></tr><tr><td>161</td><td>NP</td><td>Nepal</td></tr><tr><td>162</td><td>NR</td><td>Nauru</td></tr><tr><td>163</td><td>NT</td><td>Neutral Zone (no longer exists)</td></tr><tr><td>164</td><td>NU</td><td>Niue</td></tr><tr><td>165</td><td>NZ</td><td>New Zealand</td></tr><tr><td>166</td><td>OM</td><td>Oman</td></tr><tr><td>167</td><td>PA</td><td>Panama</td></tr><tr><td>168</td><td>PE</td><td>Peru</td></tr><tr><td>169</td><td>PF</td><td>French Polynesia</td></tr><tr><td>170</td><td>PG</td><td>Papua New Guinea</td></tr><tr><td>171</td><td>PH</td><td>Philippines</td></tr><tr><td>172</td><td>PK</td><td>Pakistan</td></tr><tr><td>173</td><td>PL</td><td>Poland</td></tr><tr><td>174</td><td>PM</td><td>St. Pierre & Miquelon</td></tr><tr><td>175</td><td>PN</td><td>Pitcairn</td></tr><tr><td>176</td><td>PR</td><td>Puerto Rico</td></tr><tr><td>177</td><td>PT</td><td>Portugal</td></tr><tr><td>178</td><td>PW</td><td>Palau</td></tr><tr><td>179</td><td>PY</td><td>Paraguay</td></tr><tr><td>180</td><td>QA</td><td>Qatar</td></tr><tr><td>181</td><td>RE</td><td>Réunion</td></tr><tr><td>182</td><td>RO</td><td>Romania</td></tr><tr><td>183</td><td>RU</td><td>Russian Federation</td></tr><tr><td>184</td><td>RW</td><td>Rwanda</td></tr><tr><td>185</td><td>SA</td><td>Saudi Arabia</td></tr><tr><td>186</td><td>SB</td><td>Solomon Islands</td></tr><tr><td>187</td><td>SC</td><td>Seychelles</td></tr><tr><td>188</td><td>SD</td><td>Sudan</td></tr><tr><td>189</td><td>SE</td><td>Sweden</td></tr><tr><td>190</td><td>SG</td><td>Singapore</td></tr><tr><td>191</td><td>SH</td><td>St. Helena</td></tr><tr><td>192</td><td>SI</td><td>Slovenia</td></tr><tr><td>193</td><td>SJ</td><td>Svalbard & Jan Mayen Islands</td></tr><tr><td>194</td><td>SK</td><td>Slovakia</td></tr><tr><td>195</td><td>SL</td><td>Sierra Leone</td></tr><tr><td>196</td><td>SM</td><td>San Marino</td></tr><tr><td>197</td><td>SN</td><td>Senegal</td></tr><tr><td>198</td><td>SO</td><td>Somalia</td></tr><tr><td>199</td><td>SR</td><td>Suriname</td></tr><tr><td>200</td><td>ST</td><td>Sao Tome & Principe</td></tr><tr><td>201</td><td>SU</td><td>Union of Soviet Socialist Republics (no longer exists)</td></tr><tr><td>202</td><td>SV</td><td>El Salvador</td></tr><tr><td>203</td><td>SY</td><td>Syrian Arab Republic</td></tr><tr><td>204</td><td>SZ</td><td>Swaziland</td></tr><tr><td>205</td><td>TC</td><td>Turks & Caicos Islands</td></tr><tr><td>206</td><td>TD</td><td>Chad</td></tr><tr><td>207</td><td>TF</td><td>French Southern Territories</td></tr><tr><td>208</td><td>TG</td><td>Togo</td></tr><tr><td>209</td><td>TH</td><td>Thailand</td></tr><tr><td>210</td><td>TJ</td><td>Tajikistan</td></tr><tr><td>211</td><td>TK</td><td>Tokelau</td></tr><tr><td>212</td><td>TM</td><td>Turkmenistan</td></tr><tr><td>213</td><td>TN</td><td>Tunisia</td></tr><tr><td>214</td><td>TO</td><td>Tonga</td></tr><tr><td>215</td><td>TP</td><td>East Timor</td></tr><tr><td>216</td><td>TR</td><td>Turkey</td></tr><tr><td>217</td><td>TT</td><td>Trinidad & Tobago</td></tr><tr><td>218</td><td>TV</td><td>Tuvalu</td></tr><tr><td>219</td><td>TW</td><td>Taiwan</td></tr><tr><td>220</td><td>TZ</td><td>Tanzania</td></tr><tr><td>221</td><td>UA</td><td>Ukraine</td></tr><tr><td>222</td><td>UG</td><td>Uganda</td></tr><tr><td>223</td><td>UM</td><td>United States Minor Outlying Islands</td></tr><tr><td>224</td><td>US</td><td>United States of America</td></tr><tr><td>225</td><td>UY</td><td>Uruguay</td></tr><tr><td>226</td><td>UZ</td><td>Uzbekistan</td></tr><tr><td>227</td><td>VA</td><td>Vatican City State (Holy See)</td></tr><tr><td>228</td><td>VC</td><td>St. Vincent & the Grenadines</td></tr><tr><td>229</td><td>VE</td><td>Venezuela</td></tr><tr><td>230</td><td>VG</td><td>British Virgin Islands</td></tr><tr><td>231</td><td>VI</td><td>United States Virgin Islands</td></tr><tr><td>232</td><td>VN</td><td>Viet Nam</td></tr><tr><td>233</td><td>VU</td><td>Vanuatu</td></tr><tr><td>234</td><td>WF</td><td>Wallis & Futuna Islands</td></tr><tr><td>235</td><td>WS</td><td>Samoa</td></tr><tr><td>236</td><td>YD</td><td>Democratic Yemen (no longer exists)</td></tr><tr><td>237</td><td>YE</td><td>Yemen</td></tr><tr><td>238</td><td>YT</td><td>Mayotte</td></tr><tr><td>239</td><td>YU</td><td>Yugoslavia</td></tr><tr><td>240</td><td>ZA</td><td>South Africa</td></tr><tr><td>241</td><td>ZM</td><td>Zambia</td></tr><tr><td>242</td><td>ZR</td><td>Zaire</td></tr><tr><td>243</td><td>ZW</td><td>Zimbabwe</td></tr><tr><td>244</td><td>ZZ</td><td>Unknown or unspecified country</td></tr></tbody>
         </table>
     </div>
     <h3>Test with ajax</h3>

@@ -79,17 +79,19 @@ $.ui.plugin.add('hygrid', 'pagination', {
     },
     
     dataloaded: function(e, ui) {
-        ui._('pager.pager').text($.format(ui.options.pager, {
-            page: ui.options.page,
-            pagetotal: Math.max(ui.options.total/ui.options.rpp, 2),
-            start: (ui.options.page *  ui.options.rpp) - ui.options.rpp,
-            end: ui.options.page * ui.options.rpp,
-            total: ui.options.total
-        }));
+        if (ui.options.pager) {
+            ui._('pager.pager').text($.format(ui.options.pager, {
+                page: ui.options.page,
+                pagetotal: Math.max(ui.options.total/ui.options.rpp, 2),
+                start: (ui.options.page *  ui.options.rpp) - ui.options.rpp,
+                end: ui.options.page * ui.options.rpp,
+                total: ui.options.total
+            }));
+        }
     },
 
     gridrefresh: function(e, ui) {
-        if(ui.options.rpp) {
+        if(ui.options.rpp && ui.options.page) {
             var end   = ui.options.page * ui.options.rpp;
             var start = (ui.options.page *  ui.options.rpp) - ui.options.rpp;
             var $tr = ui._('tbody').find('tr');
@@ -109,18 +111,18 @@ $.ui.plugin.add('hygrid', 'pagination', {
                 start = ui.options.total - ui.options.rpp;
                 end = ui.options.total;
             }
-        }
-        if (ui.options.pager) {
-            ui._('pager.pager').text($.format(ui.options.pager, {
-                page: ui.options.page,
-                pagetotal: Math.max(ui.options.total/ui.options.rpp, 2) + 1,
-                start: start,
-                end: end,
-                total: ui.options.total
-            }));
-        }
-        if (ui.options.htmltable) {
-            $tr.hide().slice(start, end).show();
+            if (ui.options.pager) {
+                ui._('pager.pager').text($.format(ui.options.pager, {
+                    page: ui.options.page,
+                    pagetotal: Math.max(ui.options.total/ui.options.rpp, 2) + 1,
+                    start: start,
+                    end: end,
+                    total: ui.options.total
+                }));
+            }
+            if (ui.options.htmltable) {
+                $tr.hide().slice(start, end).show();
+            }
         }
     },
 

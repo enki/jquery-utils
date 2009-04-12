@@ -23,7 +23,12 @@ $.ui.plugin.add('hygrid', 'core', {
     initialize: function(e, ui) {
         $.extend($.ui.hygrid.cellModifiers, {
             label: function(el, cell, type){ 
-                return (type == 'th') && el.find('div').text(cell.label) || el.text(cell.label); 
+                if (type == 'th') {
+                    el.find('div').text(cell.label)
+                }
+                else if(!ui.options.htmltable) {
+                    el.text(cell.label)
+                }
             },
             align: function(el, cell){ 
                 el.find('div').andSelf().css('text-align', cell.align); 
@@ -36,6 +41,9 @@ $.ui.plugin.add('hygrid', 'core', {
             format:  function(el, cell, type){ 
                 var txt = el.text();
                 if (type == 'td' && txt != '') {
+                    if (cell.format.indexOf('{') == -1) {
+                        cell.format = '{0:'+ cell.format +'}';
+                    }
                     el.text($.format(cell.format, txt)); 
                 }
             }
