@@ -44,7 +44,7 @@ $.ui.plugin.add('hygrid', 'pagination', {
         }
     },
 
-    initialized: function(e, ui) { 
+    initialized: function(e, ui) {
         if (ui._('pager.rppSelect')) {
             ui._('pager.rppSelect').bind('change.pagination', function(){
                 ui.options.rpp = parseInt($(this).val(), 10);
@@ -58,12 +58,12 @@ $.ui.plugin.add('hygrid', 'pagination', {
         }).appendTo(ui._('toolbarBottom'));
 
         ui._('pager.prev').bind('click.pagination', function(){
-            ui.options.page = ui.options.page > 1 && ui.options.page - 1 || 1;
+            ui.options.page = parseInt(ui.options.page, 10) > 1 && parseInt(ui.options.page, 10) - 1 || 1;
             ui._trigger('gridrefresh');
         }).appendTo(ui._('toolbarBottom'));
 
         ui._('pager.next').bind('click.pagination', function(){
-            ui.options.page = ui.options.page + 1;
+            ui.options.page = parseInt(ui.options.page, 10) + 1;
             ui._trigger('gridrefresh');
         }).appendTo(ui._('toolbarBottom'));
         

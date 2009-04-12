@@ -22,29 +22,23 @@ $.tpl('hygrid.toolbarBottom', '<tfoot class="ui-hygrid-toolbar bottom ui-widget-
 $.ui.plugin.add('hygrid', 'core', {
     initialize: function(e, ui) {
         $.extend($.ui.hygrid.cellModifiers, {
-            label: function(el, cell, type){ 
-                if (type == 'th') {
+            label: function(el, cell){ 
+                if (cell.isTH) {
                     el.find('div').text(cell.label)
-                }
-                else if(!ui.options.htmltable) {
-                    el.text(cell.label)
                 }
             },
             align: function(el, cell){ 
                 el.find('div').andSelf().css('text-align', cell.align); 
             },
-            width: function(el, cell, type, col){ 
-                if (type == 'th' && (this.options.width == 'auto' || col < this.options.cols.length - ui._fixCellInex)) { 
+            width: function(el, cell, col){ 
+                if (cell.isTH && (this.options.width == 'auto' || col < this.options.cols.length)) { 
                     el.find('div').andSelf().width(cell.width);
                 }
             },
-            format:  function(el, cell, type){ 
-                var txt = el.text();
-                if (type == 'td' && txt != '') {
-                    if (cell.format.indexOf('{') == -1) {
-                        cell.format = '{0:'+ cell.format +'}';
-                    }
-                    el.text($.format(cell.format, txt)); 
+            format:  function(el, cell){ 
+                if (cell.isTD && cell.text && cell.text.length) {
+                    var f = (cell.format.indexOf('{') == -1)? '{0:'+ cell.format +'}': cell.format;
+                    el.text($.format(f, cell.text)); 
                 }
             }
         });
@@ -56,7 +50,22 @@ $.ui.plugin.add('hygrid', 'core', {
             ui._('wrapper', ui.element);
             ui._('table',   ui.element.find('table'));
         }
-        ui._('wrapper').addClass('ui-hygrid');
+
+        ui.hasFocus = false;
+        ui._('wrapper').addClass('ui-hygrid').bind('click.focusHandler', function() {
+            if (!ui.hasFocus) {
+                ui.hasFocus = true;
+                ui._trigger('focus');
+            }
+        });
+        $(document).bind('click.focusHandler', function(e) {
+            if (ui.hasFocus && !$(e.originalTarget).parents('div.ui-hygrid').length) {
+                ui.hasFocus = false;
+                ui._trigger('blur');
+            }
+        });
+
+
     },
     initialized: function(e, ui) {
         var cols = ui.options.colhider && ui.cols()+1 || ui.cols();
@@ -72,8 +81,13 @@ $.ui.plugin.add('hygrid', 'core', {
         thead.find('th.ui-hygrid-header')
             .each(function(x){
                 if (ui.options.cols[x]) {
+                    // apply modifiers to column header
+                    ui.options.cols[x].isTH = !(ui.options.cols[x].isTD = false);
                     ui._applyCellModifiers(this, ui.options.cols[x], x);
-                    ui.col(x).each(function(){
+                    // apply modifiers to column cells, cell.text/isTD/isTH are used as a temporary buffer (hackish but straight forward)
+                    ui.col(x, true).each(function(){
+                        ui.options.cols[x].text = $(this).text();
+                        ui.options.cols[x].isTH = !(ui.options.cols[x].isTD = true);
                         ui._applyCellModifiers(this, ui.options.cols[x], x);
                     });
                 }

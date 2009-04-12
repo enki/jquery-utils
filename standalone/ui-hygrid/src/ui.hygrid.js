@@ -96,23 +96,24 @@ $.widget('ui.hygrid', {
     },
 
     _createRow: function(cells) {
-        var e  = $.Event();
-        this.insertedRow = $('<tr />');
+        var row = $('<tr />');
         for (i in cells) {
-            var cell = this.options.cols && this.options.cols[i] || {}; 
-            var label = cell.label; 
-            cell.label = cells[i];
-            this.insertedRow.append(this._createCell(cell, 'td'));
-            cell.label = label; // I manually cache/restore the object's label to avoid having to clone it for each cells
+            var cell  = this.options.cols && this.options.cols[i] || {}; 
+            cell.text = cells[i];
+            cell.isTH = !(cell.isTD = true);
+            cell.type = 'td';
+            row.append(this._createCell(cell));
         }
-        this._trigger('rowinsert');
-        this.insertedRow.appendTo(this._('tbody'));
-        this._trigger('rowinserted');
+        this._trigger({type: 'rowinsert', insertedRow: row});
+        row.appendTo(this._('tbody'));
+        this._trigger({type: 'rowinserted', insertedRow: row});
     },
 
-    _createCell: function(cell, type) {
-        var tpl = (type == 'th')? '<{0:s} class="ui-hygrid-header"><div /></{0:s}>': '<{0:s} />';
-        var el  = $($.format(tpl, type || 'td'));
+    _createCell: function(cell) {
+        cell.type = cell.type.toLowerCase() || 'td';
+        cell.isTD = !(cell.isTH = (cell.type == 'th'));
+        var el    = $(cell.isTH && '<th class="ui-hygrid-header"><div /></th>' || '<td />');
+        if (cell.isTD) { el.text(cell.text); }
         return this._applyCellModifiers(el, cell);
     },
 
@@ -120,12 +121,11 @@ $.widget('ui.hygrid', {
         var $el = $(el);
         var mod = $.keys($.ui.hygrid.cellModifiers);
         if ($el.get(0)) {
-            var type = $el.get(0).nodeName;
             for (x in mod) {
                 if (cell[mod[x]]) {
                     try {
                         $.ui.hygrid.cellModifiers[mod[x]]
-                            .apply(this, [$el, cell, type && type.toLowerCase() || 'td', col]);
+                            .apply(this, [$el, cell, col]);
                     } catch(e) {}
                 }
             }
@@ -150,15 +150,17 @@ $.widget('ui.hygrid', {
             return false;
         }
     },
-
-    _trigger: function(type, e, ui) {
-        var ui = ui || this;
-        var ev = e  || $.Event(type);
-        $.ui.plugin.call(this, type, [ev, ui]);
+    // type, e, ui 
+    // {type: }
+    _trigger: function() {
+        var ui = arguments[2] || this;
+        var ev = $.isObject(arguments[0]) && $.Event(arguments[0]) || $.Event(arguments[0]);
+        var type = $.isObject(arguments[0]) && arguments[0].type || arguments[0];
         if (ui.options.debug || ui.options.trace) {
-            ui._debug.apply(this, [type, ev, ui]);
+            ui._debug.apply(this, [ev.type, ev, ui]);
         }
-        return $.widget.prototype._trigger.call(this, type, [ev, ui]);
+        $.ui.plugin.call(this, type, [ev, ui]);
+        return $.widget.prototype._trigger.call(this, ev.type, [ev, ui]);
     },
 
     _debug: function(type, e, ui) {
@@ -178,7 +180,6 @@ $.widget('ui.hygrid', {
         }
     }
 });
-
 // These properties are shared accross every hygrid instances
 $.extend($.ui.hygrid, {
     version:     '@VERSION',

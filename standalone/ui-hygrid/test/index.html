@@ -53,7 +53,6 @@
             };
             return o;
         }
-        console.log(getCellModifiers(1));
         function loadGrids(){
             var o = {
                 caption:    $('#hygrid-caption').is(':checked') && $('#hygrid-caption-val').val() || false,
@@ -81,22 +80,26 @@
                 var tb = $(this).parent().next();
                 if (tb.length) {
                     if (this.checked) {
-                        tb.find('input').removeAttr('disabled');
+                        tb.find('input, select').removeAttr('disabled');
                     }
                     else {
-                        tb.find('input').attr('disabled', true);
+                        tb.find('input, select').attr('disabled', true);
                     }
                 }
             } catch(e) {};
         }).click(function() { $(this).trigger('refresh'); })
 
         $('table.plugins :checkbox').trigger('refresh');
+        $('#reload').click(function(){
+            window.location.reload();
+        });
         loadGrids();
     });
 
 
     </script>
     <style>
+    #header {margin: 20px 40px 10px 40px;}
     fieldset {
         margin:20px 40px;    
         padding:20px;
@@ -138,6 +141,14 @@
         padding:4px 8px;
         vertical-align:middle;
     }
+    #plugins-pane, #cols-pane {
+        float:left;
+    }
+    .buttonbar {
+        background:#ddd;
+        padding:10px;
+        margin:10px 40px;
+    }
     </style>
 </head>
 
@@ -147,9 +158,7 @@
     <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
     <a class="related-links experimental">Experimental code !</a>
     <h2>Functional tests</h2>
-
-    <h3>Options</h3>
-    <div id="options-pane">
+    <div id="plugins-pane">
         <h3>Plugins</h3>
         <table class="form plugins" cellpadding="0" cellspacing="0" summary="">
             <tbody>
@@ -269,7 +278,11 @@
                 </tr>
             </tbody>
         </table>
+        <div class="buttonbar">
+            <input type="button" id="reload" value="Reload" />
+        </div>
     </div>
+    <div style="clear:both;"></div>
 
     <h3>Test from static table</h3>
     <div class="demo">

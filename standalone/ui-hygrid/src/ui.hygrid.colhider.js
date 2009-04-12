@@ -26,10 +26,10 @@ $.ui.plugin.add('hygrid', 'colhider', {
     },
     initialized: function(e, ui) {
         ui._fixCellInex++;
-        ui._('colhidermenu ', $.tpl('colhider.menu').prependTo(ui._('wrapper')));
+        ui._('colhidermenu', $.tpl('colhider.menu').prependTo(ui._('wrapper')));
         var thead = ui._('thead');
         var tbody = ui._('tbody');
-        var menu  = ui._('colhidermenu ');
+        var menu  = ui._('colhidermenu');
         $th = thead.find('th');
     
         if (ui.options.htmltable) {
@@ -67,17 +67,26 @@ $.ui.plugin.add('hygrid', 'colhider', {
         // create button
         ui._('colhiderButton', $.tpl('colhider.button').width(16)
             .bind('click.colhider', function() {
-                menu.css({
-                    top: tbody.position().top,
-                    left: $(this).position().left
-                }).toggle();
+                if (menu.is(':visible')) {
+                    menu.hide();
+                }
+                else {
+                    menu.css({
+                        top: tbody.position().top,
+                        left: $(this).position().left
+                    }).show();
+                }
             })
             .hover(function(){ $(this).addClass('ui-state-hover');}, 
                    function(){ $(this).removeClass('ui-state-hover'); 
             }).appendTo(thead.find('tr')));
     },
 
+    blur: function(e, ui) {
+        ui._('colhidermenu').hide();
+    },
+
     rowinserted: function(e, ui) {
-        ui.insertedRow.append('<td />');
+        e.originalEvent.insertedRow.append('<td />');
     }
 });
