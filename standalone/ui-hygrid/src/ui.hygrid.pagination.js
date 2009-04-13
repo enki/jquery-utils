@@ -48,28 +48,28 @@ $.ui.plugin.add('hygrid', 'pagination', {
         if (ui._('pager.rppSelect')) {
             ui._('pager.rppSelect').bind('change.pagination', function(){
                 ui.options.rpp = parseInt($(this).val(), 10);
-                ui._trigger('gridrefresh');
+                ui._trigger('refresh');
             }).appendTo(ui._('toolbarBottom'));
         }
 
         ui._('pager.first').bind('click.pagination', function(){
             ui.options.page = 1;
-            ui._trigger('gridrefresh');
+            ui._trigger('refresh');
         }).appendTo(ui._('toolbarBottom'));
 
         ui._('pager.prev').bind('click.pagination', function(){
             ui.options.page = parseInt(ui.options.page, 10) > 1 && parseInt(ui.options.page, 10) - 1 || 1;
-            ui._trigger('gridrefresh');
+            ui._trigger('refresh');
         }).appendTo(ui._('toolbarBottom'));
 
         ui._('pager.next').bind('click.pagination', function(){
             ui.options.page = parseInt(ui.options.page, 10) + 1;
-            ui._trigger('gridrefresh');
+            ui._trigger('refresh');
         }).appendTo(ui._('toolbarBottom'));
         
         ui._('pager.last').bind('click.pagination', function(){
             ui.options.page = Math.max(ui.options.total/ui.options.rpp, 2);
-            ui._trigger('gridrefresh');
+            ui._trigger('refresh');
         }).appendTo(ui._('toolbarBottom'));
 
         if (ui.options.pager) {
@@ -90,7 +90,7 @@ $.ui.plugin.add('hygrid', 'pagination', {
         }
     },
 
-    gridrefresh: function(e, ui) {
+    refresh: function(e, ui) {
         if(ui.options.rpp && ui.options.page) {
             var end   = ui.options.page * ui.options.rpp;
             var start = (ui.options.page *  ui.options.rpp) - ui.options.rpp;
@@ -129,6 +129,15 @@ $.ui.plugin.add('hygrid', 'pagination', {
     coltoggled: function(e, ui) {
         var $ths = $('th:visible', ui._('thead'));
         $ths.eq($ths.length - 2).css('width', 'auto');
+    },
+
+    destroy: function(e, ui) {
+        if (ui._('pager.next'))      { ui._('pager.next').remove(); }
+        if (ui._('pager.prev'))      { ui._('pager.prev').remove(); }
+        if (ui._('pager.first'))     { ui._('pager.first').remove(); }
+        if (ui._('pager.last'))      { ui._('pager.last').remove(); }
+        if (ui._('pager.pager'))     { ui._('pager.pager').remove(); }
+        if (ui._('pager.rppSelect')) { ui._('pager.rppSelect').remove(); }
     }
 });
 })(jQuery);

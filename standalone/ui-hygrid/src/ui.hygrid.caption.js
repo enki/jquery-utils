@@ -14,9 +14,10 @@ $.tpl('hygrid.caption', '<caption class="ui-hygrid-caption ui-widget-header">{ca
 
 $.ui.plugin.add('hygrid', 'caption', {
     initialized: function(e, ui) { 
-        if (ui.options.caption) {
-            $.tpl('hygrid.caption', {caption: ui.options.caption}).prependTo(ui._('table'));
-        }
+        ui._('caption', $.tpl('hygrid.caption', {caption: ui.options.caption}).prependTo(ui._('table')));
+    },
+    destroy: function(e, ui) {
+        if (ui._('caption')) { ui._('caption').remove(); }
     }
 });
 

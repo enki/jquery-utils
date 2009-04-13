@@ -54,7 +54,7 @@ $.ui.plugin.add('hygrid', 'colhider', {
                     }
                     ui._trigger('coltoggled');
                     ui.preventAjaxRefresh = true;
-                    ui._trigger('gridrefresh');
+                    ui._trigger('refresh');
                     ui.preventAjaxRefresh = false;
                     setTimeout(function() {
                         menu.hide();
@@ -88,5 +88,10 @@ $.ui.plugin.add('hygrid', 'colhider', {
 
     rowinserted: function(e, ui) {
         e.originalEvent.insertedRow.append('<td />');
+    },
+    destroy: function(e, ui) {
+        ui._('colhidermenu').remove();
+        ui._('colhiderButton').remove();
+        ui._('tbody').find('tr td:last-child').remove();
     }
 });

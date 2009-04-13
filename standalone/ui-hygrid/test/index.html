@@ -35,6 +35,7 @@
 
 
     <script type="text/javascript">
+    var loadGrids = false;
     $(function(){
          function getCellModifiers(col) {
             function getVal(s) {
@@ -53,7 +54,7 @@
             };
             return o;
         }
-        function loadGrids(){
+        loadGrids = function (){
             var o = {
                 caption:    $('#hygrid-caption').is(':checked') && $('#hygrid-caption-val').val() || false,
                 width:      $('#hygrid-width').is(':checked') && parseInt($('#hygrid-width-val').val(), 10) || false,
@@ -69,7 +70,7 @@
                 page:       $('#hygrid-page').is(':checked') && $('#hygrid-page-val').val() || false,
                 cols:       [getCellModifiers(1), getCellModifiers(2), getCellModifiers(3)]
             };
-
+            console.log($('#demo-1'));
             $('#demo-1').hygrid(o);
             o.url = '../src/backends/php/test.php';
             $('#demo-2').hygrid(o);
@@ -91,7 +92,10 @@
 
         $('table.plugins :checkbox').trigger('refresh');
         $('#reload').click(function(){
-            window.location.reload();
+            $('#demo-1, #demo-2').hygrid('destroy');
+            setTimeout(function(){
+                loadGrids();
+            },1000);
         });
         loadGrids();
     });

@@ -22,6 +22,9 @@ $.ui.plugin.add('hygrid', 'ledger', {
     },
     dataloaded: function(e, ui) { 
         applyLedger(ui);
+    },
+    destroy: function(e, ui) {
+        ui._('tbody').find('tr').removeClass('odd even')
     }
 });
 

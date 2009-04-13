@@ -16,7 +16,7 @@ $.ui.hygrid.parsers.json = function(e, ui) {
     for (x in ui.recievedData.rows) {
         ui._createRow(ui.recievedData.rows[x].cell);
     }
-    ui._trigger('gridupdated');
+    ui._trigger('updated');
 };
 
 $.extend($.ui.hygrid.defaults, {
@@ -52,7 +52,7 @@ $.ui.plugin.add('hygrid', 'ajax', {
             ui.options.ajax = false;
         }
     },
-    gridrefresh: function(e, ui){
+    refresh: function(e, ui){
         if (ui.options.ajax && !ui.preventAjaxRefresh) {
             ui._trigger('dataloading');
             $.ajax({
@@ -68,7 +68,7 @@ $.ui.plugin.add('hygrid', 'ajax', {
             });
         }
     },
-    gridupdated: function(e, ui) {
+    updated: function(e, ui) {
         var cols = ui.options.colhider && ui.cols()+1 || ui.cols();
         if (ui.options.toolbarTop) {
             ui._('toolbarTop').attr('colspan', cols);
@@ -97,7 +97,9 @@ $.ui.plugin.add('hygrid', 'ajax', {
                 total: ui.options.total
             }));
         }
-        //ui._trigger('gridrefresh');
+    },
+    destroy: function(e, ui){
+        ui._('thead').find('th').removeClass('ui-state-default ui-hygrid-header');
     }
 });
 

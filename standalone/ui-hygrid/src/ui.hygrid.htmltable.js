@@ -25,8 +25,7 @@ $.ui.plugin.add('hygrid', 'htmltable', {
             .appendTo(ui._('wrapper'));
     },
     initialized: function(e, ui) {
-        var thead = ui._('thead');
-        $th = thead.find('th')
+        ui._('thead').find('th')
                 .disableSelection()
                 .addClass('ui-state-default ui-hygrid-header')
                 .each(function(x){
@@ -39,6 +38,11 @@ $.ui.plugin.add('hygrid', 'htmltable', {
                     }
                 });
         ui.options.total = ui._('tbody').find('tr').length;
+    },
+    destroy: function(e, ui) {
+        ui._('thead').find('th')
+                .enableSelection()
+                .removeClass('ui-state-default ui-hygrid-header');
     }
 });
 

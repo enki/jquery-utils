@@ -17,7 +17,8 @@ $.widget('ui.hygrid', {
     _init: function() {
         this._trigger('initialize');
         this._trigger('initialized');
-        this._trigger('gridrefresh');
+        this._trigger('refresh');
+        console.log($.ui.hygrid.getter);
     },
 
     params: function() {
@@ -38,6 +39,21 @@ $.widget('ui.hygrid', {
         else {
             return this._setData(arguments[0], arguments[1]);
         }
+    },
+
+    destroy: function() {
+        this._trigger('destroy');
+    },
+
+    get: function(k, v) {
+        console.log('wtf');
+        console.log(this, k, v);
+        return this.options[k] || false;
+    },
+
+    set: function(k, v) {
+        console.log(this, k, v)
+        return this.options[k] = v;
     },
 
     cols: function(visible) {
@@ -150,8 +166,11 @@ $.widget('ui.hygrid', {
             return false;
         }
     },
-    // type, e, ui 
-    // {type: }
+
+    trigger: function(type) {
+        this._trigger(type);
+    },
+    
     _trigger: function() {
         var ui = arguments[2] || this;
         var ev = $.isObject(arguments[0]) && $.Event(arguments[0]) || $.Event(arguments[0]);
@@ -180,11 +199,12 @@ $.widget('ui.hygrid', {
         }
     }
 });
+$.ui.hygrid.getter = ['col', 'cells', 'cell', 'row', 'set', 'get'];
 // These properties are shared accross every hygrid instances
 $.extend($.ui.hygrid, {
     version:     '@VERSION',
     eventPrefix: 'grid',
-    getter:      'col cells cell row',
+    getter:      'col cells cell row set get trigger',
     defaults: {
         width:   'auto', 
         params:  [],
@@ -194,5 +214,4 @@ $.extend($.ui.hygrid, {
     cellModifiers: {},
     parsers: {}
 });
-
 })(jQuery);
