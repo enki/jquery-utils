@@ -61,6 +61,9 @@ li {
     padding:2px 0;
     font-size:90%;
 }
+ol li {
+    list-style-type:decimal;
+}
 label {
     font-size:80%;
     color:#666;

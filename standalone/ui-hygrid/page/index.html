@@ -5,30 +5,38 @@
         <link rel="Stylesheet" media="screen" href="styles.css" />
         <link rel="Stylesheet" media="screen" href="../dist/themes/default/ui.all.css" />
         <link rel="Stylesheet" media="screen" href="../dist/themes/default/ui.hygrid.css" />
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
-        <script type="text/javascript" src="jquery.ui.all.js"></script>
-        <script type="text/javascript" src="jquery.utils.js"></script>
-        <script type="text/javascript" src="jquery.anchorHandler.js"></script>
+        <script type="text/javascript" src="jquery-1.3.2.js"></script>
+        <script type="text/javascript" src="../src/jquery.ui.all.js"></script>
+        <script type="text/javascript" src="../src/jquery.utils.js"></script>
         <script type="text/javascript" src="../src/jquery.strings.js"></script>
         <script type="text/javascript" src="../src/jquery.delayedObserver.js"></script>
+        <script type="text/javascript" src="../src/jquery.anchorHandler.js"></script>
         <script type="text/javascript" src="../src/ui.hygrid.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.core.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.htmltable.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.ajax.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.caption.js"></script>
         <script type="text/javascript" src="../src/ui.hygrid.ledger.js"></script>
-        <script type="text/javascript" src="../src/ui.hygrid.colhider.js"></script>
-        <script type="text/javascript" src="../src/ui.hygrid.sortable.js"></script>
         <script type="text/javascript" src="../src/ui.hygrid.selectable.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.pagination.js"></script>
+        <script type="text/javascript" src="../src/ui.hygrid.colhider.js"></script>
+        <!--script type="text/javascript" src="../src/ui.hygrid.sortable.js"></script-->
+        <!--script type="text/javascript" src="../src/ui.hygrid.search.js"></script-->
 
         <script type="text/javascript">
             $(function(){
                 $('#d-demo-wrapper-1').hygrid({
-                    url: 'simple-test.json',
+                    url: '../src/backends/php/test.php',
                     width: 700,
-                    selectable: 2,
+                    rpp: 9,
+                    rppSelect: false,
+                    colhider: true,
+                    debug: true,
+                    trace: true,
                     cols: [
-                        {label: 'ISO',  name: 'iso',  width: 40, sortable: false, align: 'center'},
-                        {label: 'Name', name: 'name', width: 190, sortable: true, align: 'left'},
-                        {label: 'Printable Name', name: 'printable_name', width: 150, sortable : true, align: 'left'},
-                        {label: 'ISO3', name: 'iso3', width: 40, sortable: true, align: 'left'},
-                        {label: 'Number Code', name: 'numcode', sortable: true, align: 'left'}
+                        {label: 'ISO',  name: 'iso',  width: 40, align: 'center'},
+                        {label: 'Name', name: 'name', width: 190, align: 'left'},
+                        {label: 'Printable Name', name: 'printable_name', align: 'left'},
                     ]
                 });
             });
@@ -48,7 +56,15 @@
         <div id="splash">
             <div id="demo">
                 <h2>Demo</h2>
-                <div id="d-demo-wrapper-1" class="demo-wrapper"></div>
+                <table id="d-demo-wrapper-1" class="demo-wrapper">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>ISO</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
         <div id="bd">
@@ -57,75 +73,93 @@
                 <p>
                 <em>jquery.hygrid</em> is, you guessed it, yet another jQuery grid plugin. It was inspired by other great grids plugins like <a href="http://www.flexigrid.info/">flexigrid</a> and <a href="http://www.trirand.com/jqgrid/jqgrid.html">jqGrid</a>.
                 </p>
-                <h4>What's the diffrence ?</h4>
-                <h5>jQuery UI widget</h5>
-                <p>
-                Being developped in a jQuery UI widet, it makes it easy to manipulate and extend while taking full advantage of the jQuery UI framework.
-                </p>
-                <p>
-                The widget also provide support for events, making it useless to provide callbacks in options. For example;
-                </p>
-                <code>// instead of
-$('#demo').hygrid({
-    refresh: function(){
-        // do stuff ..
-    }
-});
-
-// you can do
-$('#demo').bind('refresh', function(e, widget){
-    // do stuff ..
-});</code>
-                <h5>Flexible plugin architecture</h5>
-                <p>
-                The grid's core is barely 150 lines of code. Pretty much every features available are plugins, making it very easy to customize or extend.
-                </p>
-                <h5>Themeroller compatible</h5>
-                <p>
-                    The grid is themable with jQuery themeroller.
-                </p>
-                <p style="margin-top:20px;"><img src="themeroller_ready_black_200px.gif" alt="jQuery UI ThemeRoller *Ready*" border="0" /></p>
-                <h5>Transitional</h5>
+                <h4>Key points</h4>
+                <ol>
+                    <li>
+                        <h5>It don't work in IE</h5>
+                        <p>
+                            Go ahead, cry me a river.
+                        </p>
+                    </li>
+                    <li>
+                        <h5>It's a jQuery UI widget</h5>
+                        <p>
+                            Being developped as a jQuery UI widet makes it easy to manipulate and extend the grid while taking full advantage of the jQuery UI framework.
+                        </p>
+                    </li>
+                    <li>
+                        <h5>It's ThemeRoller ready</h5>
+                        <p>
+                            The grid is entirely *themable* with <a href="http://jqueryui.com/themeroller/" alt="jQuery UI ThemeRoller">ThemeRoller</a>.
+                        </p>
+                        <p style="margin-top:20px;">
+                            <a href="http://jqueryui.com/themeroller/" alt="jQuery UI ThemeRoller"><img src="themeroller_ready_black_200px.gif" alt="jQuery UI ThemeRoller *Ready*" border="0" /></a>
+                        </p>
+                    </li>
+                    <li>
+                        <h5>Solid plugin architecture</h5>
+                        <p>
+                            The grid use the observer pattern, it's basically event driven. This design allow to encapsulate grid functionalities into seperated plugins and
+                            makes it easier to create custom plugins.
+                        </p>
+                    </li>
+                    <li>
+                        <h5>Lightweight</h5>
+                        <p>
+                            The grid's <a href="http://code.google.com/p/jquery-utils/source/browse/trunk/standalone/ui-hygrid/src/ui.hygrid.js">core is around 200 lines of code</a> (~6Kb). Pretty much every features available are plugins, making it very easy to customize, extend or even strip down.
+                        </p>
+                    </li>
+                    <li>
+                        <h5>Developer documentation</h5>
+                        <p>
+                            Most of the grid I've tried are well documented (save for flexigrid), but if you wish to change something in the grid you have to modify the grid's code.. which is rarely documented.
+                            I'll try to keep the API as well documented as I can to make it easy for developpers to extend the functionalities of this grid in a non-intrusive manner.
+                        </p>
+                        <p>
+                            <a href="http://code.google.com/p/jquery-utils/wiki/UiHygridDev">Learn how the grid works and how to extend it to create your own plugins</a>.
+                        </p>
+                    </li>
+                    <li>
+                        <h5>Pure python build system</h5>
+                        <p>
+                            The jQuery Utils' build system is used to compile plugins into a single file, create the minified version and the distribution archive files. It uses a YAML build file, which allow to create custom build with a minimum effort.
+                        </p>
+                        <p>
+                            <a href="http://code.google.com/p/jquery-utils/wiki/BuildSystem">Learn more about the build system</a>.
+                        </p>
+                    </li>
+                    <li>
+                        <h5>Backends</h5>
+                        <p>
+                            I will try to provide generic backends for PHP and Django. Currently there is a minimalistic PHP backend I've made to test the Ajax plugin.
+                        </p>
+                    </li>
+                    <li>
+                        <h5>Debug</h5>
+                        <p>
+                            The grid uses Firebug to provide a minimal but yet useful debug and trace functionalities. It allow to see every events occuring in the grid along with the grid state and the stack trace.
+                        </p>
+                        <p>
+                            <img src="stacktrace.png" alt="Hygrid stack trace" border="0" />
+                        </p>
+                    </li>
+                </ol>
+                <h4>The goal</h4>
                 <p>
                     This grid wasn't created to be an official jQuery UI plugin nor to replace the <a href="http://jqueryui.pbwiki.com/GridTable">jQuery UI GridTable plugin</a> currently under developement.
-                    These are to different plugin with different goals. The author(s) of the GridTable plugin wants to do things <em>right</em>, which means
-                    their grid isn't a priority, so it won't be available anytime soon in the official release.
+                    They are two different plugins with two different goals. The author(s) of the GridTable plugin wants to do things <em>right</em>, which means
+                    their grid isn't a priority right now, so it won't be available soon in the official release.
                 </p>
                 <p>
                     I will favorize simplicity and stability over complexity and features. That's in part for this reason that I dropped the virtual scrolling functionality and IE support.
-                    However, I'm sure that the plugin architecture makes these issues addresable.
-                </p>
-                <h5>Documented</h5>
-                <p>
-                    Most of the grid I've tried are well documented (save for flexigrid), but if you wish to change something in the grid you have to modify the grid's code.. which is rarely documented.
-                    Being plugin oriented, I'll try to keep the API as well documented as I can to make it easy for developpers to extend the functionalities of this grid in a non-intrusive manner.
-                </p>
-                <h5>Domain specific</h5>
-                <p>
-                    At this time, the grid doesn't support IE. However it works in all other browsers I've tested so far (Firefox, Opera, Epiphany, Chrome).
-                    I don't plan to work much on IE support as I don't need it. But the grid's plugin architecture makes it really easy to change mostly all
-                    aspects of the grid, so it's possible that eventually someone will be willing to make a IE compatibility plugin. Don't hesitate to ask
-                    me questions if you need help in your quest to fix this grid for IE, but don't count on me to do it myself. It's not something I need 
-                    and I've lost enought time of my life fixing IE.
-                </p>
-                <h5>Uses a single table element</h5>
-                <p>
-                Because of virtual scrolling, most grids uses multiple tables to render the grid body along with the grid header/footer. 
-                Since this grid has no support virtual scrolling, I was able to use a single table element and keep things somewhat semantically sane.
-                </p>
-                <p>
-                In other words, I won't trade stability and consistency for bells and whistles. My goal is to make something lightweight and usable <em>now</em>, not to try to perfectly mimic desktop-like grids.
-                </p>
-                <h5>Backends</h5>
-                <p>
-                    Incorporation of generic backends is planned in the developpment roadmap. Every other grid systems lets up you to job of creating your own backend. I've already coded a somewhat generic flexigrid backend for Django and I plan to port it to this grid. If I can make it flexible enough to support more than one grid system, I will try to do so. I will also most likely have to make a PHP backend soon for the demos and tests.
+                    However, I hope the grid's design will makes these issues addresable in the future.
                 </p>
                 <h4>Is it for me ?</h4>
                 <p>
                     Only you can tell. If you like it and understand its limitations and goals, well it's for you. If you really need features like virtual scrolling or flawless IE support, I'd advise you to use another grid system.
                 </p>
                 <h4>Alternative grids</h4>
-                There is other grid solutions available, I've made this little survey to save you some testing, it's far from exhaustive, so if you have details or correction to make don't hesitate to email me.
+                There is other grid solutions available, I've made this little survey to save you some testing, it's far from exhaustive, so if you have details or correction to make don't hesitate to contact me.
                 <table cellspacing="0" cellpadding="0" summary="" class="features">
                     <thead>
                         <tr>
@@ -227,10 +261,18 @@ $('#demo').bind('refresh', function(e, widget){
                     <li><a class="glass" href="http://code.google.com/p/jquery-utils/source/browse/#svn/trunk/standalone/ui-hygrid/dist"><img src="script_code.png" alt="Package" align="absmiddle">Browse source code</a></li>
                 </ul>
                 <h3>Subversion</h3>
+                <p>
+                    If you want just the grid you can checkout this repository folder;
+                </p>
                 <pre>svn co http://jquery-utils.googlecode.com/svn/trunk/standalone/ui-hygrid/ ui-hygrid</pre>
+                <p>
+                    If you plan to make your own build, you will need the whole jQuery Utils directory; 
+                </p>
+                <pre>svn co http://jquery-utils.googlecode.com/svn/trunk/ ui-jquery-utils</pre>
                 <h3>Known issues</h3>
                 <ul>
                     <li>Fail in IE</li>
+                    <li>Colhider menu fail in Webkit</li>
                 </ul>
                 <h3>Report a bug</h3>
                 <p>
@@ -243,23 +285,22 @@ $('#demo').bind('refresh', function(e, widget){
             <div id="s-documentation" class="subsection">
                 <h2><a name="documentation">Documentation</a></h2>
                 <h3>Basic usage</h3>
-<code>$(function(){
-    $('#grid').hygrid({
-        url: 'hygrid-test.json',
-        cols: [
-            {label: 'ISO',  name: 'iso',  width: 40, sortable: false, align: 'center'},
-            {label: 'Name', name: 'name', width: 40, sortable: true, align: 'left', hide: true},
-            {label: 'Printable Name', name: 'printable_name', width: 40, sortable : true, align: 'left'},
-            {label: 'ISO3', name: 'iso3', width: 40, sortable: true, align: 'left', hide: true},
-            {label: 'Number Code', name: 'numcode', width: 40, sortable: true, align: 'left'}
-        ]
-    });
+<code>$('#demo').hygrid({
+    url: 'php/backend.php',
+    cols: [
+        {label: 'ISO',  name: 'iso',  width: 40, align: 'center' },
+        {label: 'Name', name: 'name', width: 80, hide: true },
+        {label: 'Price', name: 'price', format: '{0:0.2f} $' }
+    ]
 });</pre>
                 <h3>Complete reference</h3>
                 <p>
-                    Documentation and the complete list of options is available
-                    on the <a href="http://code.google.com/p/jquery-utils/wiki/Uihygrid">project's wiki page</a> on Google code.
+                    The documentation and the complete list of options is available on the <a href="http://code.google.com/p/jquery-utils/wiki/Uihygrid">project's wiki page</a>.
                 </p>
+                <p>
+                    The documentation for developers is available on <a href="http://code.google.com/p/jquery-utils/wiki/UiHygridDev">this wiki page</a>.
+                </p>
+
             </div>
             <div id="s-about" class="subsection">
                 <h2><a name="about">About</a></h2>
@@ -291,6 +332,13 @@ $('#demo').bind('refresh', function(e, widget){
                             <td>
                                 <ul>
                                     <li class="done">Preview release</li>
+                                    <li class="done">Toolbar</li>
+                                    <li class="done">Pager</li>
+                                    <li class="done">Column hider</li>
+                                    <li class="done">Ledger</li>
+                                    <li class="done">PHP backend</li>
+                                    <li class="done">Create from existing table</li>
+                                    <li class="done">Basic unit tests</li>
                                 </ul>
                             </td>
                         </tr>
@@ -298,9 +346,10 @@ $('#demo').bind('refresh', function(e, widget){
                             <th>0.0.2</th>
                             <td>
                                 <ul>
-                                    <li>Toolbar</li>
-                                    <li>Pager</li>
-                                    <li>Full sortable support</li>
+                                    <li>Sortable</li>
+                                    <li>Translations</li>
+                                    <li>Icons</li>
+                                    <li>More unit tests</li>
                                 </ul>
                             </td>
                         </tr>
@@ -308,10 +357,9 @@ $('#demo').bind('refresh', function(e, widget){
                             <th>0.0.3</th>
                             <td>
                                 <ul>
-                                    <li>Unit tests</li>
                                     <li>Search</li>
-                                    <li>Create from existing table</li>
                                     <li>At least one backend (PHP or Python)</li>
+                                    <li>Unit tests for plugins</li>
                                 </ul>
                             </td>
                         </tr>
@@ -319,10 +367,8 @@ $('#demo').bind('refresh', function(e, widget){
                             <th>0.0.4</th>
                             <td>
                                 <ul>
-                                    <li>Pager</li>
-                                    <li>Search</li>
-                                    <li>Toolbar</li>
-                                    <li>At least one backend (PHP or Python)</li>
+                                    <li>Django backend</li>
+                                    <li>Inline row editing</li>
                                 </ul>
                             </td>
                         </tr>
@@ -330,9 +376,8 @@ $('#demo').bind('refresh', function(e, widget){
                             <th>0.0.5</th>
                             <td>
                                 <ul>
-                                    <li>Resizable table &amp; cols</li>
                                     <li>All plugins unit tested</li>
-                                    <li>API freeze</li>
+                                    <li>API mostly freezed</li>
                                 </ul>
                             </td>
                         </tr>
@@ -357,7 +402,7 @@ $('#demo').bind('refresh', function(e, widget){
                             <th>0.1.0</th>
                             <td>
                                 <ul>
-                                    <li class="done">First official release</li>
+                                    <li>First official release</li>
                                 </ul>
                             </td>
                         </tr>
@@ -365,7 +410,6 @@ $('#demo').bind('refresh', function(e, widget){
                             <th>1.1.1</th>
                             <td>
                                 <ul>
-                                    <li>Inline row editing</li>
                                 </ul>
                             </td>
                         </tr>

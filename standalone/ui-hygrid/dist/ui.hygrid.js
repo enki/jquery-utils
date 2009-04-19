@@ -22,6 +22,36 @@
 
 	$.extend({ 
 
+        // Returns a range object
+        // Author: Matthias Miller
+        // Site:   http://blog.outofhanwell.com/2006/03/29/javascript-range-function/
+        range:  function() {
+            if (!arguments.length) { return []; }
+            var min, max, step;
+            if (arguments.length == 1) {
+                min  = 0;
+                max  = arguments[0]-1;
+                step = 1;
+            }
+            else {
+                // default step to 1 if it's zero or undefined
+                min  = arguments[0];
+                max  = arguments[1]-1;
+                step = arguments[2] || 1;
+            }
+            // convert negative steps to positive and reverse min/max
+            if (step < 0 && min >= max) {
+                step *= -1;
+                var tmp = min;
+                min = max;
+                max = tmp;
+                min += ((max-min) % step);
+            }
+            var a = [];
+            for (var i = min; i <= max; i += step) { a.push(i); }
+            return a;
+        },
+
         // Taken from ui.core.js. 
         // Why are you keeping this gem for yourself guys ? :|
         keyCode: {
@@ -98,8 +128,7 @@
         // Returns true if an object is an array
         // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-            if (!o) { return false; }
-            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
+            return Object.prototype.toString.apply(o || false) === '[object Array]';
 		},
 
         isObject: function(o) {
@@ -232,7 +261,7 @@
 	});
 })(jQuery);
 /*
-  jQuery strings - 0.2
+  jQuery strings - 0.3
   http://code.google.com/p/jquery-utils/
   
   (c) Maxime Haineault <haineault@gmail.com>
@@ -395,7 +424,13 @@
                 if (tmp[start] == '{' && tmp[start+1] !='{') {
                     end   = str.indexOf('}', start);
                     token = tmp.slice(start+1, end).join('');
-                    buffer.push(strings.strConversion.__formatToken(token, (typeof arguments[1] != 'object')? arguments2Array(arguments, 2): args || []));
+                    if (tmp[start-1] != '{' && tmp[end+1] != '}') {
+                        var tokenArgs = (typeof arguments[1] != 'object')? arguments2Array(arguments, 2): args || [];
+                        buffer.push(strings.strConversion.__formatToken(token, tokenArgs));
+                    }
+                    else {
+                        buffer.push(token);
+                    }
                 }
                 else if (start > end || buffer.length < 1) { buffer.push(tmp[start]); }
             }
@@ -451,7 +486,7 @@
                     : $($.format(this[arguments[0]], arguments[1]));
             }
         }
-};
+    };
 
     var Argument = function(arg, args) {
         this.__arg  = arg;
@@ -513,7 +548,6 @@
         for (l=args.length, x=(shift || 0)-1; x<l;x++) { o.push(args[x]); }
         return o;
     };
-
     $.extend(strings);
 })(jQuery);
 /*
@@ -562,76 +596,90 @@
 
 */
 
+$.extend($.ui.hygrid.defaults, {
+    colhider: true
+});
+
 $.tpl('colhider.menu',     '<ul class="ui-hygrid-p-colhider-menu ui-helper-hidden ui-helper-reset ui-widget-content" />');
 $.tpl('colhider.menuItem', '<li class="ui-corner-all ui-helper-reset"><label><input type="checkbox" /> {label:s}</label></li>');
-
+$.tpl('colhider.button',   '<th class="ui-hygrid-p-colhider ui-state-default"><span class="ui-icon ui-icon-gridmenu" />');
 $.ui.plugin.add('hygrid', 'colhider', {
-    rowinserted: function(e, ui) {
-        ui.insertedRow.append('<td class="ui-hygrid-blank">&nbsp;</td>');
-    },
-    coltoggled: function(e, ui) {
-        if (ui.options.width == 'auto') {
-            ui._trigger('gridupdated');
-        }
-    },
     initialize: function(e, ui) {
         $.extend($.ui.hygrid.cellModifiers, {
             hide:  function(el, cell, type){ 
-                if (cell.hide) { el.hide(); } 
+                el.hide();
             }
         });
     },
     initialized: function(e, ui) {
-        ui.options = $.extend({colhider: true}, ui.options);
-        
-        if (ui.options.colhider) {
-            ui._('colhidermenu ', $.tpl('colhider.menu').prependTo(ui._('wrapper')));
-            var thead = ui._('thead');
-            var tbody = ui._('tbody');
-            var menu  = ui._('colhidermenu ');
-            ui._fixCellIndex = ui._fixCellIndex + 1;
-            $th = thead.find('th');
-
-            // create menu
-            // TODO: when input:checked.length == 1 disable clicking
-            $th.slice(0, $th.length).each(function(i){
-                var e   = $.Event();
-                var lbl = $(this).find('div:first-child').text();
-                $.tpl('colhider.menuItem', {label: lbl})
-                    .data('colindex', i)
-                    .bind('click.colhider', function(){
-                        var $self = $(this);
-                        var menu  = $self.parents('ul');
-                        var index = $self.data('colindex');
-                        ui.toggledCol = ui.col(index);
-                        if ($self.find('input:checked').length > 0) {
-                            ui.toggledCol.show();
-                        }
-                        else {
-                            ui.toggledCol.hide();
-                        }
-                        ui._setColOption(index, 'hide', ui.toggledCol.is(':hidden'));
-                        setTimeout(function() {
-                            menu.hide();
-                            ui._trigger('coltoggled');
-                        }, 100); // let the user see the check mark before hiding
-                    })
-                    .find('input')
-                        .attr('checked', !ui._getColOptions(i, 'hide')).end()
-                    .appendTo(menu);
-            });
-            // create button
-            $('<th class="ui-hygrid-p-colhider ui-state-default"><span class="ui-icon ui-icon-gridmenu" />').width(16)
-                .bind('click.colhider', function() {
+        ui._fixCellInex++;
+        ui._('colhidermenu', $.tpl('colhider.menu').prependTo(ui._('wrapper')));
+        var thead = ui._('thead');
+        var tbody = ui._('tbody');
+        var menu  = ui._('colhidermenu');
+        $th = thead.find('th');
+    
+        if (ui.options.htmltable) {
+            tbody.find('tr').append('<td />');
+        }
+        // create menu
+        // TODO: when input:checked.length == 1 disable clicking
+        $th.slice(0, $th.length).each(function(i){
+            var e   = $.Event();
+            var lbl = $(this).text();
+            $.tpl('colhider.menuItem', {label: lbl})
+                .data('colindex', i)
+                .bind('click.colhider', function(){
+                    var $self = $(this);
+                    var menu  = $self.parents('ul');
+                    var index = $self.data('colindex');
+                    var checked = $self.find('input').is(':checked');
+                    ui.toggledCol = ui.col(index);
+                    ui._setColOption(index, 'hide', !checked);
+                    if (checked) {
+                        ui.col(index).show();
+                    }
+                    ui._trigger('coltoggled');
+                    ui.preventAjaxRefresh = true;
+                    ui._trigger('refresh');
+                    ui.preventAjaxRefresh = false;
+                    setTimeout(function() {
+                        menu.hide();
+                    }, 100); // let the user see the check mark before hiding
+                })
+                .find('input')
+                    .attr('checked', !ui._getColOptions(i, 'hide')).end()
+                .appendTo(menu);
+        });
+        // create button
+        ui._('colhiderButton', $.tpl('colhider.button').width(16)
+            .bind('click.colhider', function() {
+                if (menu.is(':visible')) {
+                    menu.hide();
+                }
+                else {
                     menu.css({
                         top: tbody.position().top,
                         left: $(this).position().left
-                    }).toggle();
-                })
-                .hover(function(){ $(this).addClass('ui-state-hover');}, 
-                       function(){ $(this).removeClass('ui-state-hover'); 
-                }).appendTo(thead.find('tr'));
-        }
+                    }).show();
+                }
+            })
+            .hover(function(){ $(this).addClass('ui-state-hover');}, 
+                   function(){ $(this).removeClass('ui-state-hover'); 
+            }).appendTo(thead.find('tr')));
+    },
+
+    blur: function(e, ui) {
+        ui._('colhidermenu').hide();
+    },
+
+    rowinserted: function(e, ui) {
+        e.originalEvent.insertedRow.append('<td />');
+    },
+    destroy: function(e, ui) {
+        ui._('colhidermenu').remove();
+        ui._('colhiderButton').remove();
+        ui._('tbody').find('tr td:last-child').remove();
     }
 });
 /*
@@ -658,6 +706,9 @@ $.ui.plugin.add('hygrid', 'ledger', {
     },
     dataloaded: function(e, ui) { 
         applyLedger(ui);
+    },
+    destroy: function(e, ui) {
+        ui._('tbody').find('tr').removeClass('odd even')
     }
 });
 
@@ -820,19 +871,13 @@ $.ui.plugin.add('hygrid', 'sortable', {
 
 (function($) {
 
-$.log = function() {
-    try {
-        var args = $.map(arguments, function(v) { return v; });
-        args[0] = $.format('hygrid: {0:s}', args[0]);
-        console.log.apply(this, args);
-    } catch(e) {};
-};
-
 $.widget('ui.hygrid', {
     plugins:  {},
+    _fixCellInex: 1,
     _init: function() {
         this._trigger('initialize');
         this._trigger('initialized');
+        this._trigger('refresh');
     },
 
     params: function() {
@@ -855,8 +900,28 @@ $.widget('ui.hygrid', {
         }
     },
 
+    destroy: function() {
+        this._trigger('destroy');
+        $('#demo-1').data('hygrid', false);
+    },
+
+    get: function(k, v) {
+        return this.options[k] || false;
+    },
+
+    set: function(k, v) {
+        console.log(this, k, v)
+        return this.options[k] = v;
+    },
+
     cols: function(visible) {
-        var length = this._('tbody').find('tr:eq(0) td').length
+        // TODO: Got to find a more reliable/clean way to do this..
+        if (this.options.htmltable) {
+            var length = this._('tbody').find('tr:eq(0) td').length;
+        }
+        else {
+            var length = this._('thead').find('th.ui-hygrid-header').length;
+        }
         return this.options.cols > length && this.options.length || length;
     },
     
@@ -870,8 +935,7 @@ $.widget('ui.hygrid', {
     },
 
     row: function(i) {
-        return $.isArray(i) && this._createRow(i) 
-                            || this._('tbody').find('tr').eq(i);
+        return this._('tbody').find('tr').eq(i);
     },
 
     cell: function(x, y, visible) {
@@ -905,24 +969,25 @@ $.widget('ui.hygrid', {
         };
     },
 
-    _createRow: function(cells) {
-        var e  = $.Event();
-        this.insertedRow = $('<tr />');
+    insertRow: function(cells) {
+        var row = $('<tr />');
         for (i in cells) {
-            var cell = this.options.cols && this.options.cols[i] || {}; 
-            var label = cell.label; 
-            cell.label = cells[i];
-            this.insertedRow.append(this._createCell(cell, 'td'));
-            cell.label = label; // I manually cache/restore the object's label to avoid having to clone it for each cells
+            var cell  = this.options.cols && this.options.cols[i] || {}; 
+            cell.text = cells[i];
+            cell.isTH = !(cell.isTD = true);
+            cell.type = 'td';
+            row.append(this._createCell(cell));
         }
-        this._trigger('rowinsert');
-        this.insertedRow.appendTo(this._('tbody'));
-        this._trigger('rowinserted');
+        this._trigger({type: 'rowinsert', insertedRow: row});
+        row.appendTo(this._('tbody'));
+        this._trigger({type: 'rowinserted', insertedRow: row});
     },
 
-    _createCell: function(cell, type) {
-        var tpl = (type == 'th')? '<{0:s} class="ui-hygrid-header"><div /></{0:s}>': '<{0:s} />';
-        var el  = $($.format(tpl, type || 'td'));
+    _createCell: function(cell) {
+        cell.type = cell.type.toLowerCase() || 'td';
+        cell.isTD = !(cell.isTH = (cell.type == 'th'));
+        var el    = $(cell.isTH && '<th class="ui-hygrid-header"><div /></th>' || '<td />');
+        if (cell.isTD) { el.text(cell.text); }
         return this._applyCellModifiers(el, cell);
     },
 
@@ -930,12 +995,11 @@ $.widget('ui.hygrid', {
         var $el = $(el);
         var mod = $.keys($.ui.hygrid.cellModifiers);
         if ($el.get(0)) {
-            var type = $el.get(0).nodeName;
             for (x in mod) {
                 if (cell[mod[x]]) {
                     try {
                         $.ui.hygrid.cellModifiers[mod[x]]
-                            .apply(this, [$el, cell, type && type.toLowerCase() || 'td', col]);
+                            .apply(this, [$el, cell, col]);
                     } catch(e) {}
                 }
             }
@@ -961,31 +1025,53 @@ $.widget('ui.hygrid', {
         }
     },
 
-    _trigger: function(type, e, ui) {
-        var ui = ui || this;
-        var ev = e  || $.Event(type);
-        if (ui.options.debug === true || ($.isArray(ui.options.debug) && ui.options.debug.indexOf(type) > -1)) {
-            $.log('%s (e: %o, ui: %o)', type, ev, ui); 
+    trigger: function(type) {
+        this._trigger(type);
+    },
+    
+    _trigger: function() {
+        var ui = arguments[2] || this;
+        var ev = $.isObject(arguments[0]) && $.Event(arguments[0]) || $.Event(arguments[0]);
+        var type = $.isObject(arguments[0]) && arguments[0].type || arguments[0];
+        if (ui.options.debug || ui.options.trace) {
+            ui._debug.apply(this, [ev.type, ev, ui]);
         }
         $.ui.plugin.call(this, type, [ev, ui]);
-        return $.widget.prototype._trigger.call(this, type, [ev, ui]);
+        return $.widget.prototype._trigger.call(this, ev.type, [ev, ui]);
+    },
+
+    _debug: function(type, e, ui) {
+        var debug = ui.options.debug;
+        var trace = ui.options.trace;
+        if (debug == true ||( $.isArray(debug) && debug.indexOf(type) > -1)) {
+            try {
+                console.groupCollapsed('hygrid: %s', type); 
+                console.log('Event: %o', e); 
+                console.log('Widget: %o', ui); 
+                if (trace === true) {
+                    console.log('Traceback:', ui._trigger.caller.toString());
+                    console.trace();
+                }
+                console.groupEnd('hygrid: %s', type); 
+            } catch(e) {};
+        }
     }
 });
-
+$.ui.hygrid.getter = ['col', 'cells', 'cell', 'row', 'set', 'get'];
 // These properties are shared accross every hygrid instances
 $.extend($.ui.hygrid, {
     version:     '0.0.1',
     eventPrefix: 'grid',
-    getter:      'col cells cell row',
+    getter:      'col cells cell row insertRow set get trigger',
     defaults: {
         width:   'auto', 
         params:  [],
+        cols:    [],
         debug:   false
     },
     cellModifiers: {},
     parsers: {}
 });
-
 })(jQuery);
 /*
   jQuery utils - 0.0.1
@@ -1010,6 +1096,36 @@ $.extend($.ui.hygrid, {
     };
 
 	$.extend({ 
+
+        // Returns a range object
+        // Author: Matthias Miller
+        // Site:   http://blog.outofhanwell.com/2006/03/29/javascript-range-function/
+        range:  function() {
+            if (!arguments.length) { return []; }
+            var min, max, step;
+            if (arguments.length == 1) {
+                min  = 0;
+                max  = arguments[0]-1;
+                step = 1;
+            }
+            else {
+                // default step to 1 if it's zero or undefined
+                min  = arguments[0];
+                max  = arguments[1]-1;
+                step = arguments[2] || 1;
+            }
+            // convert negative steps to positive and reverse min/max
+            if (step < 0 && min >= max) {
+                step *= -1;
+                var tmp = min;
+                min = max;
+                max = tmp;
+                min += ((max-min) % step);
+            }
+            var a = [];
+            for (var i = min; i <= max; i += step) { a.push(i); }
+            return a;
+        },
 
         // Taken from ui.core.js. 
         // Why are you keeping this gem for yourself guys ? :|
@@ -1087,8 +1203,7 @@ $.extend($.ui.hygrid, {
         // Returns true if an object is an array
         // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-            if (!o) { return false; }
-            return Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
+            return Object.prototype.toString.apply(o || false) === '[object Array]';
 		},
 
         isObject: function(o) {
@@ -1221,7 +1336,7 @@ $.extend($.ui.hygrid, {
 	});
 })(jQuery);
 /*
-  jQuery strings - 0.2
+  jQuery strings - 0.3
   http://code.google.com/p/jquery-utils/
   
   (c) Maxime Haineault <haineault@gmail.com>
@@ -1384,7 +1499,13 @@ $.extend($.ui.hygrid, {
                 if (tmp[start] == '{' && tmp[start+1] !='{') {
                     end   = str.indexOf('}', start);
                     token = tmp.slice(start+1, end).join('');
-                    buffer.push(strings.strConversion.__formatToken(token, (typeof arguments[1] != 'object')? arguments2Array(arguments, 2): args || []));
+                    if (tmp[start-1] != '{' && tmp[end+1] != '}') {
+                        var tokenArgs = (typeof arguments[1] != 'object')? arguments2Array(arguments, 2): args || [];
+                        buffer.push(strings.strConversion.__formatToken(token, tokenArgs));
+                    }
+                    else {
+                        buffer.push(token);
+                    }
                 }
                 else if (start > end || buffer.length < 1) { buffer.push(tmp[start]); }
             }
@@ -1440,7 +1561,7 @@ $.extend($.ui.hygrid, {
                     : $($.format(this[arguments[0]], arguments[1]));
             }
         }
-};
+    };
 
     var Argument = function(arg, args) {
         this.__arg  = arg;
@@ -1502,7 +1623,6 @@ $.extend($.ui.hygrid, {
         for (l=args.length, x=(shift || 0)-1; x<l;x++) { o.push(args[x]); }
         return o;
     };
-
     $.extend(strings);
 })(jQuery);
 /*
@@ -1553,19 +1673,13 @@ $.extend($.ui.hygrid, {
 
 (function($) {
 
-$.log = function() {
-    try {
-        var args = $.map(arguments, function(v) { return v; });
-        args[0] = $.format('hygrid: {0:s}', args[0]);
-        console.log.apply(this, args);
-    } catch(e) {};
-};
-
 $.widget('ui.hygrid', {
     plugins:  {},
+    _fixCellInex: 1,
     _init: function() {
         this._trigger('initialize');
         this._trigger('initialized');
+        this._trigger('refresh');
     },
 
     params: function() {
@@ -1588,8 +1702,28 @@ $.widget('ui.hygrid', {
         }
     },
 
+    destroy: function() {
+        this._trigger('destroy');
+        $('#demo-1').data('hygrid', false);
+    },
+
+    get: function(k, v) {
+        return this.options[k] || false;
+    },
+
+    set: function(k, v) {
+        console.log(this, k, v)
+        return this.options[k] = v;
+    },
+
     cols: function(visible) {
-        var length = this._('tbody').find('tr:eq(0) td').length
+        // TODO: Got to find a more reliable/clean way to do this..
+        if (this.options.htmltable) {
+            var length = this._('tbody').find('tr:eq(0) td').length;
+        }
+        else {
+            var length = this._('thead').find('th.ui-hygrid-header').length;
+        }
         return this.options.cols > length && this.options.length || length;
     },
     
@@ -1603,8 +1737,7 @@ $.widget('ui.hygrid', {
     },
 
     row: function(i) {
-        return $.isArray(i) && this._createRow(i) 
-                            || this._('tbody').find('tr').eq(i);
+        return this._('tbody').find('tr').eq(i);
     },
 
     cell: function(x, y, visible) {
@@ -1638,24 +1771,25 @@ $.widget('ui.hygrid', {
         };
     },
 
-    _createRow: function(cells) {
-        var e  = $.Event();
-        this.insertedRow = $('<tr />');
+    insertRow: function(cells) {
+        var row = $('<tr />');
         for (i in cells) {
-            var cell = this.options.cols && this.options.cols[i] || {}; 
-            var label = cell.label; 
-            cell.label = cells[i];
-            this.insertedRow.append(this._createCell(cell, 'td'));
-            cell.label = label; // I manually cache/restore the object's label to avoid having to clone it for each cells
+            var cell  = this.options.cols && this.options.cols[i] || {}; 
+            cell.text = cells[i];
+            cell.isTH = !(cell.isTD = true);
+            cell.type = 'td';
+            row.append(this._createCell(cell));
         }
-        this._trigger('rowinsert');
-        this.insertedRow.appendTo(this._('tbody'));
-        this._trigger('rowinserted');
+        this._trigger({type: 'rowinsert', insertedRow: row});
+        row.appendTo(this._('tbody'));
+        this._trigger({type: 'rowinserted', insertedRow: row});
     },
 
-    _createCell: function(cell, type) {
-        var tpl = (type == 'th')? '<{0:s} class="ui-hygrid-header"><div /></{0:s}>': '<{0:s} />';
-        var el  = $($.format(tpl, type || 'td'));
+    _createCell: function(cell) {
+        cell.type = cell.type.toLowerCase() || 'td';
+        cell.isTD = !(cell.isTH = (cell.type == 'th'));
+        var el    = $(cell.isTH && '<th class="ui-hygrid-header"><div /></th>' || '<td />');
+        if (cell.isTD) { el.text(cell.text); }
         return this._applyCellModifiers(el, cell);
     },
 
@@ -1663,12 +1797,11 @@ $.widget('ui.hygrid', {
         var $el = $(el);
         var mod = $.keys($.ui.hygrid.cellModifiers);
         if ($el.get(0)) {
-            var type = $el.get(0).nodeName;
             for (x in mod) {
                 if (cell[mod[x]]) {
                     try {
                         $.ui.hygrid.cellModifiers[mod[x]]
-                            .apply(this, [$el, cell, type && type.toLowerCase() || 'td', col]);
+                            .apply(this, [$el, cell, col]);
                     } catch(e) {}
                 }
             }
@@ -1694,29 +1827,51 @@ $.widget('ui.hygrid', {
         }
     },
 
-    _trigger: function(type, e, ui) {
-        var ui = ui || this;
-        var ev = e  || $.Event(type);
-        if (ui.options.debug === true || ($.isArray(ui.options.debug) && ui.options.debug.indexOf(type) > -1)) {
-            $.log('%s (e: %o, ui: %o)', type, ev, ui); 
+    trigger: function(type) {
+        this._trigger(type);
+    },
+    
+    _trigger: function() {
+        var ui = arguments[2] || this;
+        var ev = $.isObject(arguments[0]) && $.Event(arguments[0]) || $.Event(arguments[0]);
+        var type = $.isObject(arguments[0]) && arguments[0].type || arguments[0];
+        if (ui.options.debug || ui.options.trace) {
+            ui._debug.apply(this, [ev.type, ev, ui]);
         }
         $.ui.plugin.call(this, type, [ev, ui]);
-        return $.widget.prototype._trigger.call(this, type, [ev, ui]);
+        return $.widget.prototype._trigger.call(this, ev.type, [ev, ui]);
+    },
+
+    _debug: function(type, e, ui) {
+        var debug = ui.options.debug;
+        var trace = ui.options.trace;
+        if (debug == true ||( $.isArray(debug) && debug.indexOf(type) > -1)) {
+            try {
+                console.groupCollapsed('hygrid: %s', type); 
+                console.log('Event: %o', e); 
+                console.log('Widget: %o', ui); 
+                if (trace === true) {
+                    console.log('Traceback:', ui._trigger.caller.toString());
+                    console.trace();
+                }
+                console.groupEnd('hygrid: %s', type); 
+            } catch(e) {};
+        }
     }
 });
-
+$.ui.hygrid.getter = ['col', 'cells', 'cell', 'row', 'set', 'get'];
 // These properties are shared accross every hygrid instances
 $.extend($.ui.hygrid, {
     version:     '0.0.1',
     eventPrefix: 'grid',
-    getter:      'col cells cell row',
+    getter:      'col cells cell row insertRow set get trigger',
     defaults: {
         width:   'auto', 
         params:  [],
+        cols:    [],
         debug:   false
     },
     cellModifiers: {},
     parsers: {}
 });
-
 })(jQuery);

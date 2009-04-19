@@ -68,7 +68,11 @@ $.ui.plugin.add('hygrid', 'core', {
     initialized: function(e, ui) {
         var cols = ui.options.colhider && ui.cols()+1 || ui.cols();
         if (ui.options.toolbarTop) {
-            ui._('toolbarTop', $.tpl('hygrid.toolbarTop').prependTo(ui._('table')).find('td:first').attr('colspan', cols));
+            var tbt = ui._('table').find('thead');
+            if (tbt.length == 0) {
+                tbt = $.tpl('hygrid.toolbarTop').prependTo(ui._('table'));
+            }
+            ui._('toolbarTop', tbt.find('td:first').attr('colspan', cols));
         }
         if (ui.options.toolbarBottom) {
             ui._('toolbarBottom', $.tpl('hygrid.toolbarBottom').appendTo(ui._('table')).find('td:first').attr('colspan', cols));
@@ -79,7 +83,8 @@ $.ui.plugin.add('hygrid', 'core', {
         $('html').unbind('click.focusHandler');
         ui._('toolbarBottom').remove();
         ui._('table').removeClass('ui-widget').insertAfter(ui._('wrapper'));
-        console.log(ui.element.prev().remove());
+        ui.element.prev().remove();
+        ui.element.data('hygrid', false);
     },
     refresh: function(e, ui) {
         ui._('thead').find('th.ui-hygrid-header')

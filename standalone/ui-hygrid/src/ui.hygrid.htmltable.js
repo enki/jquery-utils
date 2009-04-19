@@ -13,16 +13,13 @@ $.extend($.ui.hygrid.defaults, {
     htmltable: true,
 });
 
-$.tpl('hygrid.table',   '<table class="ui-widget" cellpadding="0" cellspacing="0" summary=""><thead /><tbody /><tfoot /></table>');
 $.ui.plugin.add('hygrid', 'htmltable', {
     initialize: function(e, ui) {
-        var table = (ui._('wrapper').find('table').length > 0) ? ui._('wrapper').find('table') : $.tpl('hygrid.table');
-        ui._('table', table);
+        var table = ui._('table');
         ui._('thead', table.find('thead'));
         ui._('tbody', table.find('tbody'));
         table.addClass('ui-widget')
-            .attr({cellpadding:0, cellspacing:0})
-            .appendTo(ui._('wrapper'));
+            .attr({cellpadding:0, cellspacing:0});
     },
     initialized: function(e, ui) {
         ui._('thead').find('th')

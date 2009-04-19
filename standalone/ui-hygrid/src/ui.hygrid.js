@@ -18,7 +18,6 @@ $.widget('ui.hygrid', {
         this._trigger('initialize');
         this._trigger('initialized');
         this._trigger('refresh');
-        console.log($.ui.hygrid.getter);
     },
 
     params: function() {
@@ -43,11 +42,10 @@ $.widget('ui.hygrid', {
 
     destroy: function() {
         this._trigger('destroy');
+        $('#demo-1').data('hygrid', false);
     },
 
     get: function(k, v) {
-        console.log('wtf');
-        console.log(this, k, v);
         return this.options[k] || false;
     },
 
@@ -111,7 +109,7 @@ $.widget('ui.hygrid', {
         };
     },
 
-    _createRow: function(cells) {
+    insertRow: function(cells) {
         var row = $('<tr />');
         for (i in cells) {
             var cell  = this.options.cols && this.options.cols[i] || {}; 
@@ -204,7 +202,7 @@ $.ui.hygrid.getter = ['col', 'cells', 'cell', 'row', 'set', 'get'];
 $.extend($.ui.hygrid, {
     version:     '@VERSION',
     eventPrefix: 'grid',
-    getter:      'col cells cell row set get trigger',
+    getter:      'col cells cell row insertRow set get trigger',
     defaults: {
         width:   'auto', 
         params:  [],

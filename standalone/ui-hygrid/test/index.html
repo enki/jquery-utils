@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" id="html">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>jQuery.hygrid Functional tests</title>
+	<title>ui.hygrid Functional tests</title>
 	<link rel="Stylesheet" media="screen" href="styles.css" />
     <link rel="Stylesheet" media="screen" href="../dist/themes/default/ui.all.css" />
     <link rel="Stylesheet" media="screen" href="../src/css/ui.hygrid.css" />
@@ -19,8 +19,6 @@
 	<script type="text/javascript" src="../src/ui.hygrid.ledger.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.selectable.js"></script>
 	<script type="text/javascript" src="../src/ui.hygrid.pagination.js"></script>
-    
-    <!-- still buggy or early dev -->
 	<script type="text/javascript" src="../src/ui.hygrid.colhider.js"></script>
 	<!--script type="text/javascript" src="../src/ui.hygrid.sortable.js"></script-->
 	<!--script type="text/javascript" src="../src/ui.hygrid.search.js"></script-->
@@ -70,7 +68,6 @@
                 page:       $('#hygrid-page').is(':checked') && $('#hygrid-page-val').val() || false,
                 cols:       [getCellModifiers(1), getCellModifiers(2), getCellModifiers(3)]
             };
-            console.log($('#demo-1'));
             $('#demo-1').hygrid(o);
             o.url = '../src/backends/php/test.php';
             $('#demo-2').hygrid(o);
@@ -89,13 +86,16 @@
                 }
             } catch(e) {};
         }).click(function() { $(this).trigger('refresh'); })
-
+        /*
+        if (!console || !console.log) {
+            alert('test');
+            $('#window._firebug, #window._firebug').attr('disabled', true);
+            }
+            */
         $('table.plugins :checkbox').trigger('refresh');
         $('#reload').click(function(){
             $('#demo-1, #demo-2').hygrid('destroy');
-            setTimeout(function(){
-                loadGrids();
-            },1000);
+            loadGrids();
         });
         loadGrids();
     });
@@ -157,7 +157,7 @@
 </head>
 
 <body id="body">
-	<h1 id="header">jQuery.hygrid</h1>
+	<h1 id="header">ui.hygrid</h1>
     <div class="copyright">Copyright (c) 2009 Maxime Haineault (<a href="http://haineault.com/" target="_blank">haineault.com</a>)</div>
     <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
     <a class="related-links experimental">Experimental code !</a>
@@ -226,17 +226,18 @@
                     <td>&nbsp;</td>
                 </tr>
                 <tr>
-                    <th>Debug</th>
+                    <th>Debug*</th>
                     <td><input type="checkbox" id="hygrid-debug" /></td>
                     <td>&nbsp;</td>
                 </tr>
                 <tr>
-                    <th>Trace</th>
+                    <th>Trace*</th>
                     <td><input type="checkbox" id="hygrid-trace" /></td>
                     <td>&nbsp;</td>
                 </tr>
             </tbody>
         </table>
+        <p style="font-size:80%;">* Requires <a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a> and <a href="http://www.getfirebug.com/">Firebug</a>.</p>
     </div>
     <div id="cols-pane">
         <h3>Cell Modifiers</h3>

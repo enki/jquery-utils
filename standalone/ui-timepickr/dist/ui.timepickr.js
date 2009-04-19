@@ -581,8 +581,16 @@ $.ui.mouse.defaults = {
             PERIOD: 190, RIGHT: 39, SHIFT: 16, SPACE: 32, TAB: 9, UP: 38
         },
         
+        // Takes a keyboard event and return true if the keycode match the specified keycode
         keyIs: function(k, e) {
             return parseInt($.keyCode[k.toUpperCase()], 10) == parseInt((typeof(e) == 'number' )? e: e.keyCode, 10);
+        },
+        
+        // Returns the key of an array
+        keys: function(arr) {
+            var o = [];
+            for (k in arr) { o.push(k); }
+            return o;
         },
 
         // Redirect to a specified url
@@ -639,8 +647,7 @@ $.ui.mouse.defaults = {
         // Returns true if an object is an array
         // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-            if (!o) { return false; }
-            return o.constructor && Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
+            return Object.prototype.toString.apply(o || false) === '[object Array]';
 		},
 
         isObject: function(o) {
@@ -1475,8 +1482,16 @@ $.ui.mouse.defaults = {
             PERIOD: 190, RIGHT: 39, SHIFT: 16, SPACE: 32, TAB: 9, UP: 38
         },
         
+        // Takes a keyboard event and return true if the keycode match the specified keycode
         keyIs: function(k, e) {
             return parseInt($.keyCode[k.toUpperCase()], 10) == parseInt((typeof(e) == 'number' )? e: e.keyCode, 10);
+        },
+        
+        // Returns the key of an array
+        keys: function(arr) {
+            var o = [];
+            for (k in arr) { o.push(k); }
+            return o;
         },
 
         // Redirect to a specified url
@@ -1533,8 +1548,7 @@ $.ui.mouse.defaults = {
         // Returns true if an object is an array
         // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-            if (!o) { return false; }
-            return o.constructor && Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
+            return Object.prototype.toString.apply(o || false) === '[object Array]';
 		},
 
         isObject: function(o) {

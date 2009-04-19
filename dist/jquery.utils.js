@@ -62,8 +62,16 @@
             PERIOD: 190, RIGHT: 39, SHIFT: 16, SPACE: 32, TAB: 9, UP: 38
         },
         
+        // Takes a keyboard event and return true if the keycode match the specified keycode
         keyIs: function(k, e) {
             return parseInt($.keyCode[k.toUpperCase()], 10) == parseInt((typeof(e) == 'number' )? e: e.keyCode, 10);
+        },
+        
+        // Returns the key of an array
+        keys: function(arr) {
+            var o = [];
+            for (k in arr) { o.push(k); }
+            return o;
         },
 
         // Redirect to a specified url
@@ -120,8 +128,7 @@
         // Returns true if an object is an array
         // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-            if (!o) { return false; }
-            return o.constructor && Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
+            return Object.prototype.toString.apply(o || false) === '[object Array]';
 		},
 
         isObject: function(o) {
@@ -1883,7 +1890,7 @@ $.fn.cycle.transitions.wipe = function($cont, $slides, opts) {
 
 })(jQuery);
 /*
- jQuery delayed observer - 0.5
+ jQuery delayed observer - 0.7
  http://code.google.com/p/jquery-utils/
 
  (c) Maxime Haineault <haineault@gmail.com>
@@ -1891,43 +1898,29 @@ $.fn.cycle.transitions.wipe = function($cont, $slides, opts) {
  
  MIT License (http://www.opensource.org/licenses/mit-license.php)
  
- Changelog
- =========
- 0.2 using closure, special thanks to Stephen Goguen & Tane Piper.
- 0.3 now allow object chaining, added license
- 0.4 code cleanup, added support for other events than keyup, fixed variable scope
- 0.5 changed filename, included in jquery-utils 
- 0.6 complete rewrite, same structure but more compact, 
-     now using jquery's "data" method instead of a stack to store data
-     it's now possible to change the condition, by default it's "if new this.val == this.oldval"
-     now using this.each to support multiple observed elements
 */
 
 (function($){
     $.extend($.fn, {
         delayedObserver: function(callback, delay, options){
-            this.each(function(){
-                var $obj    = $(this);
-                var options = options || {};
-                $obj.data('oldval',    $obj.val())
-                    .data('delay',     delay || 0.5)
-                    .data('condition', options.condition || function() {
-                        return ($(this).data('oldval') == $(this).val());
-                    })
-                    .data('callback',  callback)
-                    [(options.event||'keyup')](function(){
-                        if ($obj.data('condition').apply($obj)) return;
+            return this.each(function(){
+                var el = $(this);
+                var op = op || {};
+                el.data('oldval', el.val())
+                    .data('delay', delay || 0.5)
+                    .data('condition', op.condition || function() { return ($(this).data('oldval') == $(this).val()); })
+                    .data('callback', callback)
+                    [(op.event||'keyup')](function(){
+                        if (el.data('condition').apply(el)) { return }
                         else {
-                            if ($obj.data('timer')) clearTimeout($obj.data('timer'));
-                          
-                            $obj.data('timer', setTimeout(function(){
-                                $obj.data('callback').apply($obj);
-                            }, $obj.data('delay') * 1000));
-                          
-                            $obj.data('oldval', $obj.val());
+                            if (el.data('timer')) { clearTimeout(el.data('timer')); }
+                            el.data('timer', setTimeout(function(){
+                                el.data('callback').apply(el);
+                            }, el.data('delay') * 1000));
+                            el.data('oldval', el.val());
                         }
                     });
-                });
+            });
         }
     });
 })(jQuery);
@@ -3114,10 +3107,6 @@ $.fn.extend({
         $(this).youtubeLinksToEmbed(options);
     };
 })(jQuery);
-
-$(document).ready(function(){
-    $('body').youtubeLinksToEmbed();
-});
 /*
   jQuery utils - 0.8.0
   http://code.google.com/p/jquery-utils/
@@ -3182,8 +3171,16 @@ $(document).ready(function(){
             PERIOD: 190, RIGHT: 39, SHIFT: 16, SPACE: 32, TAB: 9, UP: 38
         },
         
+        // Takes a keyboard event and return true if the keycode match the specified keycode
         keyIs: function(k, e) {
             return parseInt($.keyCode[k.toUpperCase()], 10) == parseInt((typeof(e) == 'number' )? e: e.keyCode, 10);
+        },
+        
+        // Returns the key of an array
+        keys: function(arr) {
+            var o = [];
+            for (k in arr) { o.push(k); }
+            return o;
         },
 
         // Redirect to a specified url
@@ -3240,8 +3237,7 @@ $(document).ready(function(){
         // Returns true if an object is an array
         // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
 		isArray: function(o) {
-            if (!o) { return false; }
-            return o.constructor && Object.prototype.toString.apply(o.constructor.prototype) === '[object Array]';
+            return Object.prototype.toString.apply(o || false) === '[object Array]';
 		},
 
         isObject: function(o) {

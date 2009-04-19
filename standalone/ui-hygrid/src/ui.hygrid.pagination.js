@@ -17,13 +17,12 @@ $.extend($.ui.hygrid.defaults, {
     page: 1,
     rpp: 5,
     rppSelect: [5, 10, 15, 20],
-    pager: '{start:d}-{end:d}/{total:d}, page: {page:d} of {pagetotal:d}'
+    pager: '{start:d}-{end:d}/{total:d}, page: {page:d} of {pagetotal:d}',
+    toolbarBottom: true
 });
 
 $.ui.plugin.add('hygrid', 'pagination', {
     initialize: function(e, ui) {
-        ui.options.toolbarTop = true;
-        ui.options.toolbarBottom = true;
         ui.options.params.push('page', 'rpp');
         
         ui._('pager.first', $.tpl('hygrid.button', {label: 'first'}));

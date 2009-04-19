@@ -55,6 +55,7 @@
     border:0;
     border-right:1px solid #e5e5e5;
     padding:4px;
+    height:26px;
 }
 .ui-hygrid table tbody tr.odd td {
     background-color:#f0f0f0;

@@ -14,7 +14,7 @@
 
 $.ui.hygrid.parsers.json = function(e, ui) {
     for (x in ui.recievedData.rows) {
-        ui._createRow(ui.recievedData.rows[x].cell);
+        ui.insertRow(ui.recievedData.rows[x].cell);
     }
     ui._trigger('updated');
 };
@@ -44,7 +44,7 @@ $.ui.plugin.add('hygrid', 'ajax', {
                 var range = $.range(0, ui.options.rpp);
                 var blank = (new Array(ui.cols())).join(',').split(','); // OK that's pretty fucking dirty.
                 for (x in range) {
-                    ui._createRow(blank);
+                    ui.insertRow(blank);
                 }
             }
         }
