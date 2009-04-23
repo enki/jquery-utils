@@ -98,9 +98,7 @@ $.widget('ui.hygrid', {
                 wrapper.width(table.width());
             break;
             case 'fill':
-                var w = wrapper.parent().width();
-                wrapper.width(w)
-                table.width(w);
+                table.width(wrapper.width());
             break;
             default:
                 wrapper.width(this.options.width);

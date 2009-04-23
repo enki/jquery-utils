@@ -13,7 +13,7 @@
     background:#ddd;
 }
 .ui-hygrid table thead th {
-    font-size:70%;
+    font-size:60%;
     font-weight:normal;
     white-space:nowrap;
     text-align:left;
@@ -22,9 +22,16 @@
     border-width:1px;
     border-color:#f4f4f4 #fff #bbb #ccc;
     border-style:solid;
-    padding:4px;
+    padding:0px 6px 6px 6px;
     overflow-x:hidden;
     cursor:default;
+}
+.ui-hygrid table thead th .ui-icon {
+    position:relative;
+    top:4px;
+}
+.ui-hygrid table thead th:first-child {
+    border-left:0;
 }
 .ui-hygrid table thead th:last-child {
     border-right:0;
