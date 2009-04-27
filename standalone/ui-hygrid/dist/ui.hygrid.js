@@ -602,7 +602,7 @@ $.extend($.ui.hygrid.defaults, {
 
 $.tpl('colhider.menu',     '<ul class="ui-hygrid-p-colhider-menu ui-helper-hidden ui-helper-reset ui-widget-content" />');
 $.tpl('colhider.menuItem', '<li class="ui-corner-all ui-helper-reset"><label><input type="checkbox" /> {label:s}</label></li>');
-$.tpl('colhider.button',   '<th class="ui-hygrid-p-colhider ui-state-default"><span class="ui-icon ui-icon-gridmenu" />');
+$.tpl('colhider.button',   '<th class="ui-hygrid-p-colhider ui-state-default"><span class="ui-icon ui-icon-gridmenu" /></th>');
 $.ui.plugin.add('hygrid', 'colhider', {
     initialize: function(e, ui) {
         $.extend($.ui.hygrid.cellModifiers, {
@@ -659,8 +659,8 @@ $.ui.plugin.add('hygrid', 'colhider', {
                 }
                 else {
                     menu.css({
-                        top: tbody.position().top,
-                        left: $(this).position().left
+                        top: tbody.position().top - 1,
+                        left: $(this).position().left - menu.width() + $(this).width() + 4
                     }).show();
                 }
             })
@@ -958,9 +958,7 @@ $.widget('ui.hygrid', {
                 wrapper.width(table.width());
             break;
             case 'fill':
-                var w = wrapper.parent().width();
-                wrapper.width(w)
-                table.width(w);
+                table.width(wrapper.width());
             break;
             default:
                 wrapper.width(this.options.width);
@@ -1760,9 +1758,7 @@ $.widget('ui.hygrid', {
                 wrapper.width(table.width());
             break;
             case 'fill':
-                var w = wrapper.parent().width();
-                wrapper.width(w)
-                table.width(w);
+                table.width(wrapper.width());
             break;
             default:
                 wrapper.width(this.options.width);

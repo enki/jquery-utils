@@ -4,6 +4,10 @@
 
 /* system theme (default) */
 
+span.ui-timepickr {
+    width:480px; 
+}
+
 span.ui-timepickr span {
     border-width:1px;
     border-style:solid;
