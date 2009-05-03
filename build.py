@@ -33,7 +33,8 @@ LOGS = {
 }
 
 def log(msg, log_type=False):
-    print LOGS.get(log_type, '%s') % msg
+    if LOG:
+        print LOGS.get(log_type, '%s') % msg
 
 def legend():
     for k in LOGS:
@@ -171,7 +172,6 @@ def make(build, options):
     file  = build[0]
     build = build[1]
     dest  = get_dest_dir(build)
-
     if options.quiet:
         LOG = False
 
@@ -180,24 +180,12 @@ def make(build, options):
     else:
         version = 'v%s' % build['version']
 
-    if build.has_key('merge'):
-        for merge in build['merge']:
-            dest = merge['dest']
-            log(dest, 'merge')
-
-            f = open(dest, 'w+')
-            o = get_dependencies(merge['files'])
-            f.write(o)
-            f.close()
-
-    if build.has_key('copy'):
-        for c in build['copy']:
-            cp(c['src'], c['dest'])
-
     if build['modules']:
         o = []
+        c = 0
         for module in build['modules']:
             if len(options.modules) == 0 or module['name'] in options.modules:
+                c = c+1
                 destPath = os.path.join(build['dest'], get_dest_filename(module))
 
                 if module.has_key('title'):
@@ -221,15 +209,30 @@ def make(build, options):
                 if options.minify:
                     minify(destPath, destPath.replace('.js', '.min.js'))
 
-    if build.has_key('zip'):
-        for z in build['zip']:
-            destZip = os.path.join(z['dest'].replace('%v', build['version']))
-            create_zip(z['src'], destZip, z['exclude'])
+    # Do nothing if no module have been built
+    if c > 0:
+        if build.has_key('merge'):
+            for merge in build['merge']:
+                dest = merge['dest']
+                log(dest, 'merge')
 
-    if build.has_key('gzip'):
-        for g in build['gzip']:
-            destGzip = os.path.join(g['dest'].replace('%v', build['version']))
-            create_gzip(g['src'], destGzip, g['exclude'])
+                f = open(dest, 'w+')
+                o = get_dependencies(merge['files'])
+                f.write(o)
+                f.close()
+
+        if build.has_key('copy'):
+            for c in build['copy']:
+                cp(c['src'], c['dest'])
+            if build.has_key('zip'):
+                for z in build['zip']:
+                    destZip = os.path.join(z['dest'].replace('%v', build['version']))
+                    create_zip(z['src'], destZip, z['exclude'])
+
+        if build.has_key('gzip'):
+            for g in build['gzip']:
+                destGzip = os.path.join(g['dest'].replace('%v', build['version']))
+                create_gzip(g['src'], destGzip, g['exclude'])
 
 
 if __name__ == '__main__':
