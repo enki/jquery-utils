@@ -1,6 +1,8 @@
 # Django settings for testproject project.
 import os, re, sys
 
+sys.path.append('contrib/')
+
 def join_url(*args):
     s = '/'.join(args)
     return re.sub(r'/+', '/', s)
@@ -96,6 +98,5 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'testproject.testapp',
-    'svn_revision',
     'ajax_forms',    
 )
