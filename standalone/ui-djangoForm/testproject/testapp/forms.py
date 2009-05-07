@@ -5,17 +5,18 @@ from django import forms
 from testproject.testapp.models import *
 
 class TestForm(forms.Form):
-    name        = forms.CharField(label=u"Name",    required=True,  max_length=50)
-    phone       = forms.CharField(label=u"Phone",   required=False, max_length=50)
-    fax         = forms.CharField(label=u"Fax",     required=False, max_length=50)
-    email       = forms.EmailField(label=u"Email",  required=False, max_length=75)
-    website     = forms.URLField(label=u"Website",  required=False, max_length=200)
-    notes       = forms.CharField(label=u"Notes",   required=False, widget=forms.Textarea)
-    address     = forms.CharField(label=u"Address", required=False, max_length=200)
-    city        = forms.CharField(label=u"City",    required=False, max_length=100)
-    state       = forms.CharField(label=u"State/Province", required=False, max_length=100)
-    country     = forms.CharField(label=u"Country", required=False, max_length=100)
-    zipcode     = forms.CharField(label=u"Postal/Zip code", required=False, max_length=10)
+    boolean        = forms.BooleanField(label=u"Boolean")
+    char           = forms.CharField(label=u"Char field", required=True,  max_length=50, min_length=3, help_text="required, max length: 50, min length: 3")
+    date           = forms.DateField(label="Date")
+    datetime       = forms.DateTimeField(label="DateTime")
+    decimal        = forms.DecimalField(label="Decimal", decimal_places=3, max_digits=3, help_text="Decimal places: 3, max digits: 3")
+    email          = forms.EmailField(label=u"Email (max 75)")
+    float          = forms.FloatField(label="Float")
+    integer        = forms.IntegerField(label="Integer")
+    ipAddress      = forms.IPAddressField(label="IP address")
+    slug           = forms.CharField(label="Slug", max_length=15, help_text="Max length: 15")
+    time           = forms.TimeField(label="Time")
+    url            = forms.URLField(label=u"URL")
 
     def clean_name(self):
         if not self.cleaned_data['name'][0].isalnum():
