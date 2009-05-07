@@ -125,12 +125,4 @@ $.extend($.ui.djangoForm.defaults.rules, {
 
 });
 
-$(function(){
-    $('form').djangoForm({
-        fields: {% render_ajax_fields form %},
-        layout: 'ul',
-        validation_events: ['blur'],
-        add_required_indicators: true
-    });
-});
 

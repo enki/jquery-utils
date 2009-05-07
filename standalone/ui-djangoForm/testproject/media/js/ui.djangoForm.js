@@ -11,7 +11,7 @@ $.widget('ui.djangoForm', {
     _init: function(fields) {
         var ui = this;
 
-        ui.element = $(ui.element).eq(0).bind('submit', function(e){
+        ui.element.bind('submit', function(e){
             $(this).removeClass('ui-djangoForm-error').find('ul.'+ ui.options.errorListClass).remove();
             $.each(ui.options.fields, function(name, field){
                 ui._applyRules(field, true);
@@ -24,7 +24,7 @@ $.widget('ui.djangoForm', {
             var id = $.format('#{0:s}{1:s}', ui.options.idPrefix, name);
             field.id = id;
             field.name = name;
-            field.element = $(id).data('validation.field', field);
+            field.element = $(id, ui.element).data('validation.field', field);
             if (field.required) {
                 field.element.parent().andSelf().addClass(ui.options.requiredClass);
             }

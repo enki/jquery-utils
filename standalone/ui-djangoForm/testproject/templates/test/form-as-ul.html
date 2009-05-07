@@ -1,0 +1,17 @@
+{% extends "test/form-base.html" %}
+{% block form %}
+{% if message %}
+<p class="ui-djangoForm-message">{{ message }}</p>
+{% endif %}
+<form class="ui-djangoForm" method="post" action="">
+    {% if message %}
+    <p class="ui-djangoForm-message">{{ message }}</p>
+    {% endif %}
+    <ul>
+        {{ form.as_ul }}
+        <li class="ui-djangoForm-action">
+            <input type="submit" value="Save" />
+        </li>
+    </ul>
+</form>
+{% endblock %}
