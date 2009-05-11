@@ -1,22 +1,30 @@
 # -*- coding: utf-8 -*-
 
-from django import forms
+# Use FormBase only if you are using Django < 1.1
+# This hotfix is required to wrap help_text in a 
+# span element, thus making it skinnable with CSS.
+#
+# Reference:
+# http://code.djangoproject.com/ticket/8426
 
+from testproject.forms import PatchedForm
+
+from django import forms
 from testproject.testapp.models import *
 
-class TestForm(forms.Form):
+class TestForm(PatchedForm):
     boolean        = forms.BooleanField(label=u"Boolean")
     char           = forms.CharField(label=u"Char field", required=True,  max_length=50, min_length=3, help_text="required, max length: 50, min length: 3")
-    date           = forms.DateField(label="Date")
+    date           = forms.DateField(label="Date", required="false")
     datetime       = forms.DateTimeField(label="DateTime")
-    decimal        = forms.DecimalField(label="Decimal", decimal_places=3, max_digits=3, help_text="Decimal places: 3, max digits: 3")
-    email          = forms.EmailField(label=u"Email (max 75)")
-    float          = forms.FloatField(label="Float")
-    integer        = forms.IntegerField(label="Integer")
-    ipAddress      = forms.IPAddressField(label="IP address")
-    slug           = forms.CharField(label="Slug", max_length=15, help_text="Max length: 15")
-    time           = forms.TimeField(label="Time")
-    url            = forms.URLField(label=u"URL")
+    decimal        = forms.DecimalField(label="Decimal", decimal_places=3, max_digits=3, help_text="Decimal places: 3, max digits: 3", required="false")
+    email          = forms.EmailField(label=u"Email", required="false")
+    float          = forms.FloatField(label="Float", required="false")
+    integer        = forms.IntegerField(label="Integer", required="false")
+    ipAddress      = forms.IPAddressField(label="IP address", required="false")
+    slug           = forms.CharField(label="Slug", max_length=15, help_text="Max length: 15", required="false")
+    time           = forms.TimeField(label="Time", required="false")
+    url            = forms.URLField(label=u"URL", required="false")
 
     def clean_name(self):
         if not self.cleaned_data['name'][0].isalnum():
