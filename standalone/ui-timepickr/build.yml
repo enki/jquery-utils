@@ -32,6 +32,8 @@ copy:
     dest: standalone/ui-timepickr/page/jquery.anchorHandler.js
   - src: src/jquery.strings.js
     dest: standalone/ui-timepickr/page/jquery.strings.js
+  - src: src/jquery.js
+    dest: standalone/ui-timepickr/page/jquery.js
 
 merge:
   - dest: standalone/ui-timepickr/dist/jquery.timepickr.css

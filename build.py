@@ -1,10 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-"""
-    Experimental build system
-"""
-
 from optparse import OptionParser
 from glob import glob
 import jsmin

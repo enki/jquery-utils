@@ -7,62 +7,84 @@
  *
  * */
 
+if (!$.fn.type) {
+$.extend($.fn, {
+    type: function() {
+        try { return $(this).get(0).nodeName.toLowerCase(); }
+        catch(e) { return false; }
+    }         
+});
+}
+
 $.widget('ui.djangoForm', {
     _init: function(fields) {
         var ui = this;
-        console.log(ui._get_form_type());
-        ui.form_type = ui._get_form_type();
-        ui.element.bind('submit', function(e){
-            $(this).removeClass('ui-djangoForm-error').find('ul.'+ ui.options.errorListClass).remove();
-            $.each(ui.options.fields, function(name, field){
-                ui._applyRules(field, true);
-            });
-            return false;
-            return !ui._hasErrors; // don't submit if it has errors
-        });
-
-        if (ui.form_type == 'ul') {
-            $('input[type=checkbox]').prev().css('float', 'left');
-        }
-
-        $.each(ui.options.fields, function(name, field){
-            var id = $.format('#{0:s}{1:s}', ui.options.idPrefix, name);
-            field.id = id;
-            field.name = name;
-            field.element = $(id, ui.element).data('validation.field', field);
-            if (field.required != "false") {
-            console.log(ui.form_type);
-                if (ui.form_type == 'table') {
-                    field.element.parents('tr').andSelf().addClass(ui.options.requiredClass);
+        if (ui.options.fields) {
+            if (ui.options.url && ui.element.type() != 'form') {
+                ui._url = ui.options.url;
+                $(this.element).load(ui._url, function(){
+                    ui.form_type = $(this).find('form:first-child').type();
+                    $(this).find('form').djangoForm(ui.options);
+                }).djangoForm('destroy');
+                if (ui.options.mode == 'dialog') {
+                    $(this.element).dialog({
+                        width:  ui.options.width  || false,
+                        height: ui.options.height || false,
+                        title:  ui.options.title  || false,
+                    });
                 }
-                else {
-                    field.element.parent().andSelf().addClass(ui.options.requiredClass);
-                }
+                return false;
             }
-            if (ui.options.smart_field_width && field.rules['max_length']) {
+            else {
+                ui.form_type = ui.element.children(0).type();
+                ui.element.bind('submit', function(e){
+                    $(this).removeClass('ui-djangoForm-error').find('ul.'+ ui.options.errorListClass).remove();
+                    $.each(ui.options.fields, function(name, field){
+                        ui._applyRules(field, true);
+                    });
+                    return !ui._hasErrors; // don't submit if it has errors
+                });
+
                 if (ui.form_type == 'ul') {
-                    var pw = field.element.parent().width() - field.element.parent().find('label').width() - 30;
+                    $('input[type=checkbox]').prev().css('float', 'left');
                 }
-                else {
-                    var pw = field.element.parent().width();
-                }
-                var nw = parseInt(field.rules['max_length'], 10) * 10;
-                console.log(pw, nw);
-                if (pw < nw) { nw = pw; } // do not go wider than the parent
-                field.element.width(nw);
+                $.each(ui.options.fields, function(name, field){
+                    var id = $.format('#{0:s}{1:s}', ui.options.idPrefix, name);
+                    field.id = id;
+                    field.name = name;
+                    field.element = $(id, ui.element).data('validation.field', field);
+                    if (field.required != false) {
+                        if (ui.form_type == 'table') {
+                            field.element.parents('tr').andSelf().addClass(ui.options.requiredClass);
+                        }
+                        else {
+                            field.element.parent().andSelf().addClass(ui.options.requiredClass);
+                        }
+                    }
+                    if (ui.options.smart_field_width && field.rules['max_length']) {
+                        if (ui.form_type == 'ul') {
+                            var pw = field.element.parent().width() - field.element.parent().find('label').width() - 30;
+                        }
+                        else {
+                            var pw = field.element.parent().width();
+                        }
+                        var nw = parseInt(field.rules['max_length'], 10) * 10;
+                        if (pw < nw) { nw = pw; } // do not go wider than the parent
+                        field.element.width(nw);
+                    }
+                });
             }
-        });
+        }
     },
-    _get_form_type: function() {
-        var ui = this;
-        return (ui.options.form_type == 'auto') 
-            ? $('.ui-djangoForm').children(0).get(0).nodeName.toLowerCase() 
-            : ui.options.form_type;
-    },
+
     _applyRules: function(field, applyRequired) {
+        if (applyRequired) {
+            field.rule = 'required';
+            $.ui.djangoForm.defaults.rules['required'].apply(this, [field]);
+        }
         for (x in $.ui.djangoForm.defaults.rules) {
             field.rule = x; // I know.. it's ugly.
-            if (field.rules[x] && (applyRequired || (!applyRequired && x != 'required' && field[x]))) {
+            if (x != 'required' && field[x]) {
                 try {
                     $.ui.djangoForm.defaults.rules[x].apply(this, [field]);
                 } catch(e){};
@@ -88,6 +110,7 @@ $.tpl('djangoForm.error',     '<li></li>');
 $.ui.djangoForm.defaults = {
     rules: {},
     form_type: 'auto',
+    mode: 'inline', // inline, dialog
     requiredClass: 'ui-djangoForm-required',
     errorListClass: 'errorlist', // use the same as Django
     idPrefix: 'id_',

@@ -40,6 +40,8 @@ copy:
     dest: standalone/ui-hygrid/src/jquery.delayedObserver.js
   - src: src/jquery.strings.js
     dest: standalone/ui-hygrid/src/jquery.strings.js
+  - src: src/jquery.js
+    dest: standalone/ui-hygrid/src/jquery.js
 
 merge:
   - dest: standalone/ui-hygrid/dist/themes/default/ui.hygrid.css
