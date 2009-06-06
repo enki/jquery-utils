@@ -63,6 +63,10 @@ $.ui.plugin.add('hygrid', 'core', {
                 }
             });
         }
+
+        $(window).bind('resize', function(){
+            setTimeout(function(){ui._setGridWidth()}, 200);
+        });
     },
 
     initialized: function(e, ui) {

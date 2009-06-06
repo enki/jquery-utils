@@ -50,7 +50,6 @@ $.widget('ui.hygrid', {
     },
 
     set: function(k, v) {
-        console.log(this, k, v)
         return this.options[k] = v;
     },
 
@@ -98,6 +97,7 @@ $.widget('ui.hygrid', {
                 wrapper.width(table.width());
             break;
             case 'fill':
+                table.width(0);
                 table.width(wrapper.width());
             break;
             default:
