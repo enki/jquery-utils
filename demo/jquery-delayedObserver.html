@@ -9,6 +9,10 @@
             $('input#demo-1').delayedObserver(function() {
                 $('#demo-1-result').text('Typed: '+ $(this).val());
             }, 0.8);
+            $('select#demo-2').delayedObserver(function() {
+                alert('test');
+                $('#demo-2-result').text('Changed to: '+ $(this).val());
+            }, 3, {event: 'change'});
         });
         </script>
         <style type="text/css">
@@ -31,6 +35,20 @@
             <p id="demo-1-text"></p>
             <div id="demo-1-result" class="result">Type something fast..</div>
         </div>
+        <h3>Demo with select</h3>
+        <div class="demo">
+            <p>
+                <select id="demo-2" name="states">
+                    <option>Maryland</option>
+                    <option>Michigan</option>
+                    <option>Mississippi</option>
+                </select>
+            </p>
+            <div id="demo-2-result" class="result">Successive selections shorter than 3 seconds will not trigger the callback.</div>
+        </div>
+        <pre>$('select#demo-2').delayedObserver(function() {
+    $('#demo-2-result').text('Changed to: '+ $(this).val());
+}, 0.8, {event: 'change'});</pre>
     </body>
 </html>
 

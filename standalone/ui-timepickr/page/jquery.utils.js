@@ -201,6 +201,10 @@
 	});
 
 	$.extend($.fn, { 
+        type: function() {
+            try { return $(this).get(0).nodeName.toLowerCase(); }
+            catch(e) { return false; }
+        },
         // Select a text range in a textarea
         selectRange: function(start, end){
             // use only the first one since only one input can be focused

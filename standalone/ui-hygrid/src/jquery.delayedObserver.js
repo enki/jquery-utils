@@ -1,5 +1,5 @@
 /*
- jQuery delayed observer - 0.7
+ jQuery delayed observer - 0.8
  http://code.google.com/p/jquery-utils/
 
  (c) Maxime Haineault <haineault@gmail.com>
@@ -14,7 +14,7 @@
         delayedObserver: function(callback, delay, options){
             return this.each(function(){
                 var el = $(this);
-                var op = op || {};
+                var op = options || {};
                 el.data('oldval', el.val())
                     .data('delay', delay || 0.5)
                     .data('condition', op.condition || function() { return ($(this).data('oldval') == $(this).val()); })

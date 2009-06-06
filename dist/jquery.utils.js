@@ -201,6 +201,10 @@
 	});
 
 	$.extend($.fn, { 
+        type: function() {
+            try { return $(this).get(0).nodeName.toLowerCase(); }
+            catch(e) { return false; }
+        },
         // Select a text range in a textarea
         selectRange: function(start, end){
             // use only the first one since only one input can be focused
@@ -1890,7 +1894,7 @@ $.fn.cycle.transitions.wipe = function($cont, $slides, opts) {
 
 })(jQuery);
 /*
- jQuery delayed observer - 0.7
+ jQuery delayed observer - 0.8
  http://code.google.com/p/jquery-utils/
 
  (c) Maxime Haineault <haineault@gmail.com>
@@ -1905,7 +1909,7 @@ $.fn.cycle.transitions.wipe = function($cont, $slides, opts) {
         delayedObserver: function(callback, delay, options){
             return this.each(function(){
                 var el = $(this);
-                var op = op || {};
+                var op = options || {};
                 el.data('oldval', el.val())
                     .data('delay', delay || 0.5)
                     .data('condition', op.condition || function() { return ($(this).data('oldval') == $(this).val()); })
@@ -3310,6 +3314,10 @@ $.fn.extend({
 	});
 
 	$.extend($.fn, { 
+        type: function() {
+            try { return $(this).get(0).nodeName.toLowerCase(); }
+            catch(e) { return false; }
+        },
         // Select a text range in a textarea
         selectRange: function(start, end){
             // use only the first one since only one input can be focused
