@@ -5,6 +5,16 @@ name: "utilsall"
 dest: dist/
 modules:
   - file: src/jquery.utils.js
+    name: "lite"
+    destfile: jquery.utils.lite.js
+    depends:
+      - src: src/jquery.utils.js
+      - src: src/jquery.strings.js
+      - src: src/jquery.delayedObserver.js
+      - src: src/jquery.i18n.js
+      - src: src/jquery.masked.js
+      - src: src/jquery.mousewheel.js
+  - file: src/jquery.utils.js
     name: "utils"
     depends:
       - src: src/jquery.utils.js

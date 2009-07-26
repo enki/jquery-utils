@@ -1,6 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+# jQuery utils python build system 
+# http://code.google.com/p/jquery-utils/
+#
+# (c) Maxime Haineault <haineault@gmail.com> 
+# http://haineault.com
+#
+# MIT License (http://www.opensource.org/licenses/mit-license.php
+
 from optparse import OptionParser
 from glob import glob
 import jsmin
@@ -220,10 +228,11 @@ def make(build, options):
         if build.has_key('copy'):
             for c in build['copy']:
                 cp(c['src'], c['dest'])
-            if build.has_key('zip'):
-                for z in build['zip']:
-                    destZip = os.path.join(z['dest'].replace('%v', build['version']))
-                    create_zip(z['src'], destZip, z['exclude'])
+
+        if build.has_key('zip'):
+            for z in build['zip']:
+                destZip = os.path.join(z['dest'].replace('%v', build['version']))
+                create_zip(z['src'], destZip, z['exclude'])
 
         if build.has_key('gzip'):
             for g in build['gzip']:

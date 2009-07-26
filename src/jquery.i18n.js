@@ -20,7 +20,8 @@
         };
         // Set language
         if (arguments.length < 2 && arguments[0].length == 2) {
-            return $._i18n.language = arguments[0];
+            $._i18n.language = arguments[0]; 
+            return $._i18n.language;
         }
         else {
             // get translation

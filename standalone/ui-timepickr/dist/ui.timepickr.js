@@ -977,17 +977,18 @@ $.ui.mouse.defaults = {
         },
 
         tpl: function() {
-            var out = '', render = true;
+            var out = '';
+            var render = true;
             // Set
             // $.tpl('ui.test', ['<span>', helloWorld ,'</span>']);
             if (arguments.length == 2 && $.isArray(arguments[1])) {
                 this[arguments[0]] = arguments[1].join('');
-                return jQuery;
+                return $(this[arguments[0]]);
             }
             // $.tpl('ui.test', '<span>hello world</span>');
             if (arguments.length == 2 && $.isString(arguments[1])) {
                 this[arguments[0]] = arguments[1];
-                return jQuery;
+                return $(this[arguments[0]]);
             }
             // Call
             // $.tpl('ui.test');
@@ -1882,17 +1883,18 @@ $.ui.mouse.defaults = {
         },
 
         tpl: function() {
-            var out = '', render = true;
+            var out = '';
+            var render = true;
             // Set
             // $.tpl('ui.test', ['<span>', helloWorld ,'</span>']);
             if (arguments.length == 2 && $.isArray(arguments[1])) {
                 this[arguments[0]] = arguments[1].join('');
-                return jQuery;
+                return $(this[arguments[0]]);
             }
             // $.tpl('ui.test', '<span>hello world</span>');
             if (arguments.length == 2 && $.isString(arguments[1])) {
                 this[arguments[0]] = arguments[1];
-                return jQuery;
+                return $(this[arguments[0]]);
             }
             // Call
             // $.tpl('ui.test');

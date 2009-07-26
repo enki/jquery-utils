@@ -458,17 +458,18 @@
         },
 
         tpl: function() {
-            var out = '', render = true;
+            var out = '';
+            var render = true;
             // Set
             // $.tpl('ui.test', ['<span>', helloWorld ,'</span>']);
             if (arguments.length == 2 && $.isArray(arguments[1])) {
                 this[arguments[0]] = arguments[1].join('');
-                return jQuery;
+                return $(this[arguments[0]]);
             }
             // $.tpl('ui.test', '<span>hello world</span>');
             if (arguments.length == 2 && $.isString(arguments[1])) {
                 this[arguments[0]] = arguments[1];
-                return jQuery;
+                return $(this[arguments[0]]);
             }
             // Call
             // $.tpl('ui.test');
@@ -576,7 +577,7 @@
                     .data('condition', op.condition || function() { return ($(this).data('oldval') == $(this).val()); })
                     .data('callback', callback)
                     [(op.event||'keyup')](function(){
-                        if (el.data('condition').apply(el)) { return }
+                        if (el.data('condition').apply(el)) { return; }
                         else {
                             if (el.data('timer')) { clearTimeout(el.data('timer')); }
                             el.data('timer', setTimeout(function(){
@@ -1535,17 +1536,18 @@ $.extend($.ui.hygrid, {
         },
 
         tpl: function() {
-            var out = '', render = true;
+            var out = '';
+            var render = true;
             // Set
             // $.tpl('ui.test', ['<span>', helloWorld ,'</span>']);
             if (arguments.length == 2 && $.isArray(arguments[1])) {
                 this[arguments[0]] = arguments[1].join('');
-                return jQuery;
+                return $(this[arguments[0]]);
             }
             // $.tpl('ui.test', '<span>hello world</span>');
             if (arguments.length == 2 && $.isString(arguments[1])) {
                 this[arguments[0]] = arguments[1];
-                return jQuery;
+                return $(this[arguments[0]]);
             }
             // Call
             // $.tpl('ui.test');
@@ -1653,7 +1655,7 @@ $.extend($.ui.hygrid, {
                     .data('condition', op.condition || function() { return ($(this).data('oldval') == $(this).val()); })
                     .data('callback', callback)
                     [(op.event||'keyup')](function(){
-                        if (el.data('condition').apply(el)) { return }
+                        if (el.data('condition').apply(el)) { return; }
                         else {
                             if (el.data('timer')) { clearTimeout(el.data('timer')); }
                             el.data('timer', setTimeout(function(){
