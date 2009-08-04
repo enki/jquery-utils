@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <title>jQuery utils</title>
+        <link rel="Stylesheet" media="screen" href="data/styles.css" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="../src/jquery.masked.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $(function($){
+                   $("#date").mask("99/99/9999");
+                   $("#phone").mask("(999) 999-9999");
+                   $("#tin").mask("99-9999999");
+                   $("#ssn").mask("999-99-9999");
+                });
+            });
+            $(function($){
+               $("#product").mask("99/99/9999",{placeholder:" "});   
+            });
+            $(function($){
+               $.mask.addPlaceholder('~',"[+-]");
+               $("#eyescript").mask("~9.99 ~9.99 999");
+            });
+        </script>
+        <style type="text/css">
+        </style>
+    </head>
+    <body id="body">
+        <h2>jquery.masked.js</h2>
+        <div class="copyright">Copyright (c) 2007-2008 Josh Bush (<a href="http://digitalbush.com/" target="_blank">digitalbush.com</a>)</div>
+        <div class="license">MIT License ~ <a href="http://www.opensource.org/licenses/mit-license.php" target="_blank">http://www.opensource.org/licenses/mit-license.php</a></div>
+        <a class="related-links documentation" href="http://digitalbush.com/projects/masked-input-plugin">Documentation</a>
+        <h3>Basic usage</h3>
+        <pre>$(function($){
+    $("#date").mask("99/99/9999");
+    $("#phone").mask("(999) 999-9999");
+    $("#tin").mask("99-9999999");
+    $("#ssn").mask("999-99-9999");
+});</pre>
+        <div class="demo">
+            <ul class="form">
+                <li>
+                    <label for="date">Date</label>
+                    <input id="date" type="text" value="" />
+                </li>
+                <li>
+                    <label for="phone">Phone</label>
+                    <input id="phone" type="text" value="" />
+                </li>
+                <li>
+                    <label for="tin">TIN</label>
+                    <input id="tin" type="text" value="" />
+                </li>
+                <li>
+                    <label for="ssn">SSN</label>
+                    <input id="ssn" type="text" value="" />
+                </li>
+            </ul>
+        </div>
+        <hr size="1" />
+        <h3>Custom placeholder</h3>
+        <pre>$(function($){
+    $("#product").mask("99/99/9999",{placeholder:" "});   
+});</pre>
+        <div class="demo">
+            <ul class="form">
+                <li><label for="product">Product</label> <input id="product" type="text" value="" /></li>
+            </ul>
+        </div>
+        <hr size="1" />
+        <h3>Placeholder defenition</h3>
+        <pre>$(function($){
+   $.mask.addPlaceholder('~',"[+-]");
+   $("#eyescript").mask("~9.99 ~9.99 999");
+});</pre>
+        <div class="demo">
+            <ul class="form">
+                <li><label for="eyescript">Product</label> <input id="eyescript" type="text" value="" /></li>
+            </ul>
+        </div>
+    </body>
+</html>
