@@ -21,7 +21,7 @@ $(function(){
         equals(tp.next().text(), 'ampm00010203040506070809101112131415161718192021222300153045', 'Data integrity OK');
         tp.remove();
     });
-
+    
     test('options.convention', function(){
         expect(5);
         var tp = setup({convention: 12});
@@ -34,15 +34,18 @@ $(function(){
     });
 
     test('options.val', function(){
-        expect(1);
-        var tp = setup({val: '04:20'});
-        equals(tp.val(), '04:20', 'val OK');
+        expect(2);
+        var tp = setup({convention: 12, val: '04:20 pm'});
+        equals(tp.val(), '04:20 pm', 'options.val (12 mode)');
+        tp.remove();
+        var tp = setup({convention: 24, val: '04:20'});
+        equals(tp.val(), '04:20', 'options.val (24h mode)');
         tp.remove();
     });
     
     test('options.resetOnBlur', function(){
         expect(4);
-        var tp = setup({resetOnBlur: true});
+        var tp = setup({resetOnBlur: true, convention: 12, val: '01:00 am'});
         var val = tp.val();
         tp.focus();
         tp.next().find('ol > li:eq(4)').mouseover();
@@ -51,7 +54,7 @@ $(function(){
         equals(tp.val(), val, 'val reseted OK');
         tp.remove();
         
-        var tp = setup({resetOnBlur: false});
+        var tp = setup({resetOnBlur: false, convention: 12});
         var val = tp.val();
         tp.focus();
         tp.next().find('ol > li:eq(4)').mouseover();
@@ -63,7 +66,7 @@ $(function(){
     
     test('options.updateLive', function(){
         expect(4);
-        var tp = setup({updateLive: true});
+        var tp = setup({updateLive: true, convention: 12, val: '01:00 am'});
         var val = tp.val();
         tp.focus();
         tp.next().find('ol > li:eq(4)').mouseover();
@@ -72,7 +75,7 @@ $(function(){
         equals(tp.val(), val, 'val reseted OK');
         tp.remove();
         
-        var tp = setup({updateLive: false});
+        var tp = setup({updateLive: false, convention: 12, val: '01:00 am'});
         var val = tp.val();
         tp.focus();
         tp.next().find('ol > li:eq(4)').mouseover();
@@ -114,21 +117,21 @@ $(function(){
     
     test('options.minutes', function(){
         expect(2);
-        var tp = setup({minutes: true});
+        var tp = setup({minutes: true, convention: 12});
         equals(tp.next().find('ol').length, 3, 'ol OK')
         tp.remove();
-        var tp = setup({minutes: false});
+        var tp = setup({minutes: false, convention: 12});
         equals(tp.next().find('ol').length, 2, 'ol OK')
         tp.remove();
     });
     
     test('options.hours', function(){
         expect(2);
-        var tp = setup({hours: true});
+        var tp = setup({hours: true, convention: 12});
         equals(tp.next().find('ol').length, 3, 'ol OK')
         tp.remove();
-        var tp = setup({hours: false});
-        equals(tp.next().find('ol').length, 2, 'ol OK')
+        var tp = setup({hours: false, convention: 12});
+        equals(tp.next().find('ol').length, 1, 'ol OK')
         tp.remove();
     });
 
