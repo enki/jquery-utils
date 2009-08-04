@@ -4,14 +4,13 @@
         <link rel="Stylesheet" media="screen" href="reset.css" />
         <link rel="Stylesheet" media="screen" href="styles.css" />
         <link rel="Stylesheet" media="screen" href="../dist/themes/default/ui.core.css" />
-        <link rel="Stylesheet" media="screen" href="../dist/themes/default/ui.timepickr.css" />
+        <link rel="Stylesheet" media="screen" href="../src/css/ui.timepickr2.css" />
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.js"></script>
         <script type="text/javascript" src="jquery.utils.js"></script>
         <script type="text/javascript" src="jquery.strings.js"></script>
         <script type="text/javascript" src="jquery.anchorHandler.js"></script>
         <script type="text/javascript" src="jquery.ui.all.js"></script>
-        <script type="text/javascript" src="../src/ui.dropslide.js"></script>
-        <script type="text/javascript" src="../src/ui.timepickr.js"></script>
+        <script type="text/javascript" src="../src/ui.timepickr2.js"></script>
 
 
         <script type="text/javascript">
@@ -22,7 +21,7 @@
               $('#demo-4').timepickr({convention:12});
               $('#demo-1').next().find('ol').show().find('li:eq(2)').mouseover();
               // temporary fix..
-              $('.ui-dropslide ol:eq(0) li:first').mouseover();
+              $('.ui-timepickr ol:eq(0) li:first').mouseover();
               // apply theme
               $('#demo-1').next().addClass('dark');
               $('#demo-2').next().addClass('dark');
@@ -231,9 +230,11 @@
                             <th>0.7</th>
                             <td>
                                 <ul>
-                                    <li>Polish base theme (follow UI styles)</li>
-                                    <li>Support for custom labels</li>
-                                    <li>Opera Support</li>
+                                    <li class="done">Complete refactoring</li>
+                                    <li class="done">Integrated a plugin architecture</li>
+                                    <li class="done">Removed dropslide dependency</li>
+                                    <li class="done">Polish base theme (follow UI styles)</li>
+                                    <li class="done">Support for custom labels</li>
                                 </ul>
                             </td>
                         </tr>

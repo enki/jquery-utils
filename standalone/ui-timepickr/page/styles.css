@@ -295,7 +295,7 @@ input.demo:focus {
     border-color:#fff;
     color:#333;
 }
-.dark li.ui-timepickr span {
+.dark.ui-timepickr li span {
     background:#333 url('btn.png') repeat-x!important;
     font-family:monospace;
     font-size:100%;
@@ -303,7 +303,7 @@ input.demo:focus {
     color:#ccc!important;
     border-color:#333 #555 #555 #444;
 }
-.dark li.ui-timepickr.hover span {
+.dark.ui-timepickr .ui-state-hover span {
     background:#3679AE url('btn-hover.png') repeat-x!important;
     color:#fff!important;
 }
