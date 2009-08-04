@@ -18,8 +18,8 @@
             // return trans or original string
             return trans || str;
         };
-        // Set language
-        if (arguments.length < 2 && arguments[0].length == 2) {
+        // Set language (accepted formats: en or en-US)
+        if (arguments.length < 2 && arguments[0].length == 2 && arguments[0].length == 5) {
             $._i18n.language = arguments[0]; 
             return $._i18n.language;
         }
