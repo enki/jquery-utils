@@ -124,12 +124,6 @@
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;
 		},
-        
-        // Returns true if an object is an array
-        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
-		isArray: function(o) {
-            return Object.prototype.toString.apply(o || false) === '[object Array]';
-		},
 
         isObject: function(o) {
             return (typeof(o) == 'object');
@@ -610,8 +604,8 @@
             // return trans or original string
             return trans || str;
         };
-        // Set language
-        if (arguments.length < 2 && arguments[0].length == 2) {
+        // Set language (accepted formats: en or en-US)
+        if (arguments.length < 2) {
             $._i18n.language = arguments[0]; 
             return $._i18n.language;
         }
@@ -1105,12 +1099,6 @@ $.fn.extend({
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;
 		},
-        
-        // Returns true if an object is an array
-        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
-		isArray: function(o) {
-            return Object.prototype.toString.apply(o || false) === '[object Array]';
-		},
 
         isObject: function(o) {
             return (typeof(o) == 'object');
@@ -1370,12 +1358,6 @@ $.fn.extend({
         // Returns true if an object is a RegExp
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;
-		},
-        
-        // Returns true if an object is an array
-        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
-		isArray: function(o) {
-            return Object.prototype.toString.apply(o || false) === '[object Array]';
 		},
 
         isObject: function(o) {
@@ -3568,8 +3550,8 @@ if (window.attachEvent) {
             // return trans or original string
             return trans || str;
         };
-        // Set language
-        if (arguments.length < 2 && arguments[0].length == 2) {
+        // Set language (accepted formats: en or en-US)
+        if (arguments.length < 2) {
             $._i18n.language = arguments[0]; 
             return $._i18n.language;
         }
@@ -4486,12 +4468,6 @@ $.fn.extend({
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;
 		},
-        
-        // Returns true if an object is an array
-        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
-		isArray: function(o) {
-            return Object.prototype.toString.apply(o || false) === '[object Array]';
-		},
 
         isObject: function(o) {
             return (typeof(o) == 'object');
@@ -4751,12 +4727,6 @@ $.fn.extend({
         // Returns true if an object is a RegExp
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;
-		},
-        
-        // Returns true if an object is an array
-        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
-		isArray: function(o) {
-            return Object.prototype.toString.apply(o || false) === '[object Array]';
 		},
 
         isObject: function(o) {
@@ -6949,8 +6919,8 @@ if (window.attachEvent) {
             // return trans or original string
             return trans || str;
         };
-        // Set language
-        if (arguments.length < 2 && arguments[0].length == 2) {
+        // Set language (accepted formats: en or en-US)
+        if (arguments.length < 2) {
             $._i18n.language = arguments[0]; 
             return $._i18n.language;
         }
@@ -8324,12 +8294,6 @@ $.ui.toaster.defaults = {
         // Returns true if an object is a RegExp
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;
-		},
-        
-        // Returns true if an object is an array
-        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
-		isArray: function(o) {
-            return Object.prototype.toString.apply(o || false) === '[object Array]';
 		},
 
         isObject: function(o) {
