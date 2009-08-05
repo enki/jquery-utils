@@ -74,50 +74,33 @@ $.widget('ui.timepickr', {
     },
 
     _setVal: function(val) {
-        if (typeof(val) == 'string') {
-            val = val.split(/:|\s/);
-        }
-        
+        val = val || this._getVal();
         this.element.data('timepickr.initialValue', val);
         this.element.val(this._formatVal(val));
     },
 
     _getVal: function() {
-        var ui = this;
-        var tmp = $.makeArray(ui._dom.menu.find('ol').map(function(){
-            var lis = $(this).find('li');
-            if (lis.filter('.ui-state-hover').get(0)) {
-                return lis.filter('.ui-state-hover').eq(0).text(); 
-            }
-            return lis.eq(0).text();
-        }));
-        return tmp;
+        var ols = this._dom.menu.find('ol');
+        function get(unit) {
+            var u = ols.filter('.'+unit).find('.ui-state-hover:first').text();
+            return u || ols.filter('.'+unit+'li:first').text();
+        }
+        return {
+            h: get('hours'),
+            m: get('minutes'),
+            s: get('seconds'),
+            a: get('prefix'),
+            z: get('suffix'),
+            f: this.options['format'+ this.c],
+            c: this.c
+        };
     },
 
     _formatVal: function(ival) {
         var val = ival || this._getVal();
-
-        var out = [];
-        if (this.options.convention === 24) {
-            if (this.options.prefixVal) {
-                out.push(val[0]);
-                out.push(val.slice(1).join(':'));
-            }
-            else {
-                out.push(val.join(':'));
-            }
-        }
-        
-        if (this.options.convention === 12) {
-            if (this.options.suffixVal) {
-                out.push(val.slice(0, -1).join(':'));
-                out.push(val.slice(-1));
-            }
-            else {
-                out.push(val.join(':'));
-            }
-        }
-        return out.join(' ');
+        val.c = this.options.convention;
+        val.f = val.c === 12 && this.options.format12 || this.options.format24;
+        return (new Time(val)).getTime();
     },
 
     blur: function() {
@@ -126,6 +109,14 @@ $.widget('ui.timepickr', {
 
     focus: function() {
         return this.element.focus();      
+    },
+    show: function() {
+        this._trigger('show');
+        this.element.trigger(this.options.trigger);
+    },
+    hide: function() {
+        this._trigger('hide');
+        this._dom.menu.hide();
     }
 
 });
@@ -137,7 +128,7 @@ $.extend($.ui.timepickr, {
     //getter:      '',
     defaults:    {
         convention:  24, // 24, 12
-        //dropslide:   { trigger: 'focus' },
+        trigger:     'mouseover',
         format12:    '{h:02.d}:{m:02.d} {suffix:s}',
         format24:    '{h:02.d}:{m:02.d}',
         hours:       true,
@@ -153,11 +144,12 @@ $.extend($.ui.timepickr, {
         core:        true,
         minutes:     true,
         seconds:     false,
-        handle:      false,
         val:         false,
         updateLive:  true,
         resetOnBlur: true,
-        keyboardnav: true
+        keyboardnav: true,
+        handle:      false,
+        handleEvent: 'click'
     }
 });
 
@@ -173,13 +165,17 @@ $.ui.plugin.add('timepickr', 'core', {
         }
         
         ui.element
-            .bind('focus', function() {
+            .bind(ui.options.trigger, function() {
                 ui._dom.menu.show();
                 ui._dom.menu.find('ol:first').show();
                 ui._trigger('focus');
+                if (ui.options.trigger != 'focus') {
+                    ui.element.focus();
+                }
+                ui._trigger('focus');
             })
             .bind('blur', function() {
-                ui._dom.menu.hide();
+                ui.hide();
                 ui._trigger('blur');
             });
 
@@ -204,6 +200,9 @@ $.ui.plugin.add('timepickr', 'hours', {
             // prefix is required in 24h mode
             ui._dom.prefix = ui._addRow(ui.options.prefix, false, 'prefix'); 
             ui._dom.hours  = ui._addRow(ui.options.rangeHour24, '{0:0.2d}', 'hours');
+
+            ui._dom.hours.find('li').slice(0, 12).hide();
+
         }
         else {
             ui._dom.hours  = ui._addRow(ui.options.rangeHour12, '{0:0.2d}', 'hours');
@@ -234,7 +233,7 @@ $.ui.plugin.add('timepickr', 'val', {
 
 $.ui.plugin.add('timepickr', 'updateLive', {
     refresh: function(e, ui) {
-        ui.element.val(ui._formatVal());
+        ui._setVal();
     }
 });
 
@@ -246,13 +245,15 @@ $.ui.plugin.add('timepickr', 'resetOnBlur', {
         });
     },
     blur: function(e, ui) {
-        ui.element.val(ui._formatVal(ui.element.data('timepickr.initialValue')));
+        ui._setVal(ui.element.data('timepickr.initialValue'));
     }
 });
 
 $.ui.plugin.add('timepickr', 'handle', {
-    refresh: function(e, ui) {
-        ui.element.val(ui._formatVal());
+    initialized: function(e, ui) {
+        $(ui.options.handle).bind(ui.options.handleEvent + '.timepickr', function(){
+            ui.show();
+        });
     }
 });
 
@@ -261,16 +262,87 @@ $.ui.plugin.add('timepickr', 'keyboardnav', {
         ui.element
             .bind('keydown', function(e) {
                 if ($.keyIs('enter', e)) {
-                    ui._setVal(ui._getVal());
-                    ui._dom.menu.hide();
+                    ui._setVal();
                     ui.blur();
                 }
                 else if ($.keyIs('escape', e)) {
-                    ui._dom.menu.hide();
                     ui.blur();
                 }
             });
     }
 });
+
+var Time = function() { // arguments: h, m, s, c, z, f || time string
+    if (!(this instanceof arguments.callee)) {
+        throw Error("Constructor called as a function");
+    }
+    // arguments as literal object
+    if (arguments.length == 1 && $.isObject(arguments[0])) {
+        this.h = arguments[0].h || 0;
+        this.m = arguments[0].m || 0;
+        this.s = arguments[0].s || 0;
+        this.c = arguments[0].c && ($.inArray(arguments[0].c, [12, 24]) >= 0) && arguments[0].c || 24;
+        this.f = arguments[0].f || ((this.c == 12) && '{h:02.d}:{m:02.d} {z:02.d}' || '{h:02.d}:{m:02.d}');
+        this.z = arguments[0].z || 'am';
+    }
+    // arguments as string
+    else if (arguments.length < 4 && $.isString(arguments[1])) {
+        this.c = arguments[2] && ($.inArray(arguments[0], [12, 24]) >= 0) && arguments[0] || 24;
+        this.f = arguments[3] || ((this.c == 12) && '{h:02.d}:{m:02.d} {z:02.d}' || '{h:02.d}:{m:02.d}');
+        this.z = arguments[4] || 'am';
+        
+        this.h = arguments[1] || 0; // parse
+        this.m = arguments[1] || 0; // parse
+        this.s = arguments[1] || 0; // parse
+    }
+    // no arguments (now)
+    else if (arguments.length === 0) {
+        // now
+    }
+    // standards arguments
+    else {
+        this.h = arguments[0] || 0;
+        this.m = arguments[1] || 0;
+        this.s = arguments[2] || 0;
+        this.c = arguments[3] && ($.inArray(arguments[3], [12, 24]) >= 0) && arguments[3] || 24;
+        this.f = this.f || ((this.c == 12) && '{h:02.d}:{m:02.d} {z:02.d}' || '{h:02.d}:{m:02.d}');
+        this.z = 'am';
+    }
+    return this;
+};
+
+Time.prototype.get        = function(p, f, u)    { return u && this.h || $.format(f, this.h); };
+Time.prototype.getHours   = function(unformated) { return this.get('h', '{0:02.d}', unformated); };
+Time.prototype.getMinutes = function(unformated) { return this.get('m', '{0:02.d}', unformated); };
+Time.prototype.getSeconds = function(unformated) { return this.get('s', '{0:02.d}', unformated); };
+Time.prototype.setFormat  = function(format)     { return this.f = format; };
+Time.prototype.getObject  = function()           { return { h: this.h, m: this.m, s: this.s, c: this.c, f: this.f, z: this.z }; };
+Time.prototype.getTime    = function()           { return $.format(this.f, {h: this.h, m: this.m, z: this.z}); };
+Time.prototype.parse      = function(str) { 
+    // 12h formats
+    if (this.c === 12) {
+        // Supported formats: (can't find any *official* standards for 12h..)
+        //  - [hh]:[mm]:[ss] [zz] | [hh]:[mm] [zz] | [hh] [zz] 
+        //  - [hh]:[mm]:[ss] [z.z.] | [hh]:[mm] [z.z.] | [hh] [z.z.]
+        this.tokens = str.split(/\s|:/);    
+        this.h = this.tokens[0] || 0;
+        this.m = this.tokens[1] || 0;
+        this.s = this.tokens[2] || 0;
+        this.z = this.tokens[3] || '';
+        return this.getObject();
+    }
+    // 24h formats
+    else { 
+        // Supported formats:
+        //  - ISO 8601: [hh][mm][ss] | [hh][mm] | [hh]  
+        //  - ISO 8601 extended: [hh]:[mm]:[ss] | [hh]:[mm] | [hh]
+        this.tokens = /:/.test(str) && str.split(/:/) || str.match(/[0-9]{2}/g);
+        this.h = this.tokens[0] || 0;
+        this.m = this.tokens[1] || 0;
+        this.s = this.tokens[2] || 0;
+        this.z = this.tokens[3] || '';
+        return this.getObject();
+    }
+};
 
 })(jQuery);
