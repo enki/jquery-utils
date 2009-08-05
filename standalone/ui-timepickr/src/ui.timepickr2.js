@@ -30,7 +30,9 @@ $.widget('ui.timepickr', {
             menu: $.tpl('timepickr.menu'),
             row:  $.tpl('timepickr.menu')
         };
+        console.log('WHATTHESHIT', this.options.rangeHour24[0]);
         this._trigger('initialize');
+        console.log('WHATTHESHIT', this.options.rangeHour24[0]);
         this._trigger('initialized');
     },
 
@@ -137,7 +139,7 @@ $.extend($.ui.timepickr, {
         prefixVal:   false,
         suffixVal:   true,
         rangeHour12: $.range(1, 13),
-        rangeHour24: $.range(0, 24),
+        rangeHour24: [$.range(0, 5), $.range(6, 10)],
         rangeMin:    $.range(0, 60, 15),
         rangeSec:    $.range(0, 60, 15),
         // plugins
@@ -155,6 +157,7 @@ $.extend($.ui.timepickr, {
 
 $.ui.plugin.add('timepickr', 'core', {
     initialized: function(e, ui) {
+        console.log('TEST', ui.options.rangeHour24[0]);
         var menu = ui._dom.menu;
         var pos  = ui.element.position();
 
@@ -199,9 +202,37 @@ $.ui.plugin.add('timepickr', 'hours', {
         if (ui.options.convention === 24) {
             // prefix is required in 24h mode
             ui._dom.prefix = ui._addRow(ui.options.prefix, false, 'prefix'); 
-            ui._dom.hours  = ui._addRow(ui.options.rangeHour24, '{0:0.2d}', 'hours');
 
-            ui._dom.hours.find('li').slice(0, 12).hide();
+            // split-range
+            if ($.isArray(ui.options.rangeHour24[0])) {
+                var range = $.merge([], ui.options.rangeHour24[0], ui.options.rangeHour24[1]);
+                ui._dom.hours = ui._addRow(range, '{0:0.2d}', 'hours');
+                ui._dom.hours.find('li').slice(ui.options.rangeHour24[0].length, -1).hide();
+                var lis   = ui._dom.hours.find('li'); 
+
+                var show = [
+                    function() {
+                        lis.slice(ui.options.rangeHour24[1].length, -1).hide();
+                        lis.slice(0, ui.options.rangeHour24[0].length - 1).show();
+                    },
+                    function() {
+                        lis.slice(ui.options.rangeHour24[0].length, -1).hide();
+                        lis.slice(ui.options.rangeHour24[1].length, -1).show();
+                    }
+                ];
+
+                ui._dom.prefix.find('li').bind('mouseover.timepickr', function(){
+                    var index = ui._dom.menu.find('.prefix li').index(this);
+                    show[index].call();
+                });
+            }
+            else {
+                ui._dom.hours = ui._addRow(ui.options.rangeHour24, '{0:0.2d}', 'hours');
+                ui._dom.hours.find('li').slice(12, -1).hide();
+            }
+
+
+
 
         }
         else {
