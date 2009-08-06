@@ -80,6 +80,9 @@ $.widget('ui.timepickr', {
         val = val || this._getVal();
         this.element.data('timepickr.initialValue', val);
         this.element.val(this._formatVal(val));
+        if(this._dom.menu.is(':hidden')) {
+            this.element.trigger('change');
+        }
     },
 
     _getVal: function() {
