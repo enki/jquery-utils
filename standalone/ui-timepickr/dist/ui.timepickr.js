@@ -1,5 +1,5 @@
 /*
- * jQuery UI 0.6.6
+ * jQuery UI 0.7.0a
  *
  * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -14,7 +14,7 @@ var _remove = $.fn.remove,
 
 //Helper functions and ui object
 $.ui = {
-	version: "0.6.6",
+	version: "0.7.0a",
 
 	// $.ui.plugin is deprecated.  Use the proxy pattern instead.
 	plugin: {
@@ -518,7 +518,7 @@ $.ui.mouse.defaults = {
 
 })(jQuery);
 /*
-  jQuery utils - 0.6.6
+  jQuery utils - 0.7.0a
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -1069,139 +1069,7 @@ $.ui.mouse.defaults = {
     $.extend(strings);
 })(jQuery);
 /*
-  jQuery ui.dropslide - 0.4
-  http://code.google.com/p/jquery-utils/
-
-  (c) Maxime Haineault <haineault@gmail.com> 
-  http://haineault.com
-
-  MIT License (http://www.opensource.org/licenses/mit-license.php
-
-*/
-
-(function($) {
-    $.widget('ui.dropslide', $.extend({}, $.ui.mouse, {
-        getter: 'showLevel showNextLevel getSelection',
-        _init: function() {
-            var widget   = this;
-            this.wrapper = this.element.next();
-
-            this.element.bind(this.options.trigger +'.dropslide', function(){
-                widget.show();
-            });
-            this.wrapper
-                .data('dropslide', this)
-                .css({width:this.options.width})
-                .find('li, li ol li')
-                    .bind('mouseover.dropslide', function(e){
-                        $(this).siblings().removeClass('hover')
-                            .find('ol').hide().end()
-                            .find('span').removeClass('ui-state-hover').end();
-                        $(this).find('ol').show().end().addClass('hover').children(0).addClass('ui-state-hover');
-                        widget.showNextLevel();
-                    })
-                   .bind('click.dropslide', function(e){
-                        $(widget.element).triggerHandler('dropslideclick', [e, widget], widget.options.click); 
-                        $(widget.element).triggerHandler('select', [e, widget], widget.options.select); 
-                    }).end()
-                .find('ol')
-                    .bind('mousemove.dropslide', function(e){
-                       return widget._redraw();
-                    })
-                   .addClass('ui-widget ui-helper-clearfix ui-helper-reset')
-                   .hide().end()
-                .find('span').addClass('ui-state-default ui-corner-all');
-
-            this._redraw();
-        },
-
-        // show specified level, id is the DOM position
-        showLevel: function(id) {
-            var ols = this.wrapper.find('ol');
-            var ds  = this;
-            if (id == 0) {            
-                ols.eq(0).css('left', this.element.position().left);
-                this.wrapper.css('top', ds.element.position().top + ds.element.height() + ds.options.top);
-                this.wrapper.css('z-index', 1000);
-            }
-            setTimeout(function() {
-                ols.removeClass('active').eq(id).addClass('active').show(ds.options.animSpeed);
-            }, ds.options.showDelay);
-        },
-
-        // guess what it does
-        showNextLevel: function() {
-            this.wrapper.find('ol.active')
-                .removeClass('active')
-                .next('ol').addClass('active').show(this.options.animSpeed);
-        },
-
-        getSelection: function(level) {
-            return level 
-                    && this.wrapper.find('ol').eq(level).find('li span.ui-state-hover')
-                    || $.makeArray(this.wrapper.find('span.ui-state-hover').map($.iterators.getText));
-        },
-
-        // essentially reposition each ol
-        _redraw: function() {
-            var prevLI ,prevOL, nextOL, pos = false;
-            var offset = this.element.position().left + this.options.left;
-            var ols    = $(this.wrapper).find('ol');
-
-            $(this.wrapper).css({
-                top: this.element.position().top + this.element.height() + this.options.top,
-                left: this.element.position().left
-            });
-            
-            // reposition each ol
-            ols.each(function(i) {
-                prevOL = $(this).prevAll('ol:visible:first');
-                if (prevOL.get(0)) {
-                    prevLI = prevOL.find('li.hover').get(0) && prevOL.find('li.hover') || prevOL.find('li:first');
-                    $(this).css('margin-left', prevLI.position().left);
-                }
-            });
-        },
-
-        // show level 0 (shortcut)
-        show: function(e) {
-            this.showLevel(0);
-        },
-
-        // hide all levels
-        hide: function() {
-            var widget = this;
-            setTimeout(function() {
-                widget.wrapper.find('ol').hide();
-            }, widget.options.hideDelay);
-        },
-
-        activate: function(e) {
-            this.element.focus();
-            this.show(this.options.animSpeed);
-        },
-                  
-        destroy: function(e) {
-            this.wrapper.remove();
-        }
-    }));
-
-    $.ui.dropslide.defaults = {
-        // options
-        tree:      false,
-        trigger:   'mouseover',
-        top:       6,
-        left:      0,
-        showDelay: 0,
-        hideDelay: 0,
-        animSpeed: 0,
-        // events
-        select:  function() {},
-        click:   function(e, ui) { ui.hide(); }
-    };
-})(jQuery);
-/*
-  jQuery ui.timepickr - 0.6.6
+  jQuery ui.timepickr - 0.7.0a
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -1216,209 +1084,376 @@ $.ui.mouse.defaults = {
   - jquery.utils.js
   - jquery.strings.js
   - jquery.ui.js
-  - ui.dropslide.js
   
 */
 
 (function($) {
-    $.tpl('timepickr.menu',   '<span class="ui-helper-reset ui-dropslide ui-timepickr ui-widget" />');
-    $.tpl('timepickr.row',    '<ol class="ui-timepickr" />');
-    $.tpl('timepickr.button', '<li class="{className:s}"><span>{label:s}</span></li>');
 
-    $.widget('ui.timepickr', {
-        _init: function() {
-            var ui = this;
-            var menu = ui._buildMenu();
-            var element = ui.element;
-            element.data('timepickr.initialValue', element.val());
-            menu.insertAfter(ui.element);
-            element
-                .addClass('ui-timepickr')
-                .dropslide(ui.options.dropslide)
-                .bind('select', ui.select);
-            
-            element.blur(function(e) {
-                $(this).dropslide('hide');
-                if (ui.options.resetOnBlur) {
-                    $(this).val($(this).data('timepickr.initialValue'));
+$.tpl('timepickr.menu',   '<div class="ui-helper-reset ui-timepickr ui-widget" />');
+$.tpl('timepickr.row',    '<ol class="ui-timepickr-row ui-helper-clearfix" />');
+$.tpl('timepickr.button', '<li class="{className:s}"><span class="ui-state-default">{label:s}</span></li>');
+
+$.widget('ui.timepickr', {
+    plugins: {},
+    _init: function() {
+        this._dom = {
+            menu: $.tpl('timepickr.menu'),
+            row:  $.tpl('timepickr.menu')
+        };
+        this._trigger('initialize');
+        this._trigger('initialized');
+    },
+
+    _trigger: function(type, e, ui) {
+        var ui = ui || this;
+        $.ui.plugin.call(this, type, [e, ui]);
+        return $.widget.prototype._trigger.call(this, type, e, ui);
+    },
+
+    _createButton: function(i, format, className) {
+        var o  = format && $.format(format, i) || i;
+        var cn = className && 'ui-timepickr-button '+ className || 'ui-timepickr-button';
+        return $.tpl('timepickr.button', {className: cn, label: o}).data('id', i)
+                .bind('mouseover', function(){
+                    $(this).siblings().find('span')
+                        .removeClass('ui-state-hover').end().end()
+                        .find('span').addClass('ui-state-hover');
+                });
+
+    },
+
+    _addRow: function(range, format, className, insertAfter) {
+        var ui  = this;
+        var btn = false;
+        var row = $.tpl('timepickr.row').bind('mouseover', function(){
+            $(this).next().show();
+        });
+        $.each(range, function(idx, val){
+            ui._createButton(val, format || false).appendTo(row);
+        });
+        if (className) {
+            $(row).addClass(className);
+        }
+        if (this.options.corners) {
+             row.find('span').addClass('ui-corner-'+ this.options.corners);
+        }
+        if (insertAfter) {
+            row.insertAfter(insertAfter);
+        }
+        else {
+            ui._dom.menu.append(row);
+        }
+        return row;
+    },
+
+    _setVal: function(val) {
+        val = val || this._getVal();
+        this.element.data('timepickr.initialValue', val);
+        this.element.val(this._formatVal(val));
+        if(this._dom.menu.is(':hidden')) {
+            this.element.trigger('change');
+        }
+    },
+
+    _getVal: function() {
+        var ols = this._dom.menu.find('ol');
+        function get(unit) {
+            var u = ols.filter('.'+unit).find('.ui-state-hover:first').text();
+            return u || ols.filter('.'+unit+'li:first span').text();
+        }
+        return {
+            h: get('hours'),
+            m: get('minutes'),
+            s: get('seconds'),
+            a: get('prefix'),
+            z: get('suffix'),
+            f: this.options['format'+ this.c],
+            c: this.c
+        };
+    },
+
+    _formatVal: function(ival) {
+        var val = ival || this._getVal();
+        val.c = this.options.convention;
+        val.f = val.c === 12 && this.options.format12 || this.options.format24;
+        return (new Time(val)).getTime();
+    },
+
+    blur: function() {
+        return this.element.blur();      
+    },
+
+    focus: function() {
+        return this.element.focus();      
+    },
+    show: function() {
+        this._trigger('show');
+        this.element.trigger(this.options.trigger);
+    },
+    hide: function() {
+        this._trigger('hide');
+        this._dom.menu.hide();
+    }
+
+});
+
+// These properties are shared accross every instances of timepickr 
+$.extend($.ui.timepickr, {
+    version:     '0.7.0a',
+    //eventPrefix: '',
+    //getter:      '',
+    defaults:    {
+        convention:  24, // 24, 12
+        trigger:     'mouseover',
+        format12:    '{h:02.d}:{m:02.d} {suffix:s}',
+        format24:    '{h:02.d}:{m:02.d}',
+        hours:       true,
+        prefix:      ['am', 'pm'],
+        suffix:      ['am', 'pm'],
+        prefixVal:   false,
+        suffixVal:   true,
+        rangeHour12: $.range(1, 13),
+        rangeHour24: [$.range(0, 12), $.range(12, 24)],
+        rangeMin:    $.range(0, 60, 15),
+        rangeSec:    $.range(0, 60, 15),
+        corners:     'all',
+        // plugins
+        core:        true,
+        minutes:     true,
+        seconds:     false,
+        val:         false,
+        updateLive:  true,
+        resetOnBlur: true,
+        keyboardnav: true,
+        handle:      false,
+        handleEvent: 'click'
+    }
+});
+
+$.ui.plugin.add('timepickr', 'core', {
+    initialized: function(e, ui) {
+        var menu = ui._dom.menu;
+        var pos  = ui.element.position();
+
+        menu.insertAfter(ui.element).css('left', pos.left);
+
+        if (!$.boxModel) { // IE alignement fix
+            menu.css('margin-top', ui.element.height() + 8);
+        }
+        
+        ui.element
+            .bind(ui.options.trigger, function() {
+                ui._dom.menu.show();
+                ui._dom.menu.find('ol:first').show();
+                ui._trigger('focus');
+                if (ui.options.trigger != 'focus') {
+                    ui.element.focus();
+                }
+                ui._trigger('focus');
+            })
+            .bind('blur', function() {
+                ui.hide();
+                ui._trigger('blur');
+            });
+
+        menu.find('li').bind('mouseover.timepickr', function() {
+            ui._trigger('refresh');
+        });
+    },
+    refresh: function(e, ui) {
+        // Realign each menu layers
+        ui._dom.menu.find('ol').each(function(){
+            var p = $(this).prev('ol');
+            try { // .. to not fuckup IE
+                $(this).css('left', p.position().left + p.find('.ui-state-hover').position().left);
+            } catch(e) {};
+        });
+    }
+});
+
+$.ui.plugin.add('timepickr', 'hours', {
+    initialize: function(e, ui) {
+        if (ui.options.convention === 24) {
+            // prefix is required in 24h mode
+            ui._dom.prefix = ui._addRow(ui.options.prefix, false, 'prefix'); 
+
+            // split-range
+            if ($.isArray(ui.options.rangeHour24[0])) {
+                var range = [];
+                $.merge(range, ui.options.rangeHour24[0]);
+                $.merge(range, ui.options.rangeHour24[1]);
+                ui._dom.hours = ui._addRow(range, '{0:0.2d}', 'hours');
+                ui._dom.hours.find('li').slice(ui.options.rangeHour24[0].length, -1).hide();
+                var lis   = ui._dom.hours.find('li'); 
+
+                var show = [
+                    function() {
+                        lis.slice(ui.options.rangeHour24[0].length).hide().end()
+                           .slice(0, ui.options.rangeHour24[0].length).show()
+                           .filter(':visible:first').trigger('mouseover');
+
+                    },
+                    function() {
+                        lis.slice(0, ui.options.rangeHour24[0].length).hide().end()
+                           .slice(ui.options.rangeHour24[0].length).show()
+                           .filter(':visible:first').trigger('mouseover');
+                    }
+                ];
+
+                ui._dom.prefix.find('li').bind('mouseover.timepickr', function(){
+                    var index = ui._dom.menu.find('.prefix li').index(this);
+                    show[index].call();
+                });
+            }
+            else {
+                ui._dom.hours = ui._addRow(ui.options.rangeHour24, '{0:0.2d}', 'hours');
+                ui._dom.hours.find('li').slice(12, -1).hide();
+            }
+        }
+        else {
+            ui._dom.hours  = ui._addRow(ui.options.rangeHour12, '{0:0.2d}', 'hours');
+            // suffix is required in 12h mode
+            ui._dom.suffix = ui._addRow(ui.options.suffix, false, 'suffix'); 
+        }
+    }});
+
+$.ui.plugin.add('timepickr', 'minutes', {
+    initialize: function(e, ui) {
+        var p = ui._dom.hours && ui._dom.hours || false;
+        ui._dom.minutes = ui._addRow(ui.options.rangeMin, '{0:0.2d}', 'minutes', p);
+    }
+});
+
+$.ui.plugin.add('timepickr', 'seconds', {
+    initialize: function(e, ui) {
+        var p = ui._dom.minutes && ui._dom.minutes || false;
+        ui._dom.seconds = ui._addRow(ui.options.rangeSec, '{0:0.2d}', 'seconds', p);
+    }
+});
+
+$.ui.plugin.add('timepickr', 'val', {
+    initialized: function(e, ui) {
+        ui._setVal(ui.options.val);
+    }
+});
+
+$.ui.plugin.add('timepickr', 'updateLive', {
+    refresh: function(e, ui) {
+        ui._setVal();
+    }
+});
+
+$.ui.plugin.add('timepickr', 'resetOnBlur', {
+    initialized: function(e, ui) {
+        ui.element.data('timepickr.initialValue', ui._getVal());
+        ui._dom.menu.find('li > span').bind('mousedown.timepickr', function(){
+            ui.element.data('timepickr.initialValue', ui._getVal()); 
+        });
+    },
+    blur: function(e, ui) {
+        ui._setVal(ui.element.data('timepickr.initialValue'));
+    }
+});
+
+$.ui.plugin.add('timepickr', 'handle', {
+    initialized: function(e, ui) {
+        $(ui.options.handle).bind(ui.options.handleEvent + '.timepickr', function(){
+            ui.show();
+        });
+    }
+});
+
+$.ui.plugin.add('timepickr', 'keyboardnav', {
+    initialized: function(e, ui) {
+        ui.element
+            .bind('keydown', function(e) {
+                if ($.keyIs('enter', e)) {
+                    ui._setVal();
+                    ui.blur();
+                }
+                else if ($.keyIs('escape', e)) {
+                    ui.blur();
                 }
             });
+    }
+});
 
-            if (ui.options.val) {
-                element.val(this.options.val);
-            }
-
-            if (ui.options.handle) {
-                $(this.options.handle).click(function() {
-                    $(element).dropslide('show');
-                });
-            }
-
-            if (ui.options.resetOnBlur) {
-                menu.find('li > span').bind('mousedown.timepickr', function(){
-                    $(element).data('timepickr.initialValue', $(element).val()); 
-                });
-            }
-            if (ui.options.updateLive) {
-                menu.find('li').bind('mouseover.timepickr', function() {
-                    $(element).timepickr('update'); 
-                });
-            }
-            var hrs = menu.find('ol:eq(1)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
-            var min = menu.find('ol:eq(2)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
-            var sec = menu.find('ol:eq(3)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
-
-            if (this.options.convention === 24) {
-                var day        = menu.find('ol:eq(0) li:eq(0)');
-                var night      = menu.find('ol:eq(0) li:eq(1)');
-                var dayHours   = hrs.find('li').slice(0, 12);
-                var nightHours = hrs.find('li').slice(12, 24);
-                var index      = 0;
-                var selectHr   = function(id) {
-                    hrs.find('li').removeClass('hover');
-                    hrs.find('span').removeClass('ui-state-hover');
-                    hrs.find('li').eq(id).addClass('hover').find('span').addClass('ui-state-hover')
-                };
-
-                day.mouseover(function() {
-                    nightHours.hide();
-                    dayHours.show(0);
-                    index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
-                    selectHr(index > 11 && index - 12 || index);
-                    element.dropslide('redraw');
-                });
-
-                night.mouseover(function() {
-                    dayHours.hide();
-                    nightHours.show(0);
-                    index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
-                    selectHr(index < 12 && index + 12 || index);
-                    element.dropslide('redraw');
-                });
-            }
-            element.dropslide('redraw');
-            element.data('timepickr', this);
-        },
-
-        update: function() {
-            var frmt = this.options.convention === 24 && 'format24' || 'format12';
-            var val = {
-                h: this.getValue('hour'),
-                m: this.getValue('minute'),
-                s: this.getValue('second'),
-                prefix: this.getValue('prefix'),
-                suffix: this.getValue('suffix')
-            };
-            var o = $.format(this.options[frmt], val);
-
-            $(this.element).val(o);
-        },
-
-        select: function(e) {
-            var dropslide = $(this).data('dropslide');
-            $(dropslide.element).timepickr('update');
-            e.stopPropagation();
-        },
-
-        getHour: function() {
-            return this.getValue('hour');
-        },
-
-        getMinute: function() {
-            return this.getValue('minute');
-        },
-
-        getSecond: function() {
-            return this.getValue('second');
-        },
-
-        getValue: function(type) {
-            return $('.ui-timepickr.'+ type +'.hover', this.element.next()).text();
-        },
+var Time = function() { // arguments: h, m, s, c, z, f || time string
+    if (!(this instanceof arguments.callee)) {
+        throw Error("Constructor called as a function");
+    }
+    // arguments as literal object
+    if (arguments.length == 1 && $.isObject(arguments[0])) {
+        this.h = arguments[0].h || 0;
+        this.m = arguments[0].m || 0;
+        this.s = arguments[0].s || 0;
+        this.c = arguments[0].c && ($.inArray(arguments[0].c, [12, 24]) >= 0) && arguments[0].c || 24;
+        this.f = arguments[0].f || ((this.c == 12) && '{h:02.d}:{m:02.d} {z:02.d}' || '{h:02.d}:{m:02.d}');
+        this.z = arguments[0].z || 'am';
+    }
+    // arguments as string
+    else if (arguments.length < 4 && $.isString(arguments[1])) {
+        this.c = arguments[2] && ($.inArray(arguments[0], [12, 24]) >= 0) && arguments[0] || 24;
+        this.f = arguments[3] || ((this.c == 12) && '{h:02.d}:{m:02.d} {z:02.d}' || '{h:02.d}:{m:02.d}');
+        this.z = arguments[4] || 'am';
         
-        activate: function() {
-            this.element.dropslide('activate');
-        },
+        this.h = arguments[1] || 0; // parse
+        this.m = arguments[1] || 0; // parse
+        this.s = arguments[1] || 0; // parse
+    }
+    // no arguments (now)
+    else if (arguments.length === 0) {
+        // now
+    }
+    // standards arguments
+    else {
+        this.h = arguments[0] || 0;
+        this.m = arguments[1] || 0;
+        this.s = arguments[2] || 0;
+        this.c = arguments[3] && ($.inArray(arguments[3], [12, 24]) >= 0) && arguments[3] || 24;
+        this.f = this.f || ((this.c == 12) && '{h:02.d}:{m:02.d} {z:02.d}' || '{h:02.d}:{m:02.d}');
+        this.z = 'am';
+    }
+    return this;
+};
 
-        destroy: function() {
-            this.element.dropslide('destroy');
-        },
-        
-        /* UI private methods */
-        
-        _createButton: function(i, format, className) {
-            var o  = format && $.format(format, i) || i;
-            var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
-            return $.tpl('timepickr.button', {className: cn, label: o}).data('id', i);
-        },
-
-        _createRow: function(range, format, className) {
-            var row = $.tpl('timepickr.row');
-            var button = this._createButton;
-            // Thanks to Christoph Müller-Spengler for the bug report
-            $.each(range, function(idx, val){
-                row.append(button(val, format || false, className || false));
-            });
-            return row;
-        },
-        
-        _getRanges12: function() {
-            var o = [], opt = this.options;
-            if (opt.hours)   { o.push(this._createRow($.range(1, 13), '{0:0.2d}', 'hour')); }
-            if (opt.minutes) { o.push(this._createRow(opt.rangeMin,   '{0:0.2d}', 'minute')); }
-            if (opt.seconds) { o.push(this._createRow(opt.rangeSec,   '{0:0.2d}', 'second')); }
-            if (opt.suffix)  { o.push(this._createRow(opt.suffix,     false,      'suffix')); }
-            return o;
-        },
-
-        _getRanges24: function() {
-            var o = [], opt = this.options;
-            o.push(this._createRow(opt.prefix, false, 'prefix')); // prefix is required in 24h mode
-            if (opt.hours)   { o.push(this._createRow($.range(0, 24),   '{0:0.2d}', 'hour')); }
-            if (opt.minutes) { o.push(this._createRow(opt.rangeMin, '{0:0.2d}', 'minute')); }
-            if (opt.seconds) { o.push(this._createRow(opt.rangeSec, '{0:0.2d}', 'second')); }
-            return o;
-        },
-
-        _buildMenu: function() {
-            var menu   = $.tpl('timepickr.menu');
-            var ranges = this.options.convention === 24 
-                         && this._getRanges24() || this._getRanges12();
-
-            $.each(ranges, function(idx, val){
-                menu.append(val);
-            });
-            return menu;
-        }
-    });
-
-    // These properties are shared accross every instances of timepickr 
-    $.extend($.ui.timepickr, {
-        version:     '0.6.6',
-        eventPrefix: '',
-        getter:      '',
-        defaults:    {
-            convention:  24, // 24, 12
-            dropslide:   { trigger: 'focus' },
-            format12:    '{h:02.d}:{m:02.d} {suffix:s}',
-            format24:    '{h:02.d}:{m:02.d}',
-            handle:      false,
-            hours:       true,
-            minutes:     true,
-            seconds:     false,
-            prefix:      ['am', 'pm'],
-            suffix:      ['am', 'pm'],
-            rangeMin:    $.range(0, 60, 15),
-            rangeSec:    $.range(0, 60, 15),
-            updateLive:  true,
-            resetOnBlur: true,
-            val:         false
-        }
-    });
+Time.prototype.get        = function(p, f, u)    { return u && this.h || $.format(f, this.h); };
+Time.prototype.getHours   = function(unformated) { return this.get('h', '{0:02.d}', unformated); };
+Time.prototype.getMinutes = function(unformated) { return this.get('m', '{0:02.d}', unformated); };
+Time.prototype.getSeconds = function(unformated) { return this.get('s', '{0:02.d}', unformated); };
+Time.prototype.setFormat  = function(format)     { return this.f = format; };
+Time.prototype.getObject  = function()           { return { h: this.h, m: this.m, s: this.s, c: this.c, f: this.f, z: this.z }; };
+Time.prototype.getTime    = function()           { return $.format(this.f, {h: this.h, m: this.m, z: this.z}); };
+Time.prototype.parse      = function(str) { 
+    // 12h formats
+    if (this.c === 12) {
+        // Supported formats: (can't find any *official* standards for 12h..)
+        //  - [hh]:[mm]:[ss] [zz] | [hh]:[mm] [zz] | [hh] [zz] 
+        //  - [hh]:[mm]:[ss] [z.z.] | [hh]:[mm] [z.z.] | [hh] [z.z.]
+        this.tokens = str.split(/\s|:/);    
+        this.h = this.tokens[0] || 0;
+        this.m = this.tokens[1] || 0;
+        this.s = this.tokens[2] || 0;
+        this.z = this.tokens[3] || '';
+        return this.getObject();
+    }
+    // 24h formats
+    else { 
+        // Supported formats:
+        //  - ISO 8601: [hh][mm][ss] | [hh][mm] | [hh]  
+        //  - ISO 8601 extended: [hh]:[mm]:[ss] | [hh]:[mm] | [hh]
+        this.tokens = /:/.test(str) && str.split(/:/) || str.match(/[0-9]{2}/g);
+        this.h = this.tokens[0] || 0;
+        this.m = this.tokens[1] || 0;
+        this.s = this.tokens[2] || 0;
+        this.z = this.tokens[3] || '';
+        return this.getObject();
+    }
+};
 
 })(jQuery);
 /*
-  jQuery utils - 0.6.6
+  jQuery utils - 0.7.0a
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -1969,139 +2004,7 @@ $.ui.mouse.defaults = {
     $.extend(strings);
 })(jQuery);
 /*
-  jQuery ui.dropslide - 0.4
-  http://code.google.com/p/jquery-utils/
-
-  (c) Maxime Haineault <haineault@gmail.com> 
-  http://haineault.com
-
-  MIT License (http://www.opensource.org/licenses/mit-license.php
-
-*/
-
-(function($) {
-    $.widget('ui.dropslide', $.extend({}, $.ui.mouse, {
-        getter: 'showLevel showNextLevel getSelection',
-        _init: function() {
-            var widget   = this;
-            this.wrapper = this.element.next();
-
-            this.element.bind(this.options.trigger +'.dropslide', function(){
-                widget.show();
-            });
-            this.wrapper
-                .data('dropslide', this)
-                .css({width:this.options.width})
-                .find('li, li ol li')
-                    .bind('mouseover.dropslide', function(e){
-                        $(this).siblings().removeClass('hover')
-                            .find('ol').hide().end()
-                            .find('span').removeClass('ui-state-hover').end();
-                        $(this).find('ol').show().end().addClass('hover').children(0).addClass('ui-state-hover');
-                        widget.showNextLevel();
-                    })
-                   .bind('click.dropslide', function(e){
-                        $(widget.element).triggerHandler('dropslideclick', [e, widget], widget.options.click); 
-                        $(widget.element).triggerHandler('select', [e, widget], widget.options.select); 
-                    }).end()
-                .find('ol')
-                    .bind('mousemove.dropslide', function(e){
-                       return widget._redraw();
-                    })
-                   .addClass('ui-widget ui-helper-clearfix ui-helper-reset')
-                   .hide().end()
-                .find('span').addClass('ui-state-default ui-corner-all');
-
-            this._redraw();
-        },
-
-        // show specified level, id is the DOM position
-        showLevel: function(id) {
-            var ols = this.wrapper.find('ol');
-            var ds  = this;
-            if (id == 0) {            
-                ols.eq(0).css('left', this.element.position().left);
-                this.wrapper.css('top', ds.element.position().top + ds.element.height() + ds.options.top);
-                this.wrapper.css('z-index', 1000);
-            }
-            setTimeout(function() {
-                ols.removeClass('active').eq(id).addClass('active').show(ds.options.animSpeed);
-            }, ds.options.showDelay);
-        },
-
-        // guess what it does
-        showNextLevel: function() {
-            this.wrapper.find('ol.active')
-                .removeClass('active')
-                .next('ol').addClass('active').show(this.options.animSpeed);
-        },
-
-        getSelection: function(level) {
-            return level 
-                    && this.wrapper.find('ol').eq(level).find('li span.ui-state-hover')
-                    || $.makeArray(this.wrapper.find('span.ui-state-hover').map($.iterators.getText));
-        },
-
-        // essentially reposition each ol
-        _redraw: function() {
-            var prevLI ,prevOL, nextOL, pos = false;
-            var offset = this.element.position().left + this.options.left;
-            var ols    = $(this.wrapper).find('ol');
-
-            $(this.wrapper).css({
-                top: this.element.position().top + this.element.height() + this.options.top,
-                left: this.element.position().left
-            });
-            
-            // reposition each ol
-            ols.each(function(i) {
-                prevOL = $(this).prevAll('ol:visible:first');
-                if (prevOL.get(0)) {
-                    prevLI = prevOL.find('li.hover').get(0) && prevOL.find('li.hover') || prevOL.find('li:first');
-                    $(this).css('margin-left', prevLI.position().left);
-                }
-            });
-        },
-
-        // show level 0 (shortcut)
-        show: function(e) {
-            this.showLevel(0);
-        },
-
-        // hide all levels
-        hide: function() {
-            var widget = this;
-            setTimeout(function() {
-                widget.wrapper.find('ol').hide();
-            }, widget.options.hideDelay);
-        },
-
-        activate: function(e) {
-            this.element.focus();
-            this.show(this.options.animSpeed);
-        },
-                  
-        destroy: function(e) {
-            this.wrapper.remove();
-        }
-    }));
-
-    $.ui.dropslide.defaults = {
-        // options
-        tree:      false,
-        trigger:   'mouseover',
-        top:       6,
-        left:      0,
-        showDelay: 0,
-        hideDelay: 0,
-        animSpeed: 0,
-        // events
-        select:  function() {},
-        click:   function(e, ui) { ui.hide(); }
-    };
-})(jQuery);
-/*
-  jQuery ui.timepickr - 0.6.6
+  jQuery ui.timepickr - 0.7.0a
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -2116,204 +2019,371 @@ $.ui.mouse.defaults = {
   - jquery.utils.js
   - jquery.strings.js
   - jquery.ui.js
-  - ui.dropslide.js
   
 */
 
 (function($) {
-    $.tpl('timepickr.menu',   '<span class="ui-helper-reset ui-dropslide ui-timepickr ui-widget" />');
-    $.tpl('timepickr.row',    '<ol class="ui-timepickr" />');
-    $.tpl('timepickr.button', '<li class="{className:s}"><span>{label:s}</span></li>');
 
-    $.widget('ui.timepickr', {
-        _init: function() {
-            var ui = this;
-            var menu = ui._buildMenu();
-            var element = ui.element;
-            element.data('timepickr.initialValue', element.val());
-            menu.insertAfter(ui.element);
-            element
-                .addClass('ui-timepickr')
-                .dropslide(ui.options.dropslide)
-                .bind('select', ui.select);
-            
-            element.blur(function(e) {
-                $(this).dropslide('hide');
-                if (ui.options.resetOnBlur) {
-                    $(this).val($(this).data('timepickr.initialValue'));
+$.tpl('timepickr.menu',   '<div class="ui-helper-reset ui-timepickr ui-widget" />');
+$.tpl('timepickr.row',    '<ol class="ui-timepickr-row ui-helper-clearfix" />');
+$.tpl('timepickr.button', '<li class="{className:s}"><span class="ui-state-default">{label:s}</span></li>');
+
+$.widget('ui.timepickr', {
+    plugins: {},
+    _init: function() {
+        this._dom = {
+            menu: $.tpl('timepickr.menu'),
+            row:  $.tpl('timepickr.menu')
+        };
+        this._trigger('initialize');
+        this._trigger('initialized');
+    },
+
+    _trigger: function(type, e, ui) {
+        var ui = ui || this;
+        $.ui.plugin.call(this, type, [e, ui]);
+        return $.widget.prototype._trigger.call(this, type, e, ui);
+    },
+
+    _createButton: function(i, format, className) {
+        var o  = format && $.format(format, i) || i;
+        var cn = className && 'ui-timepickr-button '+ className || 'ui-timepickr-button';
+        return $.tpl('timepickr.button', {className: cn, label: o}).data('id', i)
+                .bind('mouseover', function(){
+                    $(this).siblings().find('span')
+                        .removeClass('ui-state-hover').end().end()
+                        .find('span').addClass('ui-state-hover');
+                });
+
+    },
+
+    _addRow: function(range, format, className, insertAfter) {
+        var ui  = this;
+        var btn = false;
+        var row = $.tpl('timepickr.row').bind('mouseover', function(){
+            $(this).next().show();
+        });
+        $.each(range, function(idx, val){
+            ui._createButton(val, format || false).appendTo(row);
+        });
+        if (className) {
+            $(row).addClass(className);
+        }
+        if (this.options.corners) {
+             row.find('span').addClass('ui-corner-'+ this.options.corners);
+        }
+        if (insertAfter) {
+            row.insertAfter(insertAfter);
+        }
+        else {
+            ui._dom.menu.append(row);
+        }
+        return row;
+    },
+
+    _setVal: function(val) {
+        val = val || this._getVal();
+        this.element.data('timepickr.initialValue', val);
+        this.element.val(this._formatVal(val));
+        if(this._dom.menu.is(':hidden')) {
+            this.element.trigger('change');
+        }
+    },
+
+    _getVal: function() {
+        var ols = this._dom.menu.find('ol');
+        function get(unit) {
+            var u = ols.filter('.'+unit).find('.ui-state-hover:first').text();
+            return u || ols.filter('.'+unit+'li:first span').text();
+        }
+        return {
+            h: get('hours'),
+            m: get('minutes'),
+            s: get('seconds'),
+            a: get('prefix'),
+            z: get('suffix'),
+            f: this.options['format'+ this.c],
+            c: this.c
+        };
+    },
+
+    _formatVal: function(ival) {
+        var val = ival || this._getVal();
+        val.c = this.options.convention;
+        val.f = val.c === 12 && this.options.format12 || this.options.format24;
+        return (new Time(val)).getTime();
+    },
+
+    blur: function() {
+        return this.element.blur();      
+    },
+
+    focus: function() {
+        return this.element.focus();      
+    },
+    show: function() {
+        this._trigger('show');
+        this.element.trigger(this.options.trigger);
+    },
+    hide: function() {
+        this._trigger('hide');
+        this._dom.menu.hide();
+    }
+
+});
+
+// These properties are shared accross every instances of timepickr 
+$.extend($.ui.timepickr, {
+    version:     '0.7.0a',
+    //eventPrefix: '',
+    //getter:      '',
+    defaults:    {
+        convention:  24, // 24, 12
+        trigger:     'mouseover',
+        format12:    '{h:02.d}:{m:02.d} {suffix:s}',
+        format24:    '{h:02.d}:{m:02.d}',
+        hours:       true,
+        prefix:      ['am', 'pm'],
+        suffix:      ['am', 'pm'],
+        prefixVal:   false,
+        suffixVal:   true,
+        rangeHour12: $.range(1, 13),
+        rangeHour24: [$.range(0, 12), $.range(12, 24)],
+        rangeMin:    $.range(0, 60, 15),
+        rangeSec:    $.range(0, 60, 15),
+        corners:     'all',
+        // plugins
+        core:        true,
+        minutes:     true,
+        seconds:     false,
+        val:         false,
+        updateLive:  true,
+        resetOnBlur: true,
+        keyboardnav: true,
+        handle:      false,
+        handleEvent: 'click'
+    }
+});
+
+$.ui.plugin.add('timepickr', 'core', {
+    initialized: function(e, ui) {
+        var menu = ui._dom.menu;
+        var pos  = ui.element.position();
+
+        menu.insertAfter(ui.element).css('left', pos.left);
+
+        if (!$.boxModel) { // IE alignement fix
+            menu.css('margin-top', ui.element.height() + 8);
+        }
+        
+        ui.element
+            .bind(ui.options.trigger, function() {
+                ui._dom.menu.show();
+                ui._dom.menu.find('ol:first').show();
+                ui._trigger('focus');
+                if (ui.options.trigger != 'focus') {
+                    ui.element.focus();
+                }
+                ui._trigger('focus');
+            })
+            .bind('blur', function() {
+                ui.hide();
+                ui._trigger('blur');
+            });
+
+        menu.find('li').bind('mouseover.timepickr', function() {
+            ui._trigger('refresh');
+        });
+    },
+    refresh: function(e, ui) {
+        // Realign each menu layers
+        ui._dom.menu.find('ol').each(function(){
+            var p = $(this).prev('ol');
+            try { // .. to not fuckup IE
+                $(this).css('left', p.position().left + p.find('.ui-state-hover').position().left);
+            } catch(e) {};
+        });
+    }
+});
+
+$.ui.plugin.add('timepickr', 'hours', {
+    initialize: function(e, ui) {
+        if (ui.options.convention === 24) {
+            // prefix is required in 24h mode
+            ui._dom.prefix = ui._addRow(ui.options.prefix, false, 'prefix'); 
+
+            // split-range
+            if ($.isArray(ui.options.rangeHour24[0])) {
+                var range = [];
+                $.merge(range, ui.options.rangeHour24[0]);
+                $.merge(range, ui.options.rangeHour24[1]);
+                ui._dom.hours = ui._addRow(range, '{0:0.2d}', 'hours');
+                ui._dom.hours.find('li').slice(ui.options.rangeHour24[0].length, -1).hide();
+                var lis   = ui._dom.hours.find('li'); 
+
+                var show = [
+                    function() {
+                        lis.slice(ui.options.rangeHour24[0].length).hide().end()
+                           .slice(0, ui.options.rangeHour24[0].length).show()
+                           .filter(':visible:first').trigger('mouseover');
+
+                    },
+                    function() {
+                        lis.slice(0, ui.options.rangeHour24[0].length).hide().end()
+                           .slice(ui.options.rangeHour24[0].length).show()
+                           .filter(':visible:first').trigger('mouseover');
+                    }
+                ];
+
+                ui._dom.prefix.find('li').bind('mouseover.timepickr', function(){
+                    var index = ui._dom.menu.find('.prefix li').index(this);
+                    show[index].call();
+                });
+            }
+            else {
+                ui._dom.hours = ui._addRow(ui.options.rangeHour24, '{0:0.2d}', 'hours');
+                ui._dom.hours.find('li').slice(12, -1).hide();
+            }
+        }
+        else {
+            ui._dom.hours  = ui._addRow(ui.options.rangeHour12, '{0:0.2d}', 'hours');
+            // suffix is required in 12h mode
+            ui._dom.suffix = ui._addRow(ui.options.suffix, false, 'suffix'); 
+        }
+    }});
+
+$.ui.plugin.add('timepickr', 'minutes', {
+    initialize: function(e, ui) {
+        var p = ui._dom.hours && ui._dom.hours || false;
+        ui._dom.minutes = ui._addRow(ui.options.rangeMin, '{0:0.2d}', 'minutes', p);
+    }
+});
+
+$.ui.plugin.add('timepickr', 'seconds', {
+    initialize: function(e, ui) {
+        var p = ui._dom.minutes && ui._dom.minutes || false;
+        ui._dom.seconds = ui._addRow(ui.options.rangeSec, '{0:0.2d}', 'seconds', p);
+    }
+});
+
+$.ui.plugin.add('timepickr', 'val', {
+    initialized: function(e, ui) {
+        ui._setVal(ui.options.val);
+    }
+});
+
+$.ui.plugin.add('timepickr', 'updateLive', {
+    refresh: function(e, ui) {
+        ui._setVal();
+    }
+});
+
+$.ui.plugin.add('timepickr', 'resetOnBlur', {
+    initialized: function(e, ui) {
+        ui.element.data('timepickr.initialValue', ui._getVal());
+        ui._dom.menu.find('li > span').bind('mousedown.timepickr', function(){
+            ui.element.data('timepickr.initialValue', ui._getVal()); 
+        });
+    },
+    blur: function(e, ui) {
+        ui._setVal(ui.element.data('timepickr.initialValue'));
+    }
+});
+
+$.ui.plugin.add('timepickr', 'handle', {
+    initialized: function(e, ui) {
+        $(ui.options.handle).bind(ui.options.handleEvent + '.timepickr', function(){
+            ui.show();
+        });
+    }
+});
+
+$.ui.plugin.add('timepickr', 'keyboardnav', {
+    initialized: function(e, ui) {
+        ui.element
+            .bind('keydown', function(e) {
+                if ($.keyIs('enter', e)) {
+                    ui._setVal();
+                    ui.blur();
+                }
+                else if ($.keyIs('escape', e)) {
+                    ui.blur();
                 }
             });
+    }
+});
 
-            if (ui.options.val) {
-                element.val(this.options.val);
-            }
-
-            if (ui.options.handle) {
-                $(this.options.handle).click(function() {
-                    $(element).dropslide('show');
-                });
-            }
-
-            if (ui.options.resetOnBlur) {
-                menu.find('li > span').bind('mousedown.timepickr', function(){
-                    $(element).data('timepickr.initialValue', $(element).val()); 
-                });
-            }
-            if (ui.options.updateLive) {
-                menu.find('li').bind('mouseover.timepickr', function() {
-                    $(element).timepickr('update'); 
-                });
-            }
-            var hrs = menu.find('ol:eq(1)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
-            var min = menu.find('ol:eq(2)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
-            var sec = menu.find('ol:eq(3)').find('li:first').addClass('hover').find('span').addClass('ui-state-hover').end().end();
-
-            if (this.options.convention === 24) {
-                var day        = menu.find('ol:eq(0) li:eq(0)');
-                var night      = menu.find('ol:eq(0) li:eq(1)');
-                var dayHours   = hrs.find('li').slice(0, 12);
-                var nightHours = hrs.find('li').slice(12, 24);
-                var index      = 0;
-                var selectHr   = function(id) {
-                    hrs.find('li').removeClass('hover');
-                    hrs.find('span').removeClass('ui-state-hover');
-                    hrs.find('li').eq(id).addClass('hover').find('span').addClass('ui-state-hover')
-                };
-
-                day.mouseover(function() {
-                    nightHours.hide();
-                    dayHours.show(0);
-                    index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
-                    selectHr(index > 11 && index - 12 || index);
-                    element.dropslide('redraw');
-                });
-
-                night.mouseover(function() {
-                    dayHours.hide();
-                    nightHours.show(0);
-                    index = hrs.find('li.hover').data('id') || hrs.find('li:first').data('id');
-                    selectHr(index < 12 && index + 12 || index);
-                    element.dropslide('redraw');
-                });
-            }
-            element.dropslide('redraw');
-            element.data('timepickr', this);
-        },
-
-        update: function() {
-            var frmt = this.options.convention === 24 && 'format24' || 'format12';
-            var val = {
-                h: this.getValue('hour'),
-                m: this.getValue('minute'),
-                s: this.getValue('second'),
-                prefix: this.getValue('prefix'),
-                suffix: this.getValue('suffix')
-            };
-            var o = $.format(this.options[frmt], val);
-
-            $(this.element).val(o);
-        },
-
-        select: function(e) {
-            var dropslide = $(this).data('dropslide');
-            $(dropslide.element).timepickr('update');
-            e.stopPropagation();
-        },
-
-        getHour: function() {
-            return this.getValue('hour');
-        },
-
-        getMinute: function() {
-            return this.getValue('minute');
-        },
-
-        getSecond: function() {
-            return this.getValue('second');
-        },
-
-        getValue: function(type) {
-            return $('.ui-timepickr.'+ type +'.hover', this.element.next()).text();
-        },
+var Time = function() { // arguments: h, m, s, c, z, f || time string
+    if (!(this instanceof arguments.callee)) {
+        throw Error("Constructor called as a function");
+    }
+    // arguments as literal object
+    if (arguments.length == 1 && $.isObject(arguments[0])) {
+        this.h = arguments[0].h || 0;
+        this.m = arguments[0].m || 0;
+        this.s = arguments[0].s || 0;
+        this.c = arguments[0].c && ($.inArray(arguments[0].c, [12, 24]) >= 0) && arguments[0].c || 24;
+        this.f = arguments[0].f || ((this.c == 12) && '{h:02.d}:{m:02.d} {z:02.d}' || '{h:02.d}:{m:02.d}');
+        this.z = arguments[0].z || 'am';
+    }
+    // arguments as string
+    else if (arguments.length < 4 && $.isString(arguments[1])) {
+        this.c = arguments[2] && ($.inArray(arguments[0], [12, 24]) >= 0) && arguments[0] || 24;
+        this.f = arguments[3] || ((this.c == 12) && '{h:02.d}:{m:02.d} {z:02.d}' || '{h:02.d}:{m:02.d}');
+        this.z = arguments[4] || 'am';
         
-        activate: function() {
-            this.element.dropslide('activate');
-        },
+        this.h = arguments[1] || 0; // parse
+        this.m = arguments[1] || 0; // parse
+        this.s = arguments[1] || 0; // parse
+    }
+    // no arguments (now)
+    else if (arguments.length === 0) {
+        // now
+    }
+    // standards arguments
+    else {
+        this.h = arguments[0] || 0;
+        this.m = arguments[1] || 0;
+        this.s = arguments[2] || 0;
+        this.c = arguments[3] && ($.inArray(arguments[3], [12, 24]) >= 0) && arguments[3] || 24;
+        this.f = this.f || ((this.c == 12) && '{h:02.d}:{m:02.d} {z:02.d}' || '{h:02.d}:{m:02.d}');
+        this.z = 'am';
+    }
+    return this;
+};
 
-        destroy: function() {
-            this.element.dropslide('destroy');
-        },
-        
-        /* UI private methods */
-        
-        _createButton: function(i, format, className) {
-            var o  = format && $.format(format, i) || i;
-            var cn = className && 'ui-timepickr '+ className || 'ui-timepickr';
-            return $.tpl('timepickr.button', {className: cn, label: o}).data('id', i);
-        },
-
-        _createRow: function(range, format, className) {
-            var row = $.tpl('timepickr.row');
-            var button = this._createButton;
-            // Thanks to Christoph Müller-Spengler for the bug report
-            $.each(range, function(idx, val){
-                row.append(button(val, format || false, className || false));
-            });
-            return row;
-        },
-        
-        _getRanges12: function() {
-            var o = [], opt = this.options;
-            if (opt.hours)   { o.push(this._createRow($.range(1, 13), '{0:0.2d}', 'hour')); }
-            if (opt.minutes) { o.push(this._createRow(opt.rangeMin,   '{0:0.2d}', 'minute')); }
-            if (opt.seconds) { o.push(this._createRow(opt.rangeSec,   '{0:0.2d}', 'second')); }
-            if (opt.suffix)  { o.push(this._createRow(opt.suffix,     false,      'suffix')); }
-            return o;
-        },
-
-        _getRanges24: function() {
-            var o = [], opt = this.options;
-            o.push(this._createRow(opt.prefix, false, 'prefix')); // prefix is required in 24h mode
-            if (opt.hours)   { o.push(this._createRow($.range(0, 24),   '{0:0.2d}', 'hour')); }
-            if (opt.minutes) { o.push(this._createRow(opt.rangeMin, '{0:0.2d}', 'minute')); }
-            if (opt.seconds) { o.push(this._createRow(opt.rangeSec, '{0:0.2d}', 'second')); }
-            return o;
-        },
-
-        _buildMenu: function() {
-            var menu   = $.tpl('timepickr.menu');
-            var ranges = this.options.convention === 24 
-                         && this._getRanges24() || this._getRanges12();
-
-            $.each(ranges, function(idx, val){
-                menu.append(val);
-            });
-            return menu;
-        }
-    });
-
-    // These properties are shared accross every instances of timepickr 
-    $.extend($.ui.timepickr, {
-        version:     '0.6.6',
-        eventPrefix: '',
-        getter:      '',
-        defaults:    {
-            convention:  24, // 24, 12
-            dropslide:   { trigger: 'focus' },
-            format12:    '{h:02.d}:{m:02.d} {suffix:s}',
-            format24:    '{h:02.d}:{m:02.d}',
-            handle:      false,
-            hours:       true,
-            minutes:     true,
-            seconds:     false,
-            prefix:      ['am', 'pm'],
-            suffix:      ['am', 'pm'],
-            rangeMin:    $.range(0, 60, 15),
-            rangeSec:    $.range(0, 60, 15),
-            updateLive:  true,
-            resetOnBlur: true,
-            val:         false
-        }
-    });
+Time.prototype.get        = function(p, f, u)    { return u && this.h || $.format(f, this.h); };
+Time.prototype.getHours   = function(unformated) { return this.get('h', '{0:02.d}', unformated); };
+Time.prototype.getMinutes = function(unformated) { return this.get('m', '{0:02.d}', unformated); };
+Time.prototype.getSeconds = function(unformated) { return this.get('s', '{0:02.d}', unformated); };
+Time.prototype.setFormat  = function(format)     { return this.f = format; };
+Time.prototype.getObject  = function()           { return { h: this.h, m: this.m, s: this.s, c: this.c, f: this.f, z: this.z }; };
+Time.prototype.getTime    = function()           { return $.format(this.f, {h: this.h, m: this.m, z: this.z}); };
+Time.prototype.parse      = function(str) { 
+    // 12h formats
+    if (this.c === 12) {
+        // Supported formats: (can't find any *official* standards for 12h..)
+        //  - [hh]:[mm]:[ss] [zz] | [hh]:[mm] [zz] | [hh] [zz] 
+        //  - [hh]:[mm]:[ss] [z.z.] | [hh]:[mm] [z.z.] | [hh] [z.z.]
+        this.tokens = str.split(/\s|:/);    
+        this.h = this.tokens[0] || 0;
+        this.m = this.tokens[1] || 0;
+        this.s = this.tokens[2] || 0;
+        this.z = this.tokens[3] || '';
+        return this.getObject();
+    }
+    // 24h formats
+    else { 
+        // Supported formats:
+        //  - ISO 8601: [hh][mm][ss] | [hh][mm] | [hh]  
+        //  - ISO 8601 extended: [hh]:[mm]:[ss] | [hh]:[mm] | [hh]
+        this.tokens = /:/.test(str) && str.split(/:/) || str.match(/[0-9]{2}/g);
+        this.h = this.tokens[0] || 0;
+        this.m = this.tokens[1] || 0;
+        this.s = this.tokens[2] || 0;
+        this.z = this.tokens[3] || '';
+        return this.getObject();
+    }
+};
 
 })(jQuery);

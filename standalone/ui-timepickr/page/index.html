@@ -18,13 +18,9 @@
                 //$('#test-1').timepickr({trigger: '#trigger-test'});
               $('#demo-1').timepickr().focus();
               $('#demo-2').timepickr({convention:12});
-              $('#demo-4').timepickr({convention:12});
               $('#demo-1').next().find('ol').show().find('li:eq(2)').mouseover();
               // temporary fix..
               $('.ui-timepickr ol:eq(0) li:first').mouseover();
-              // apply theme
-              $('#demo-1').next().addClass('dark');
-              $('#demo-2').next().addClass('dark');
             });
         </script>
     </head>
@@ -64,10 +60,8 @@
                 </div>
             </div>
             <ul id="demo-nav">
-                <li><a href="#d-demo-wrapper-1">24h format / dark</a></li>
-                <li><a href="#d-demo-wrapper-2">12h format / dark</a></li>
-                <!--li><a href="#d-demo-wrapper-3">24h format / basic</a></li-->
-                <li><a href="#d-demo-wrapper-4">12h format / basic</a></li>
+                <li><a href="#d-demo-wrapper-1">24h format</a></li>
+                <li><a href="#d-demo-wrapper-2">12h format</a></li>
                 <li style="list-style:none;padding:8px 0;"><div id="switcher"></div></li>
             </ul>
         </div>
@@ -248,8 +242,14 @@
                                     <li class="done">Enhanced Themeroller comptatibility</li>
                                     <li class="done">Support for custom labels</li>
                                     <li class="done">Support for custom split range (2h mode)</li>
-                                    <li class="done">Now using a Time object to manipulate input/output consistantly</li>
+                                    <li class="done">Now using a Time object to manipulate input/output consistently</li>
                                     <li class="done">Added theme switcher to demo page</li>
+                                    <li class="done">Fixed bug <a href="http://code.google.com/p/jquery-utils/issues/detail?id=4">#4</a></li>
+                                    <li class="done">Fixed bug <a href="http://code.google.com/p/jquery-utils/issues/detail?id=6">#6</a></li>
+                                    <li class="done">Fixed bug <a href="http://code.google.com/p/jquery-utils/issues/detail?id=9">#9</a></li>
+                                    <li class="done">Fixed bug <a href="http://code.google.com/p/jquery-utils/issues/detail?id=15">#15</a></li>
+                                    <li class="done">Fixed bug <a href="http://code.google.com/p/jquery-utils/issues/detail?id=16">#16</a></li>
+                                    <li class="done">Fixed bug <a href="http://code.google.com/p/jquery-utils/issues/detail?id=31">#31</a></li>
                                 </ul>
                             </td>
                         </tr>
