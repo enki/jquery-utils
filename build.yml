@@ -55,13 +55,11 @@ modules:
       - src: src/jquery.slimbox.js
       - src: src/jquery.timeago.js
       - src: src/jquery.youtubeLinksToEmbed.js
-      - src: standalone/ui-timepickr/src/ui.dropslide.js
       - src: standalone/ui-timepickr/src/ui.timepickr.js
       - src: src/ui.toaster.js
 merge:
   - dest: dist/jquery.utils.css
     files:
-      - src: standalone/ui-timepickr/src/css/ui.dropslide.css
       - src: standalone/ui-timepickr/src/css/ui.timepickr.css
       - src: src/css/ui.toaster.css
 
