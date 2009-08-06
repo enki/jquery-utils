@@ -27,23 +27,21 @@
     cursor:pointer;
     display:block;
     text-align:center;
-    -moz-border-radius:3px;
-    -webkit-border-radius:3px;
 
 
     /* system theme (default) */
     border-width:1px;
     border-style:solid;
-    border-color:ThreeDLightShadow ThreeDShadow ThreeDShadow ThreeDLightShadow;
+    /*border-color:ThreeDLightShadow ThreeDShadow ThreeDShadow ThreeDLightShadow;
     color:ButtonText;
-    background:ButtonFace;
+    background:ButtonFace;*/
 }
 
 .ui-timepickr-button span.ui-state-hover {
-    color:HighlightText;
-    background:Highlight;
+    /*color:HighlightText;
+    background:Highlight;*/
 }
 
 .ui-state-hover span {
-    background:#c30;
+    /*background:#c30;*/
 }
