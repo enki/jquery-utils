@@ -15,7 +15,7 @@
 (function($){
     $.tpl('flickrshow.wrapper',  '<div class="ui-flickrshow" />');
     $.tpl('flickrshow.titlebar', '<div class="ui-flickrshow-titlebar"><a href="{href:s}" title="{title:s}">{title:s}</a></div>');
-    $.tpl('flickrshow.image',    '<a href="{href:s}" title="{title:s}" rel="flickr-show"><img src="{src:s}" class="ui-flickrshow-image" alt="{alt:s}" border="{border:d}" /></a>');
+    $.tpl('flickrshow.image',    '<a href="{href:s}" title="{title:s}" rel="flickr-show"><img class="ui-flickrshow-image" alt="{alt:s}" border="{border:d}" /></a>');
     $.tpl('flickrshow.toolbar',  [
         '<div class="ui-flickrshow-toolbar">',
             '<a id="ui-flickrshow-prev"></a>',
