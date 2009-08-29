@@ -353,7 +353,7 @@ Time.prototype.getMinutes = function(unformated) { return this.get('m', '{0:02.d
 Time.prototype.getSeconds = function(unformated) { return this.get('s', '{0:02.d}', unformated); };
 Time.prototype.setFormat  = function(format)     { return this.f = format; };
 Time.prototype.getObject  = function()           { return { h: this.h, m: this.m, s: this.s, c: this.c, f: this.f, z: this.z }; };
-Time.prototype.getTime    = function()           { return $.format(this.f, {h: this.h, m: this.m, z: this.z}); };
+Time.prototype.getTime    = function()           { return $.format(this.f, {h: this.h, m: this.m, suffix: this.z}); }; // Thanks to Jackson for the fix.
 Time.prototype.parse      = function(str) { 
     // 12h formats
     if (this.c === 12) {
