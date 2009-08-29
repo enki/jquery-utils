@@ -3,19 +3,19 @@ version: 0.7.0a
 svnrev: true
 dest: standalone/ui-timepickr/dist/
 modules:
-  - file: standalone/ui-timepickr/src/ui.timepickr.js
-    name: "timepickr"
+  - name: "timepickr"
     destfile: jquery.timepickr.js
     depends:
       - src: src/ui.core.js
       - src: src/jquery.utils.js
       - src: src/jquery.strings.js
-  - file: standalone/ui-timepickr/src/ui.timepickr.js
-    name: "uitimepickr"
+      - src: standalone/ui-timepickr/src/ui.timepickr.js
+  - name: "uitimepickr"
     destfile: ui.timepickr.js
     depends:
       - src: src/jquery.utils.js
       - src: src/jquery.strings.js
+      - src: standalone/ui-timepickr/src/ui.timepickr.js
 
 copy: 
   - src: demo/themes/default/images/*.png

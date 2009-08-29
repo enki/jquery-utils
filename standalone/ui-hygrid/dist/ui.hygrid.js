@@ -124,12 +124,6 @@
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;
 		},
-        
-        // Returns true if an object is an array
-        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
-		isArray: function(o) {
-            return Object.prototype.toString.apply(o || false) === '[object Array]';
-		},
 
         isObject: function(o) {
             return (typeof(o) == 'object');

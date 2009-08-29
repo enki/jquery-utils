@@ -3,25 +3,25 @@ version: 0.0.1
 svnrev: true
 dest: standalone/ui-hygrid/dist/
 modules:
-  - file: standalone/ui-hygrid/src/ui.hygrid.js
-    name: "hygrid"
+  - name: "hygrid"
     destfile: ui.hygrid.all.js
     depends:
       - src: src/jquery.utils.js
       - src: src/jquery.strings.js
       - src: src/jquery.delayedObserver.js
+      - src: standalone/ui-hygrid/src/ui.hygrid.js
       - src: standalone/ui-hygrid/src/ui.hygrid.colhider.js
       - src: standalone/ui-hygrid/src/ui.hygrid.ledger.js
       - src: standalone/ui-hygrid/src/ui.hygrid.resizable.js
       - src: standalone/ui-hygrid/src/ui.hygrid.selectable.js
       - src: standalone/ui-hygrid/src/ui.hygrid.sortable.js
-  - file: standalone/ui-hygrid/src/ui.hygrid.js
-    name: "hygrid"
+  - name: "hygrid"
     destfile: ui.hygrid.js
     depends:
       - src: src/jquery.utils.js
       - src: src/jquery.strings.js
       - src: src/jquery.delayedObserver.js
+      - src: standalone/ui-hygrid/src/ui.hygrid.js
 
 copy: 
   - src: demo/themes/default/images/*.png

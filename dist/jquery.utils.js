@@ -1,5 +1,5 @@
 /*
-  jQuery utils - 0.8.0
+  jQuery utils - 0.8.5
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -123,12 +123,6 @@
         // Returns true if an object is a RegExp
 		isRegExp: function(o) {
 			return o && o.constructor.toString().indexOf('RegExp()') != -1 || false;
-		},
-        
-        // Returns true if an object is an array
-        // Mark Miller - http://blog.360.yahoo.com/blog-TBPekxc1dLNy5DOloPfzVvFIVOWMB0li?p=916
-		isArray: function(o) {
-            return Object.prototype.toString.apply(o || false) === '[object Array]';
 		},
 
         isObject: function(o) {
@@ -2037,90 +2031,6 @@ if (window.attachEvent) {
 }
 	
 })();
-/*
-  jQuery flickrshow - 0.1.0
-  http://code.google.com/p/jquery-utils/
-
-  (c) Maxime Haineault <haineault@gmail.com>
-  http://haineault.com   
-
-  MIT License (http://www.opensource.org/licenses/mit-license.php)
-  
-  Largely inspired from this blog post:
-  http://www.viget.com/inspire/pulling-your-flickr-feed-with-jquery/
-
-*/
-
-(function($){
-    $.tpl('flickrshow.wrapper',  '<div class="ui-flickrshow" />');
-    $.tpl('flickrshow.titlebar', '<div class="ui-flickrshow-titlebar"><a href="{href:s}" title="{title:s}">{title:s}</a></div>');
-    $.tpl('flickrshow.image',    '<a href="{href:s}" title="{title:s}" rel="flickr-show"><img src="{src:s}" class="ui-flickrshow-image" alt="{alt:s}" border="{border:d}" /></a>');
-    $.tpl('flickrshow.toolbar',  [
-        '<div class="ui-flickrshow-toolbar">',
-            '<a id="ui-flickrshow-prev"></a>',
-            '<a id="ui-flickrshow-browse" href="{link:s}" target="{browseTarget:s}"></a>',
-            '<a id="ui-flickrshow-next"></a>',
-        '</div>']);
-
-	$.extend($.fn, {
-		flickrshow: function(options, json) {
-            var el  = this;
-            var opt = $.extend({ 
-                cycle: {},
-                imgBorder: 0, 
-                toolbar:   true,
-                titlebar:  true,
-                browseTarget: '_self',
-                slimbox: $.slimbox || false }, options);
-
-            $.getJSON(opt.url, function(data, textStatus){ 
-                var tpl = ['<div class="ui-flickrshow-body ui-content">'];
-                var wrapper  = $.tpl('flickrshow.wrapper');
-
-                for (i in data.items) {
-                    tpl.push($.tpl('flickrshow.image', {
-                        href:   data.items[i].link,
-                        title:  data.items[i].title,
-                        src:    data.items[i].media.m,
-                        alt:    '',
-                        border: opt.imgBorder
-                    }, true));
-                }
-
-                tpl.push('</div>');
-                el.append(wrapper);
-
-                if (opt.titlebar) {
-                    $.tpl('flickrshow.titlebar', {
-                        href: data.link,
-                        title: data.title,
-                        modified: data.modified
-                    }).appendTo(wrapper);
-                }
-
-                if (opt.toolbar) {
-                    opt.cycle.next = '#ui-flickrshow-next';
-                    opt.cycle.prev = '#ui-flickrshow-prev';
-                    $.tpl('flickrshow.toolbar', {
-                        link: data.link, 
-                        browseTarget: opt.browseTarget
-                    }).appendTo(wrapper);
-                }
-
-                wrapper.append($(tpl.join('')))
-                    .find('.ui-flickrshow-body').cycle(opt.cycle);
-
-                if (opt.slimbox && $.slimbox) {
-                    $("a[href^='http://www.flickr.com/photos/'] > img:first-child[src]", wrapper.find('.ui-flickrshow-body')).parent().slimbox({}, function(el) {
-                        return [el.firstChild.src.replace(/_[mts]\.(\w+)$/, ".$1"),
-                                (el.title || el.firstChild.alt) + '<br /><a href="' + el.href + '">Flickr page</a>'];
-                    });                    
-                }
-            });
-            return $(el);
-		}
-	});
-})(jQuery);
 (function($){
     $._i18n = { trans: {}, 'default':  'en', language: 'en' };
     $.i18n = function() {
@@ -2141,8 +2051,8 @@ if (window.attachEvent) {
             // return trans or original string
             return trans || str;
         };
-        // Set language
-        if (arguments.length < 2 && arguments[0].length == 2) {
+        // Set language (accepted formats: en or en-US)
+        if (arguments.length < 2) {
             $._i18n.language = arguments[0]; 
             return $._i18n.language;
         }
@@ -2865,71 +2775,3 @@ $.fn.extend({
   }
 })(jQuery);
 
-/*
-  jQuery youtubeLinksToEmbed - 0.3
-  http://code.google.com/p/jquery-utils/
-
-  (c) Maxime Haineault <haineault@gmail.com>
-  http://haineault.com   
-
-  MIT License (http://www.opensource.org/licenses/mit-license.php)
-
-*/
-
-(function($){
-    var youtubeURL = 'http://www.youtube.com/v/';
-
-    var yl2e = {
-        onclick: function() {
-            if ($(this).next().hasClass('youtubeLinksToEmbed')) { return false; }
-
-            href    =  youtubeURL + this.href.match(/[a-zA-Z0-9-_]+$/) + '&rel=1';
-            wrapper = $('<div class="youtubeLinksToEmbed" style="display:none;"><span>Loading...</span><div style="display:none;"></div></div>');
-            player  = $('div:first', wrapper);
-
-            player.flash({src: href, width: 425, height: 355});
-            $(this).after(wrapper);
-
-            wrapper.queue(function(){
-                $(this).css('height', 40);
-                $(this).dequeue();
-                $(this).slideDown();
-                $(this).dequeue();
-            });
-    
-            setTimeout(function(){
-                wrapper.queue(function(){
-                    $(this).find('span').hide().end();
-                    $(this).dequeue();
-                    $(this).animate({height: 375});
-                    $(this).dequeue();
-                });
-                setTimeout(function(){
-                    player.show();    
-                }, 500);
-            }, 1500);
-
-            return false;
-        }    
-    };
-
-    $.fn.youtubeLinksToEmbed = function(options){
-        var opt = $.extend({autoOpen: false}, options);
-        $(this).find('a[href*=youtube.com/watch?v=]')
-            .addClass('youtubeLinksToEmbed')
-            .each(function(){ 
-                $(this).click(yl2e.onclick);
-                if (opt.autoOpen) {
-                    $(this).trigger('click');
-                }});
-    };
-
-    $.fn.youtubeInputsToEmbed = function(options) {
-        $(this).find('input[value*=youtube.com/watch?v=]')
-            .addClass('youtubeLinksToEmbed')
-            .each(function(){ 
-                $('<a href="'+ $(this).val() +'">watch</a>')
-                    .insertAfter(this);});
-        $(this).youtubeLinksToEmbed(options);
-    };
-})(jQuery);

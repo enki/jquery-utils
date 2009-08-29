@@ -133,15 +133,10 @@ def slurp(f):
     """
     Returns file content as string
     """
-    try:
-        fd = open(f)
-        buf = fd.readlines()
-        fd.close()
-        return ''.join(buf)
-    except:
-        return ''
-    finally:
-        fd.close()
+    fd = open(f)
+    buf = fd.readlines()
+    fd.close()
+    return ''.join(buf)
 
 def get_dependencies(obj, path=''):
     """
