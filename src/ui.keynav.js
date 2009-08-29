@@ -1,5 +1,5 @@
 /*
-  jQuery ui.keynav - 0.3
+  jQuery ui.keynav - 0.4
   http://code.google.com/p/jquery-utils/
 
   (c) Maxime Haineault <haineault@gmail.com> 
@@ -11,245 +11,164 @@
   ¯¯¯¯¯¯¯¯¯¯¯¯
   - jquery.ui.js
   - jquery.utils.js
-
+  - jquery.strings.js
+  - jquery.mousewheel.js
 */
 
 $.widget('ui.keynav', {
     _init: function(){
-        var self = this;
-
-        // try to guess format from class if none is specified
-        if (!self.options.format) {
-            var match = $(self.element).attr('class').match(/ui-keynav-(\w+)/i);
-            self.options.format = match && match[1] || 'int';
+        var $elf = this;
+        var type = $.ui.keynav.types[this.options.type];
+        if (type) {
+            if (type._init) {
+                type._init.apply(this.element, [this]);
+            }
+            if (type.constraints) {
+                this._applyConstraints(type);
+            }
         }
-        else {
-            $(self.element).addClass('ui-keynav ui-keynav-'+ self.options.format);
-        }
-
-        self.keynav = $.ui.keynav.formats[self.options.format];
-        $.each(['focus', 'blur'], function(i, callback) {
-            if (self.keynav[callback] && $(self.element)[callback]) {
-                $(self.element)[callback].apply(self, [self.keynav[callback]]);
+    },
+    _bindArrows: function(el, type, ev) {
+        var $elf = this;
+        $(el).bind(ev || 'keyup.keynavArrows', function(e){
+            if ($.keyIs('up', e))  {
+                $.ui.keynav.types[type].increment.apply(this, [e, $elf]);
+            }
+            if ($.keyIs('down', e))  {
+                $.ui.keynav.types[type].decrement.apply(this, [e, $elf]);
             }
         });
     },
-
-    observe: function(callback) {
-        var self = this;
-        // use delayed observer if available
-        if (self.options.delayed && $.inArray(callback, ['keyup', 'keydown', 'keypress'])) {
-            $(self.element).delayedObserver(function(e){ 
-                return self.update.apply(self, [e]); }, {});
-        }
-        else {
-            $(self.element)[callback](function(e){ 
-                return self.update.apply(self, [e]); });
-        }
+    _bindMouseWheel: function(el, type) {
+        var $elf = this;
+        $(el).mousewheel(function(e, delta){
+            var action = delta < 0 && 'decrement' || 'increment';
+            $.ui.keynav.types[type][action].apply(this, [e, $elf]);
+            $(this).trigger('keyup');
+            return false;
+        });
     },
-    update: function(e) {
-        var key = $.inArray(e.which, this.keynav.capture) > -1 && e.which || 'all';
-        if (this.keynav[e.type] && this.keynav[e.type][key]) {
-            this.keynav[e.type][key].apply(this, [e]);
+    _applyConstraints: function(type) {
+        for (var x in type.constraints) {
+            if ($.ui.keynav.constraints[x]) {
+                var constraint = this.options[x] || type.constraints[x];
+                if ($.isFunction($.ui.keynav.constraints[x])) {
+                    $.ui.keynav.constraints[x].apply(this, [constraint]);
+                }
+            }
         }
-    },
-    val: function(v) {
-        var self = this;
-        if (self.keynav.val) {
-            return self.keynav.val.apply(self, [v]);
-        }
-        else {
-            return v && $(self.element).val(v) || $(self.element).val();
-        }
-    },
-    chr: function (pos) {
-        $(self.element).val()[pos || self.pos()];
-    },
-    pos: function() {
-         return $(this.element).get(0).selectionStart;
-    },
-    select: function(s, e) {
-        return $(this.element).selectRange(s || 0, typeof(e) == 'undefined' && s+1 || e);
     }
 });
+
+$.ui.keynav.types = {
+    integer: {
+        constraints: {
+            max: 100,
+            max_length: 5,
+            allow_keyCodes: [
+                0, 13, 16, 17, 18, 20, 27, 33, 34, 35, 36, 
+                37, 38, 39, 40, 45, 46, 48, 49, 50, 51, 52, 
+                53, 54, 55, 56, 57, 8, 9, 96, 97, 98, 99, 100, 
+                101, 102, 103, 104, 105]
+        },
+        _init: function(ui) {
+            if (ui.options.mousewheel) { ui._bindMouseWheel(this, 'integer'); }
+            if (ui.options.arrows)     { ui._bindArrows(this,     'integer'); }
+        },
+        increment: function(e, ui){
+            var val = parseInt($(this).val(), 10);
+            var inc = (ui.options.shiftModifier && e.shiftKey)
+                        ? ui.options.shiftModifierVal: 1;
+            $(this).val(parseInt(val + inc, 10));
+        },
+        decrement: function(e, ui){
+            var val = parseInt($(this).val(), 10);
+            var inc = (ui.options.shiftModifier && e.shiftKey)
+                        ? ui.options.shiftModifierVal: 1;
+            $(this).val(parseInt(val - inc, 10));
+        }
+    },
+    fixed: {
+        constraints: {
+            max: 100,
+            max_length: 5, // max length apply to the digit *before* the dot 
+            max_digits: 2, // max length apply to the digit *after* the dot
+            allow_keyCodes: [
+                0, 13, 16, 17, 18, 20, 27, 33, 34, 35, 36, 
+                37, 38, 39, 40, 45, 46, 48, 49, 50, 51, 52, 
+                53, 54, 55, 56, 57, 8, 9, 96, 97, 98, 99, 100, 
+                101, 102, 103, 104, 105, 110, 190]
+        },
+        _init: function(ui) {
+            if (ui.options.mousewheel) { ui._bindMouseWheel(this, 'fixed'); }
+            if (ui.options.arrows)     { ui._bindArrows(this,     'fixed'); }
+        },
+        increment: function(e, ui){
+            var val = parseFloat($(this).val(), 10);
+            var inc = (ui.options.shiftModifier && e.shiftKey)
+                        ? ui.options.shiftModifierVal: 1;
+            if (!e.altKey) { inc = inc/100; }
+            $(this).val($.format(ui.options.fixedFormat, val + inc));
+        },
+        decrement: function(e, ui){
+            var val = parseFloat($(this).val(), 10);
+            var inc = (ui.options.shiftModifier && e.shiftKey)
+                        ? ui.options.shiftModifierVal: 1;
+            if (!e.altKey) { inc = inc/100; }
+            $(this).val($.format(ui.options.fixedFormat, val - inc));
+        }
+    }
+};
+
+$.ui.keynav.constraints = {
+    max: function(max) {
+        var el  = this.element;
+        max = this.options.max || max;
+        $(el).bind('keyup.max', function(){
+                var val = parseFloat($(this).val(), 10);
+                if (val > max) {
+                    try { /* IE FIX */
+                        $(this).val(max);
+                    } catch(e) {}
+                }
+        });
+    },
+    max_digits: function(maxLength) {
+        var el = this.element;
+        $(el).bind('keyup.max_digits', function(){
+            var val = $(el).val();
+            var pfx = '';
+            var sfx = '';
+            if (val.indexOf('.') > 0) {
+                pfx = val.split('.')[0] + '.';
+                sfx = val.split('.')[1];
+
+                if (sfx.length > maxLength) {
+                    try { /* IE FIX */
+                        $(this).val(pfx + sfx.slice(0, maxLength));
+                    } catch(e) {}
+                }
+            }
+        });
+    },
+    max_length: function(maxlength) {
+        $(this.element).attr('maxlength', maxlength);
+    },
+    allow_keyCodes: function(keyCodes) {
+        var el = this.element;
+        $(el).bind('keydown.allow_keyCodes', function(e){
+            if ($.inArray(e.keyCode, keyCodes) < 0) {
+                return false;
+            }
+        });
+    }
+};
 
 $.ui.keynav.defaults = {
-    format:  false,
-    delayed: $.fn.delayedObserver || false,
-    delay:   0.3
+    type: 'integer',
+    mousewheel: true,
+    arrows: true,
+    shiftModifier: true,
+    shiftModifierVal: 10,
+    fixedFormat: '{0:02.f}'
 };
-
-$.ui.keynav.formats  = {
-    int: {
-        capture: [38, 40], // top, bottom arrows
-        val: function(v) {
-            return v && $(this.element).val(v) || parseInt($(this.element).val(), 10);
-        },
-        keyup: {
-            all: function() {
-                var match = $(this.element).val().match(/\d+/g);
-                $(this.element).val(match && !isNaN(match[0]) && parseInt(match[0], 10) || 0);
-            },
-            38: function(e) { // top 
-                if (e.ctrlKey)  this.val(this.val() + 100);
-                if (e.shiftKey) this.val(this.val() + 10);
-                else            this.val(this.val() + 1);
-            },
-            40: function(e) { // bottom
-                if (e.ctrlKey)  this.val(this.val() - 100);
-                if (e.shiftKey) this.val(this.val() - 10);
-                else            this.val(this.val() - 1);
-            }
-        }
-    },
-    time: {
-        capture: [38, 40], // top, bottom arrows
-        format:  24,
-        keyup: {
-            all: function(e) {
-                var self = this;
-            },
-            38: function(e) { // top 
-                var self = this;
-                var time = self.keynav.getTime($(self.element).val());
-                var hour = parseInt(time[0], 10);
-                var min  = parseInt(time[1], 10);
-                
-                if (e.altKey)        min  = min + 1;
-                else if (e.ctrlKey)  min  = Math.round((min+30)/10)*10;
-                else if (e.shiftKey) hour = hour + 1;
-                else                 min  = Math.round((min+10)/10)*10;
-
-                if (min  >= 59) { min  = 0; hour++; }
-                if (hour >= 24) { hour = 1; }
-                if (min  < 10)  { min  = '0'+min; }
-                if (hour < 10)  { hour = '0'+hour; }
-
-                self.val(hour +':'+ min);
-            },
-            40: function(e) { // bottom
-                var self = this;
-                var time = self.keynav.getTime($(self.element).val());
-                var hour = parseInt(time[0], 10);
-                var min  = parseInt(time[1], 10);
-                
-                if (e.altKey)        min  = min  - 1;
-                else if (e.ctrlKey)  min  = Math.round((min-30)/10)*10;
-                else if (e.shiftKey) hour = hour - 1;
-                else                 min  = Math.round((min-10)/10)*10;
-
-                if (min  < 0)   { min  = 59; hour--; }
-                if (hour < 0)   { hour = 24; }
-                if (min  < 10)  { min  = '0'+min; }
-                if (hour < 10)  { hour = '0'+hour; }
-
-                self.val(hour +':'+ min);
-            }
-        },
-        getTime: function(str) {
-            var o = str.split(':');
-            var h = o[0] || 0;
-            var m = o[1] || 0;
-            return [isNaN(h) && 0 || h, isNaN(m) && 0 || m];
-        }
-    },
-    date: {
-        capture: [38, 40], // top, bottom arrows
-        keyup: {
-            all: function(e) {
-                var self = this;
-            },
-            38: function(e) { // top 
-                var self = this;
-                var date = self.keynav.getDate($(self.element).val());
-                if (e.ctrlKey)  {
-                    date[1] = date[1] + 1;
-                    date[2] = date[2] - 1;
-                }
-                if (e.shiftKey) date[0] = date[0] + 1;
-                else date[2] = date[2] + 1
-                
-                var o = new Date(date[0], date[1], date[2]);
-                var m = (o.getMonth()+1 > 9)? o.getMonth()+1: '0'+(o.getMonth()+1);
-                var d = (o.getDate() > 9)?    o.getDate():    '0'+(o.getDate());
-                self.val(o.getFullYear() +'-'+ m +'-'+ d);
-            },
-            40: function(e) { // bottom
-                var self = this;
-                var date = self.keynav.getDate($(self.element).val());
-                if (e.ctrlKey)  {
-                    date[1] = date[1] - 1;
-                    date[2] = date[2] + 1;
-                }
-                if (e.shiftKey) date[0] = date[0] - 1;
-                else date[2] = date[2] - 1
-                
-                var o = new Date(date[0], date[1], date[2]);
-                var m = (o.getMonth()+1 > 9)? o.getMonth()+1: '0'+(o.getMonth()+1);
-                var d = (o.getDate() > 9)?    o.getDate():    '0'+(o.getDate());
-                self.val(o.getFullYear() +'-'+ m +'-'+ d);
-            }
-        },
-        getDate: function(date) {
-            var d = date.split('-')
-            return [parseInt(d[0], 10), parseInt(d[1], 10)-1, parseInt(d[2], 10)]; 
-        }
-    }
-};
-
-$.extend($.ui.keynav.formats, {
-    alphabet: {
-        capture: [37, 38, 39, 40], // left, top, right, bottom arrows
-        chars: 'abcdefghijklmnopqrstuvwxyz',
-        focus: function(e) {
-            $(this.element).selectRange(1, 2);
-            e.preventDefault();
-            e.stopPropagation();
-        },
-        keyup: {
-            all: function(e) {
-                var self = this;
-                switch(e.which) {
-                    case 35: 
-                        self.select(self.val().length - 1);
-                    break; 
-                    case 36:
-                        self.select(0)
-                    break; 
-                }
-            },
-            37: function(e) { // left
-                var pos = (this.pos()-1 >= 0)? this.pos()-1: this.val().length-1;
-                this.select(pos);
-            },
-            38: function(e) { // top 
-                var self = this;
-                var pos  = self.pos();
-                var chr  = $(self.element).val()[pos];
-                var idx  = self.keynav.chars.indexOf(chr);
-                var nchr = self.keynav.chars[(self.keynav.chars[idx+1] && idx+1 || 0)];
-                
-                self.val(self.val().slice(0, pos) + nchr + self.val().slice(pos+1, self.val().length));
-                self.select(pos);
-                e.preventDefault();
-                e.stopPropagation();
-            },
-            39: function(e) { // right
-                var pos = (this.pos() <= this.val().length)? this.pos(): 1;
-                this.select((pos <= this.val().length) && pos-1 || pos);
-            },
-            40: function(e) { // bottom
-                var self = this;
-                var pos  = self.pos();
-                var chr  = $(self.element).val()[pos];
-                var idx  = self.keynav.chars.indexOf(chr) - 1;
-                var nchr = self.keynav.chars[((idx<26 && idx>-1)   ?idx :25)];
-                
-                self.val(self.val().slice(0, pos) + nchr + self.val().slice(pos+1, self.val().length));
-                self.select(pos);
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        }
-    }
-});

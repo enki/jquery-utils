@@ -11,13 +11,7 @@
 
 from optparse import OptionParser
 from glob import glob
-import jsmin
-import os
-import shutil
-import sys
-import tarfile
-import yaml
-import zipfile
+import jsmin, os, shutil, sys, tarfile, yaml, zipfile
 
 BUILD_DIR = 'build/'
 LOG = True
@@ -160,13 +154,6 @@ def get_dependencies(obj, path=''):
         o.append(slurp(p))
     return ''.join(o)
 
-def get_dest_filename(module):
-    if module.has_key('destfile'):
-        fn = module['destfile']
-    elif module['file']:
-        fn = os.path.basename(module['file'])
-    return fn
-
 def get_dest_dir(build):
     return create_dir_if_not_exists(build['dest'])
 
@@ -185,12 +172,12 @@ def make(build, options):
         version = 'v%s' % build['version']
 
     if build['modules']:
-        o = []
         c = 0
         for module in build['modules']:
+            o = []
             if len(options.modules) == 0 or module['name'] in options.modules:
                 c = c+1
-                destPath = os.path.join(build['dest'], get_dest_filename(module))
+                destPath = os.path.join(build['dest'], module['destfile'])
 
                 if module.has_key('title'):
                     title = module['title']
@@ -199,7 +186,6 @@ def make(build, options):
 
                 log("%s %s -> %s" % (title, version, destPath), 'build')
                 o.append(get_dependencies(module['depends']))
-                o.append(slurp(module['file']))
 
                 f = open(destPath, 'w+')
                 buff = ''.join(o)

@@ -5,12 +5,15 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
     <script type="text/javascript" src="../src/jquery.ui.all.js"></script>
     <script type="text/javascript" src="../src/jquery.utils.js"></script>
+    <script type="text/javascript" src="../src/jquery.strings.js"></script>
+    <script type="text/javascript" src="../src/jquery.mousewheel.js"></script>
     <script type="text/javascript" src="../src/ui.keynav.js"></script>
 
     <script type="text/javascript">
         $(function(){
-            $('#test-int').keynav({format: 'int'});
-            $('#test-alphabet').keynav({format: 'alphabet'});
+          $('#test-int').keynav({type: 'integer', max_length: 3});
+          $('#test-fixed').keynav({type: 'fixed', max_length: 3});
+            $('#test-alphabet').keynav({type: 'alpha'});
         });
     </script>
     <style type="text/css">
@@ -25,28 +28,15 @@
     <ul>
         <li>jquery.ui.js</li>
         <li>jquery.utils.js</li>
+        <li>jquery.strings.js</li>
+        <li>jquery.mousewheel.js</li>
     </ul>
     <h3>Basic usage</h3>
     <pre>$('#test-int').keynav({format: 'int'});</pre>
     <div class="demo">
         <ul class="form">
-            <li>
-                <label for="test-int">Integer</label>
-                <input id="test-int" type="text" value="" />
-            </li>
-        </ul>
-    </div>
-    <hr size="1" />
-    <h3>Extending</h3>
-    <pre>
-    
-    </pre>
-    <div class="demo">
-        <ul class="form">
-            <li>
-                <label for="test-alphabet">Alphabet</label>
-                <input id="test-alphabet" type="text" value="" />
-            </li>
+            <li><label for="test-int">Integer</label> <input id="test-int" type="text" value="" /></li>
+            <li><label for="test-fixed">Fixed</label> <input id="test-fixed" type="text" value="" /></li>
         </ul>
     </div>
     <hr size="1" />

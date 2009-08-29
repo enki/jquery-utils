@@ -1,62 +1,41 @@
 title: jquery.utils
-version: 0.8.0
+version: 0.8.5
 svnrev: true
 name: "utilsall"
 dest: dist/
 modules:
-  - file: src/jquery.utils.js
-    name: "lite"
+  - name: "lite"
     destfile: jquery.utils.lite.js
     depends:
       - src: src/jquery.utils.js
       - src: src/jquery.strings.js
-      - src: src/jquery.delayedObserver.js
-      - src: src/jquery.i18n.js
+      - src: src/jquery.cookie.js
+      - src: src/jquery.cycle.js
+      - src: src/jquery.flash.js
       - src: src/jquery.masked.js
       - src: src/jquery.mousewheel.js
-  - file: src/jquery.utils.js
-    name: "utils"
+      - src: src/jquery.slimbox.js
+  - name: "utils"
+    destfile: jquery.utils.js
     depends:
       - src: src/jquery.utils.js
       - src: src/jquery.strings.js
       - src: src/jquery.anchorHandler.js
-      - src: src/jquery.arrayUtils.js
       - src: src/jquery.cookie.js
       - src: src/jquery.countdown.js
       - src: src/jquery.cycle.js
       - src: src/jquery.delayedObserver.js
       - src: src/jquery.flash.js
-      - src: src/jquery.flickrshow.js
       - src: src/jquery.i18n.js
       - src: src/jquery.masked.js
       - src: src/jquery.mousewheel.js
       - src: src/jquery.slimbox.js
       - src: src/jquery.timeago.js
-      - src: src/jquery.youtubeLinksToEmbed.js
+      # src: src/jquery.arrayUtils.js
+      # src: src/jquery.youtubeLinksToEmbed.js
+      # src: src/jquery.flickrshow.js
+      # src: src/ui.toaster.js
 
-  - file: src/jquery.utils.js
-    name: "ui"
-    title: jquery.utils.ui
-    destfile: jquery.utils.ui.js
-    depends:
-      - src: src/jquery.utils.js
-      - src: src/jquery.strings.js
-      - src: src/jquery.anchorHandler.js
-      - src: src/jquery.arrayUtils.js
-      - src: src/jquery.cookie.js
-      - src: src/jquery.countdown.js
-      - src: src/jquery.cycle.js
-      - src: src/jquery.delayedObserver.js
-      - src: src/jquery.flash.js
-      - src: src/jquery.flickrshow.js
-      - src: src/jquery.i18n.js
-      - src: src/jquery.masked.js
-      - src: src/jquery.mousewheel.js
-      - src: src/jquery.slimbox.js
-      - src: src/jquery.timeago.js
-      - src: src/jquery.youtubeLinksToEmbed.js
-      - src: standalone/ui-timepickr/src/ui.timepickr.js
-      - src: src/ui.toaster.js
 merge:
   - dest: dist/jquery.utils.css
     files:
