@@ -1,5 +1,5 @@
 /*
-  jQuery strings - 0.3
+  jQuery strings - 0.4
   http://code.google.com/p/jquery-utils/
   
   (c) Maxime Haineault <haineault@gmail.com>
@@ -21,10 +21,13 @@
                 switch(this.__getType(i)) {
                     case 'array':case 'date':case 'number':
                         return i.toString();
-                    case 'object': 
-                        var o = [];
-                        for (x=0; x<i.length; i++) { o.push(i+': '+ this.__repr(i[x])); }
-                        return o.join(', ');
+                    case 'object': // Thanks to Richard Paul Lewis for the fix
+                        var o = []; 
+                        var l = i.length;
+                        for(var x=0;x<l;x++) {
+                          o.push(x+': '+this.__repr(i[x]));
+                        } 
+                        return o.join(', ');                        
                     case 'string': 
                         return i;
                     default: 
