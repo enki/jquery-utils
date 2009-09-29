@@ -40,8 +40,7 @@
                 var match = i.constructor.toString().match(/Array|Number|String|Object|Date/);
                 return match && match[0].toLowerCase() || typeof(i);
             },
-            //+ Jonas Raoni Soares Silva
-            //@ http://jsfromhell.com/string/pad [v1.0]
+            // Jonas Raoni Soares Silva (http://jsfromhell.com/string/pad)
             __pad: function(str, l, s, t){
                 var p = s || ' ';
                 var o = str;
