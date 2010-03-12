@@ -135,7 +135,7 @@ $.extend($.ui.timepickr, {
     defaults:    {
         convention:  24, // 24, 12
         trigger:     'mouseover',
-        format12:    '{h:02.d}:{m:02.d} {suffix:s}',
+        format12:    '{h:02.d}:{m:02.d} {z:s}',
         format24:    '{h:02.d}:{m:02.d}',
         hours:       true,
         prefix:      ['am', 'pm'],
