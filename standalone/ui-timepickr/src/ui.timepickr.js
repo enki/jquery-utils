@@ -25,7 +25,7 @@ $.tpl('timepickr.button', '<li class="{className:s}"><span class="ui-state-defau
 
 $.widget('ui.timepickr', {
     plugins: {},
-    _init: function() {
+    _create: function() {
         this._dom = {
             menu: $.tpl('timepickr.menu'),
             row:  $.tpl('timepickr.menu')
@@ -37,7 +37,7 @@ $.widget('ui.timepickr', {
     _trigger: function(type, e, ui) {
         var ui = ui || this;
         $.ui.plugin.call(this, type, [e, ui]);
-        return $.widget.prototype._trigger.call(this, type, e, ui);
+        return $.Widget.prototype._trigger.call(this, type, e, ui);
     },
 
     _createButton: function(i, format, className) {
@@ -130,11 +130,11 @@ $.widget('ui.timepickr', {
 });
 
 // These properties are shared accross every instances of timepickr 
-$.extend($.ui.timepickr, {
+$.extend($.ui.timepickr.prototype, {
     version:     '@VERSION',
     //eventPrefix: '',
     //getter:      '',
-    defaults:    {
+    options:    {
         convention:  24, // 24, 12
         trigger:     'mouseover',
         format12:    '{h:02.d}:{m:02.d} {z:s}',
