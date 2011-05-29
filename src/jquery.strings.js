@@ -178,7 +178,7 @@
         },
 
         calc: function(str, args) {
-            return eval(format(str, args));
+            return eval(this.format(str, args));
         },
 
         repeat: function(s, n) { 
